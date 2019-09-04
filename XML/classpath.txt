@@ -1,0 +1,11 @@
+kind:  类别/类别   
+
+	src 源       直接编译到  输出 位置
+	con连接    连接jre
+	lib   库        自己的架包
+	output 输出
+
+
+path:  路径
+
+source folder 源文件

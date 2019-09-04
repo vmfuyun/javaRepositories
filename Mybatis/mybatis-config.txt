@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+<!-- 环境选择 下面的是多个环境 加s了的意思 默认值是 -->
+	<environments default="dev">
+	<!-- 环境 1 -->
+		<environment id="dev">
+		<!-- 事务类型 -->
+			<transactionManager type="JDBC"></transactionManager>
+			<!-- 数据源 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url" value="jdbc:mysql:///javaweb" />
+				<property name="username" value="root" />
+				<property name="password" value="admin" />
+			</dataSource>
+		</environment>
+	</environments>
+	<!-- 尽量环境配置完毕后是mapper -->
+	<!-- 这里的路径可以相当于类的相对路径 -->
+	<mappers><mapper resource = "cn/woIfcode/mybatis/studentmapper.xml"/>
+	</mappers>
+</configuration>

@@ -1,0 +1,14 @@
+原因:   因为 服务器 使用了 ISO-8856-1编码    不支持中文               
+	Tomcat8.0以后就支持了中文  			支持get请求 中文     但是不支持 post请求
+
+解决  编码    string.getbaye("编码格式")---ISO-8859-1
+        解码    new string( ....., "UTF-8")------
+
+       
+        setcharatorencoding("UTF-8")         注意必须在      获取所有       之前                
+        
+
+Tomcat8.0之前的配置 URIEncoding="   "   编码.......... 处理       只能解决get请求
+
+所有的设置 编码  信息 都要 在server方法里的头一行
+

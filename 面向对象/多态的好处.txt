@@ -1,0 +1,42 @@
+多态的好处:
+
+需求:给饲养员提供一个饲养动物的方法,用于喂养动物的方法,用于喂养动物.
+没有多态:
+针对于不同的动物,我们得提供不同的feed方法来喂养,
+我想,只提供一个方法来喂养动物
+class Person{
+   public void feed(Dog d){
+       System.out.println("feeding...");
+       d.eat();
+    }
+    public void feed(Cat c){
+       System.out.println("feeding...");
+    }
+}
+class AnimalDemo{
+    public static void main(String args[]){
+         Dog d=new Dog();
+         Person p=new Person();
+         p.feed(d);
+         Cat c=new Cat();
+         p.feed(c);
+     }
+}
+存在多态:
+统一了喂养动物的行为;
+从上述例子,可以得知多态的作用:把不同的子类对象当做父类类型来看待,可以屏蔽不同子类对象之间的差异,从而写出通用的代码达到编程,以适应需求的不断变化.
+class Person{
+    public void feed(Animal a){
+       System.out.println("feeding...");
+       a.eat();
+    }
+}
+class AnimalDemo{
+    public static void main(String args[]){
+         Dog d=new Dog();
+         Person p=new Person();
+         p.feed(d);
+         Cat c=new Cat();
+         p.feed(c);
+     }
+}

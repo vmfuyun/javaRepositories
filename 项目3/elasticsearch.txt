@@ -1,0 +1,99 @@
+实际操作的时候  
+	方式一 : 把所有的数据(mysql)搬到es     一般选择这个!        注意es是在内存中 全部搬过去 注意内存的压力
+	方式二: 把需要搜索的数据 复制到es  
+9200端口 http 是给 内部使用的  kiban   
+9300端口  tcp  是一般给其余的用的      
+	集群 使用逗号 分割  
+
+template
+	模板类 对应的建立 index type   的常量 更好的操作,  
+	keywork 不会被分词  ,,,    text会被分词 
+dao接口  
+	对应 继承 接口repository<前面实现的,id 的类型>  
+	贴上@repository
+...对应的service和实现一类的操作 
+	注意 注入一个 TransportClient 
+service
+	注意使用的是,template.createIndex(xxx.class);  因为 domian对应设置了 @id @feliedxxx 结构
+		template.putmapping(xx.class) ===把对应注解 变成对应的es字段参数  
+	加上save
+建立template 
+	设计原则 适用于前端    什么国内啦, 主题副标题 ,,一类的    自定义 dateFoemat.custom  
+	前端需要什么字段,所见所需,需要查询的字段====es存什么
+
+website
+	datacontroller  初始化     
+	主题 要进行 需求分解
+	
+	多列聚合 使用 composite  就是多个分组   对应也是一个对象 聚合对象    builder 对应的是 一个名字 和条件  
+			termsValues    ---missingBucket 忽略              使用new SeatchRequest()里面是对应的模板的index   .  requery.types (types) 
+		使用的是 client.search(query)
+		然后  
+		 	
+	攻略controller     使用map  正好的key value 能获取  正好的--对应    
+
+	查询的--SearchController 
+	es 查询到最后 也就是匹配查询    一般情况  如果过是多个 条件的话  尽量分析一下是什么条件   java 能用什么条件   
+	
+	在 jpa-es - dao=Repository中	  boolquery 查询 使用must  进行 匹配查询 比较多 也比较方便  
+	
+	设计 对应的 结构 对应前台的 数据  一般使用的   list类型和 map类型     拼接出对应的数据     
+	  SearchRequest request = new SearchRequest(StrategyTemplate.INDEX_NAME)
+                .types(StrategyTemplate.TYPE_NAME)
+                .source(new SearchSourceBuilder()
+                        .size(0)
+                        .aggregation(builder)
+                        .query(query)
+                );
+	----->条件的拼接  一般是使用的  请求SearchRequest  对应上对应的 index type 
+		  --->一般映射到实体类上 使用的是 @document (index,type)   @id @field--->  @Field 每个文档的字段配置（类型、是否分词、是否存储、分词器 ）
+	
+	        SearchResponse response = this.client.search(request).actionGet();  通过这个发出请求  面对的是比较麻烦的  复杂的操作
+	如果是比较常用的  一般会使用 对应的dao层   
+	编写规则 一般不去修改原先写的 原因是 原先写的 测试是没有问题的所以 不要去修改 不然再有问题  
+
+
+	Page<StrategyTemplate> page = strategySearchRepository.search(boolQuery, qo.getPageable());       注意 想要进行排序的  后面使用的是 Pageable 是说工具类的
+	
+
+	高亮是一个替换 过程  注意       multi_match  多个匹配   
+			结构例子 如此下        查询后结果需要用高亮的 替换到原先的
+		GET /luowowo_strategy/strategy/_search
+{
+ 
+			 "query": {
+    
+				"multi_match": {
+   
+					   "query": "广州",
+     
+					    "fields": [
+        "title",
+        "subTitle",
+        "summary"
+      ]
+    
+					        }
+
+			               },
+  "from": 0,
+  "size": 3,
+
+		 		 "highlight": {
+
+					    "fields": {
+ 
+						     "title": {},
+      "subTitle": {},
+      "summary": {}
+    }
+ 
+				  	     }
+}
+	
+
+
+
+	短信发送--- 技术延申   项目间api调用  api接口的开发
+	
+	

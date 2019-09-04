@@ -1,0 +1,80 @@
+//组合关系
+
+/*
+继承关系: 
+	子类可以继承到父类中部分的成员,(is  A)
+	那么此时子类是可以修改到父类的信息的.
+继承关系破坏封装,为了复用代码可能会让子类具有不该具有的功能.
+
+----------------------------------------
+
+为什么引入继承: 
+	为了代码复用问题.
+解决代码复用问题,不一定非要使用继承,也可以使用”包含关系”(has  A).
+
+	例如:我想创业,该何去何从:
+    方式1: 接手家族事业,子承父业.	=====>>	 继承关系:
+    方式2: 加盟连锁商店,拥有母公司的品牌效应	=====>>	 组合关系/包含.
+
+----------------------------------------
+
+如果A类为了得到B的功能行为:
+   如果A类是B类的一种特殊情况,我们就应该采用继承来实现.
+   否则使用组合方式.
+
+*/
+
+class CombinationDemo //+ extends ArrayUtil1 继承关系(破坏封装)
+{
+	private ArrayUtil1 util = new ArrayUtil1();//组合关系     私有化对象变量
+	public void test()
+	{
+		int[] arr = {8,24,17,-13,0,2,4,-7,3};
+		util.sort(arr);//排序
+		util.printArray(arr);//打印
+	}
+	public static void main(String[] args) 
+	{
+		new CombinationDemo().test();
+
+		System.out.println("~=~=~=~=~=~=~=~=~");
+
+		Dog d1 = new Dog();
+		d1.sleep();
+
+		System.out.println("~=~=~=~=~=~=~=~=~");
+
+		Cat c1 = new Cat();
+		c1.sleep();
+	}
+}
+
+class Animal
+{
+	public void sleep()
+	{
+		System.out.println("刷牙洗脸");
+		System.out.println("换睡衣");
+		System.out.println("上床");
+		System.out.println("打呼噜");
+		System.out.println("尿床");
+	}
+}
+
+
+//继承
+class Dog extends Animal
+{
+}
+
+
+//组合
+class Cat
+{
+	private Animal a = new Animal();
+
+	public void sleep()
+	{
+		a.sleep();
+	}
+}

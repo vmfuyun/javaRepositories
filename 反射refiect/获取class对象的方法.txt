@@ -1,0 +1,8 @@
+class使用 泛型 来获取自己想要的类型 的字节码文件
+
+获取字节码对象
+1, 类名.class
+2,getclass 方法
+3,静态方法forName(String className);
+
+第三中用的最多

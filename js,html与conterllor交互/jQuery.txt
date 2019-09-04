@@ -1,0 +1,16 @@
+
+1 事件的绑定
+	查看 jQuery 文档：jQuery对象.bind(type, data, fn)，jQuery对象.click(fn)，jQuery对象.on(event, childSelector, data, function)
+
+jquery  操作元素  
+	$('#btn').detach();    删除 可以获取 之前的  当需要保存 删除的元素包含事件的话 需要用detach();
+
+jquery 获取内容值
+	var username = $('#username').val();  得到value值
+	$('#info').text(); 得到中间值
+
+jquery 属性的设置
+	jquery对象.attr  添加 属性值 
+	jquery对象.prop  适用于 属性名 和 属性值 一样的   设置属性 
+	
+	

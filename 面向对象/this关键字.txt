@@ -1,0 +1,77 @@
+//理解this:
+
+/*
+什么是this:
+	表示当前对象,什么优势当前对象.
+	this主要存在于两个位置:
+	1)构造器中:  
+		就表示当前创建的对象.
+	2)方法中:  
+		哪一个对象调用this所在的方法,
+		那么此时this就表示哪一个对象.
+
+当一个对象创建之后,JVM会分配一个引用自身的引用:this.
+
+*/
+
+//用户信息类
+class User
+{
+	/*
+	User()
+	{
+		//this在构造器中:  就表示当前创建的对象.
+		System.out.println(this);
+	}
+	*/
+
+	private String	name;
+	private int		age;
+
+	//name的 setter/getter
+	public void setName(String name)
+	{
+		//name = name; 根据就近原则,这样无法赋值
+		this.name = name;//将调用的n赋给name字段
+	}
+
+	public String getName()
+	{
+		return name;//返回name的字段值
+	}
+
+	//age的 setter/getter
+	public void setAge(int age)
+	{
+		this.age = age;
+	}
+
+	public int getAge()
+	{
+		return age;
+	}
+
+	//打印当前对像的name和age
+	public void show()
+	{
+		System.out.println(this.name + " 的年龄是 " + this.age);
+	}
+}
+
+class  ThisDemo1
+{
+	public static void main(String[] args) 
+	{
+		User u1 = new User();
+		User u2 = new User();
+		System.out.println(u1);
+
+		u1.setName("李丽");
+		u1.setAge(23);
+		u1.show();
+
+		u2.setName("范容");
+		u2.setAge(28);
+		u2.show();
+	}
+}

@@ -1,0 +1,13 @@
+
+ 是jdom的升级版 来读XML   
+第三方   要下载jar  ...  build path
+
+文档   找 docs--- index     ----quick start (快速上手)     
+       看文档  看代码   Foo    Bar  是老外不知道起什么名字了 随意起的
+
+
+注意 导包  必须是 dom4j
+
+getRootElement    根元素
+
+1  先得到 文档    对象

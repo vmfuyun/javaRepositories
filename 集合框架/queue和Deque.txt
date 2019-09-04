@@ -1,0 +1,4 @@
+继承linkedlist   继承很多 接口 之类的
+
+
+看Api

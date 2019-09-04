@@ -1,0 +1,107 @@
+<association javaType="cn.woIfcode.Umis.domain.Department" property="dept"  >
+		<id property="id" column="did"/>
+		<result property="name" column="dname"/>
+	
+	</association>
+多表 联合查询的    
+	join形式  需要 配置 association   的javaType  必须是 你要复合成类(对象)   属性名   
+	然后 里面要把里面的合成一个   
+	
+	所以  查询的时候 select 要填写成 各个列  要起别名 不然 无法合成
+
+
+外键列的 消除 
+	找到外键列  通过(where)  然后 设置为null  不然是无法消除的  -----先打破关系然后 再删除
+
+mybatis 要记得 commit 因为 session默认是不提交事务的
+
+
+
+查询 全部的 数据 (额外sql类型)   最少 n+1个sql    (查询所有)
+
+
+
+session   
+	一级缓存   map     存在session   不想用的话  
+	性能 一般    ,  多个session是不能共享
+
+
+N+1和关联  选择问题
+
+	单个对象---用N+1
+
+delete 操作 
+	外键在哪 先把 先把外键的那个表  删除外键关系  设置为null   
+	
+	如果有的表  引用这个表的数据   就必须把引用的那个列 设置成null   update操作   维护外键关系
+
+
+
+one2many    主体 是 one----->many  one可以找到 many      在java中  谁是主体 谁维护关系 也就是mapper 要有维护关系的 sql方法
+	one方要包含 many方的对象 一般是多个 所以是一个list--->要进行初始化
+	设置关系 是 通过 get --add  
+
+	保存数据
+
+	通过发额外sql 维护外键关系  一般是写在 外键表的 那个mapper
+
+	查询数据  看下 查询出来是多少 多个 用collection  封装成集合
+	多表查询   ofType  来封装
+	分页 优先使用  额外sql
+	one-->many一般用额外sql
+双向 many2one
+		many--->	查 one 用多表联合 join ---
+         		one  --->查many 用额外     因为 如果排序的话   用join 联合查询会  排序 效果不对
+
+	1,谁是主体  到底是 one 查询 many 还是....
+	2, 搞清楚   关联对象 是one方  还是many 
+		要去获取 关联的one方对象 使用多表联合 association              one 方查询  用单表
+		要去获取  关联的是many     使用额外sql方式  使用collection          --解决循环 查询
+			
+	one 方 用单表  
+	many方用多表
+	
+注意去想自己的 domain类是什么属性------很关键!!!    怎么设计呢   one方是 主体的话  会有list ,,,,,,,,,,,,,,,,,,    many 是包含一个one方对象
+
+
+
+
+
+
+
+many2many                                  以后先 写完成的 逻辑 然后再完成其余的       注意 下一步应该是什么 应该做啥
+	建立一个中间表来  维系 对应关系
+	通过 方向 (主体) 来 去设置中间值      去设置关系 和 添加到 中间表 
+
+	
+
+
+二级缓存	
+	在sqlsessionfactory   (先去1级然后去2级 没有再去数据库) 不要把高并发的  经常修改的 放在缓存中
+	生命周期和sessionfactory 一样    
+	<cache/> 开启二级缓存-------------------是mapper级别  就是说要在mapper上配置    
+	
+	注意 
+	二级缓存是要手动提交 事务的  也要关闭 session
+	
+
+	作用域是 一个Namespace 命名空间    
+	要求实现序列化  ser  会把对象 放在磁盘    ----基础
+	DML操作(增删改)会把二级缓存 清除掉  
+高效地使用
+	语句标签<flushCache> 默认是 开启的  改成 false, 对于DML操作  一般是insert操作  因为查询 的话 是不会影响别的数据的
+	查询所有的时候  二级缓存就有可能没办法全部包括    
+		解决 直接去数据库 查  listAll               < use cache > 是否用 缓存 false
+Ehcache
+	分布式  导包(依赖)  
+	ehcache.xml----看意思  	
+	用的话 可以去百度
+
+
+
+
+
+//  注意事项   
+	当复制过的话   需要 注意几个点   包   resoult 的全限定名称    ass...的是 按它要转成的
+	
+	@cleanup  是lombok的一个注解  释放资源用的

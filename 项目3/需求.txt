@@ -1,0 +1,79 @@
+验证码发送与校验
+一:前端验证码的发送
+1.验证码控制器注入用户信息接口IUserInfoService，调用sendVerifyCode发送验证码方法，传递手机号码参数；
+二:验证码生成与缓存
+2.用户信息实现类UserInfoServiceImpl，sendVerifyCode方法做验证码生成、发送到用户手机；
+3.用户信息实现类UserInfoServiceImpl，缓存验证码到redis中，注入验证码逻辑操作接口IVerifyCodeRedisService，调用setVerifyCode方法，传递手机号码和验证码参数；
+4.验证码逻辑操作实现类VerifyCodeRedisServiceImpl，setVerifyCode方法处理保存验证码到redis中的业务逻辑，！主要给key值做前缀，格式—》verifycode：phone :code；
+5.验证码逻辑操作实现类VerifyCodeRedisServiceImpl，需要传入前缀verifyCode、失效时间（建个类Consts给个常量VERIFY_CODE_VAL_TIME=5）给子前缀包装类VerifyCodeKeyPrefix封装成子前缀包装对象prefix；
+6.验证码逻辑操作实现类VerifyCodeRedisServiceImpl，注入redis命令操作接口IRedisService，把子前缀包装对象prefix、手机号码、验证码传递给命令操作接口IRedisService的set方法；
+7.命令操作接口IRedisService，set方法接收形参是继承多态的子前缀包装对象prefix的父类BaseKeyPrefix、手机号码、验证码，！主要执行redis数据库的一些命令，这里保存验证码到redis中；
+8.命令操作实现类RedisServiceImpl，注入RedisTemplate类，形参是前缀基类BaseKeyPrefix、手机号码、验证码；拿到操作对象，然后set到对象中，即保存到redis；
+9.测试发送验证码【留意zookeeper开久了卡死问题，最好以管理员身份运行】；
+
+三:验证码的校验
+1.用户信息实现类UserInfoServiceImpl，getVerifyCode方法判断短信验证码是否一致，传入代码优化之后，保存的前缀和超时时间的常量VERIFY_CODE即子前缀包装对象，以及手机，返回的是验证码字符串；
+2.验证码逻辑操作实现类VerifyCodeRedisServiceImpl，getVerifyCode方法，传入子前缀包装对象以及手机，返回的是验证码字符串；
+3.命令操作接口IRedisService，get方法接收形参是继承多态的子前缀包装对象prefix的父类BaseKeyPrefix、手机号码，！主要执行redis数据库的一些命令，这里从redis中拿到验证码等会用户信息实现类和用户输入的验证码做校验；
+4.命令操作实现类RedisServiceImpl，形参是前缀基类BaseKeyPrefix、手机号码；把真实key拼接起来（verifycode：phone），通过redisTemplate对象的opsForValue方法的get(realKey)拿到对应的验证码，加上""变成字符串返回；
+
+--------------------------
+
+
+用户登录
+
+一:登录判断与登录信息缓存
+1.登录控制器LoginController，userLogin方法，传入用户输入的用户名（手机）、密码，调用用户信息实现类UserInfoServiceImpl，userLogin方法，字符串接收的是方法返回的UUID，用于提供给后面的cookie作为value；
+2.用户信息实现类UserInfoServiceImpl，selectUserByPhoneAndPassword方法接收手机、加密密码；判断用户输入信息错误抛出异常提示；
+3.UserInfoMapper处理多参数传入，SQL根据参数查询用户信息；
+用户信息缓存：
+4.设计用户信息子前缀包装类UserInfoPrefix，设置常量存入前缀和失效时间；
+5.用户信息实现类UserInfoServiceImpl，userLogin方法，调用新建的createToken方法，传入用户对象，该方法内生成UUID作为保存到redis中的key（前缀+UUID），createToken方法中调用用户信息逻辑操作接口IUserInfoRedisService的addToken方法，传入用户信息子前缀包装对象的常量（包括前缀和失效时间）、UUID、用户对象，createToken方法返回UUID字符串，用于给登录控制器的cookie作为value；
+6.用户信息逻辑操作实现类UserInfoRedisServiceImpl，addToken方法接收子前缀包装对象、UUID、用户对象，调用命令操作接口IRedisService的set方法，传入这三个参数（第三个参数使用泛型T接收，方法声明泛型类型<T>）；
+7.命令操作实现类RedisServiceImpl，接收这三个参数（第三个参数使用泛型T接收，方法声明泛型类型<T>）；同时做相关类型的转换，调用新建的bean2String方法，把用户对象转换成字符串【做类型转换】，字符串才能作为redis的value；
+
+二:将缓存token通过cookie返回到浏览器中，同时用户信息要放到session里返回给浏览器
+1.website项目建工具类CookieUtil，addCookie方法接收响应对象、cookie的name、cookie的value、设置路径、设置失效时间30分钟、响应cookie给浏览器；
+2.用户信息子前缀包装类设置常量作为cookie的name；
+3.登录控制器的userLogin方法，调用工具类CookieUtil的addCookie方法，传入响应对象、cookie的name、cookie的value（UUID）；
+4.进行登录测试，查询redis的key，即前缀加UUID，通过key查询到redis中的用户信息；
+
+三:登录校验
+1.登录控制器，userLogin方法，注入用户信息逻辑操作接口IUserInfoRedisService，调用getUserInfoByUUID方法，传入前缀和UUID从redis查询到对应的用户信息，然后设置到session共享域；
+2.用户信息逻辑操作实现类UserInfoRedisServiceImpl，getUserInfoByUUID方法接收前缀和UUID，传入命令操作接口IRedisService的get方法，返回用户对象（还需要传入用户类的字节码对象给后面指定返回的类型）；
+3.命令操作接口IRedisService，第三个参数使用字节码对象接收，方法声明泛型类型<T>；
+4.命令操作实现类RedisServiceImpl，第三个参数使用字节码对象接收，方法声明泛型类型<T>；获取真实key，通过真实key从redis中查询到对应的用户信息（字符串格式），转换为对象返回给session共享域，同时指定返回类型是用户类；
+
+---------------------
+redis 设置时间操作：
+1.用户信息逻辑操作实现类UserInfoRedisServiceImpl，getUserInfoByUUID方法，判断从redis中获取到的用户对象不为空，即已经登录中，调用命令操作接口IRedisService的expire方法，传入前缀和UUID，每次获取登录用户信息，就延长下时间；
+2.命令操作实现类RedisServiceImpl，expire方法，接收前缀和UUID，调用redisTemplate的expire方法，传入真实key、延长时间、时间单位，给redis中的key设置时间；
+
+
+---------------------
+
+1:验证码发送
+  1>redis服务整合
+  2>redis结构构建
+     BasePrefix    : redis操作, 一般key都需要前缀
+     VerifyCodePrefix : 子前缀包装类
+
+     IRedisServie      : redis命令操作接口, 不涉及任何业务逻辑
+     IVerifyCodeRedisService:业务逻辑操作缓存服务
+  3>验证码操作流程
+
+2:java 发送 http 请求
+
+3:真实短信发送
+
+4:用户登录
+   
+   1>传统用户登录操作原理
+   2>分布式用户等操作原理
+
+   redis get set 泛型操作
+   redis 设置时间操作（）
+   
+   cookie 操作
+
+

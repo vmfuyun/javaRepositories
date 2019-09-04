@@ -1,0 +1,12 @@
+声明式渲染     
+	自动响应式
+	<div id="app">
+  		{{ message }}
+	</div>    
+	上面是以一个 id为 app的 div,,  里面是 一个数据 获取形式 
+	var app = new Vue({                声明一个 vue对象
+  	       el: '#app',                          绑定元素 --遵循jquery筛选器 格式
+	       data: {		对应元素 绑定data 数据 并遵循 json格式
+	       message: 'Hello Vue!'         
+	  }			也可以绑定到  tutle等特性上 需要使用vue的指令 v- 前缀的
+	})

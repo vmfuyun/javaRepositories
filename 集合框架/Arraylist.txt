@@ -1,0 +1,33 @@
+size、isEmpty、get、set、iterator                 listIterator 
+
+除了实现 List 接口外，此类还提供一些方法来操作内部用来存储列表的数组的大小
+扩容是原来的1.5倍  用>>右移1   加原先的
+
+应该使用 Collections.synchronizedList 方法将该列表“包装”起来。
+这最好在创建时完成，以防止意外对列表进行不同步的访问：
+
+           变同步的  或者 变成list   
+
+        List list = Collections. synchronizedList (new ArrayList(...)); 
+
+
+	Collections 是一个返回 集合的包装   同步的 一个类
+
+
+Arraylist 默认构造器是10 容量 也就是存 10 个    
+也有可以指定容量的        
+    CRUD   增删改查  
+  包含  add   clear    clone   
+	toArray()   
+        remove
+
+
+
+
+从类 java.util.AbstractList 继承的方法      
+           equals, hashCode, iterator, listIterator, listIterator, subList 
+
+从接口 java.util.List 继承的方法         
+        containsAll, equals, hashCode, iterator, listIterator, listIterator, removeAll, retainAll, subList 
+
+  

@@ -1,0 +1,44 @@
+JavaScript 简单使用
+变量定义：由于JavaScript 是轻量级语言，所以所有类型都使用var 来声明，真实类型是什么就是什么类型。
+var  a = 1;
+var  b=”str”;
+var c = true;
+
+函数
+语法：
+function 函数名( [变量名...] ){
+       // 函数体
+}
+function show( ){
+       alert(“hello word”);
+}
+
+变量声明只需要带名称无需带类型
+function add(num1,num2){
+       alert(num1 + num2);
+}
+
+返回值问题
+函数体有return 则有返回值，没return 则没返回值
+function add(num1,num2){
+       retrun num1 + num2;
+}
+
+ 调用：调用方式和Java方法的调用类似，直接函数名()
+ <a href=“JavaScript:函数名()”>调用函数</a>
+<input type=”button” onclick=”函数名()”>
+
+
+使用 js 来提交表单
+获取表单元素后调用submit函数：需给form提供id属性
+<form id=”formId” action=”#” method=”get”></form>
+function go(){
+   document.getElementById(“formId”).submit();
+}
+
+直接获取所有的form表单再选择要提交那个表单的数据
+function go(){
+   document.forms[0].submit();
+}
+
+

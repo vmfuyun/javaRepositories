@@ -1,0 +1,41 @@
+  XML 的两个 编码否是 UTF-8
+
+有且只有一个 根标签  不允许标签嵌套  区分大小写
+
+
+
+声明XML文档 要在第一行  
+最简单的语法 就是
+<?xml version="1.0"?>   第一个  讲究的 是对应      xml  是声明这是一个xml文件 后面是版本
+
+用encoding属性来说明    也就是说这个的编码是什么  一般都是 UTF-8
+
+<?xml version= "1.0" encoding="UTF-8"?>     
+           版本                     编码      
+
+用standalone属性来说明文档的独立性  
+
+
+<? xml version="1.0" encoding="UTF-8" standalong="yes" ?>  
+standalong 必须在encoding之后
+
+<>  标签/元素
+单标签 有属性的意思    <user/>
+<!--element-->
+CDATA是 character Data(字符源码)的缩写
+作用 把标签当普通文本 
+语法: <![CDATA[数据内容]]>
+              大写       
+ 解析器对这个 内容不进行处理  直接给程序 直接处理
+
+约束 大体上有两个 主要有CDATA 和  Schema 约束(对应的控制库)约束元素 属性名字格式都会约束
+
+要从面向对象的角度  去看 这个XML  要操作它   有一个 类 是document     
+
+用document对象来 代表 XML  
+
+每一个标签  就是 Element        '  每个标签 有可能有标签   Attribute  属性        
+
+有的标签 是有 text  就是文本                    关键是对应关系
+
+

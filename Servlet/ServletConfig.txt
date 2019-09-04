@@ -1,0 +1,9 @@
+ServletConfig接口    当前项目配置的所有信息    web.xml
+	getServletname   <Servlet-name>
+	getServletContext()获取上下文对象      一个应用就这一个这样的对象
+	getinit... 初始化信息
+	getInitpr.......所有名字    然后可以通过信息拿到所有内容
+通过  获取编码String       通过 自带的web.xml来解决硬编码   获取初始化参数来()
+ <init-param>< param-name>encoding   <param-value>
+		判断编码判断 
+

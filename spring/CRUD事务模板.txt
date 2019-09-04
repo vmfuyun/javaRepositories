@@ -1,0 +1,24 @@
+ what
+where
+when
+
+在 when的地方  可以有一个tx属性(支持通配符)  可以通过把查询 操作 统一以get 或 list,----query 开头====设置成 只读
+					其余用*需要  就可以了
+
+
+事务增强 好比是 环绕增强 ----其实是没有when的
+	what    
+	<bean>---datasourceTransactionManager--托管这个类
+	when
+	<tx:advice>----transaction-manager    ----做哪些事务增强--关联事务管理者
+		<tx:attributes>		---事务增强的  属性配置
+			<tx:method>	---对那些方法 进行事务  什么级别 一类
+	where
+	<aop:config>
+		<aop:pointcut>---切入点	--就是对那些业务进行  事务增强
+		<aop:advisor>---顾问	--让顾问进行处理	
+		
+
+底层是通过 每个namespaxe 命名空间 进行解析 并存储
+
+context 是环境 容器 上下文

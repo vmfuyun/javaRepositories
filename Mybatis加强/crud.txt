@@ -1,0 +1,175 @@
+dependensies  (依赖) 直接可以通过这个  一次性全部 导入架包
+
+plugins(插件)   直接复制  					注意 没有用的 方法 不要保存  直接删除  否则有干扰
+
+mybatis-config.xml 放在 resource文件里  编译后会放在一起
+
+四要素  
+	注意 起别名 如果是一个包的package  是填写 到domain
+
+@Cleanup   ---标签 关流
+useGEneratedkeys       ----true  --自动生成的主键
+
+useGeneratedKeys ( 仅 对 insert 有 用 ) 这 会 告 诉 MyBatis 使 用 JDBC 的 getGeneratedKeys 方法来取出由数据
+		(比如:像 MySQL 和 SQL Server 这样的数据库管理系统的自动递增字段)内部生成的主键。 默认值:false。  
+keyProperty (仅对 insert 有用) 标记一个属性, MyBatis 会通过 getGeneratedKeys 或者通过 insert 语句的 selectKey 子元素设置它的值。 默认: 不设置。  
+
+keyProperty="对应的主键的对象"。
+
+
+
+使用这个配置, “Blog”可以任意用来替代“domain.blog. Blog”所使用的地方。  ////一般是用在返回的 语句  例如 select 语句 返回  
+
+You can also specify a package where MyBatis will search for beans.
+ For example: 
+<typeAliases>
+  <package name="domain.blog"/>
+</typeAliases>
+
+
+mapper  接口操作 注意有几个 需要注意的地方         1 , mybatis-config.xml 文件--mapper文件的映射
+				 	2,命名空间和 接口要一直  -- 方法名称和 id也要一直 
+					3,mapper.xml文件和接口要在一起(必须要在一起)
+					4,
+
+
+
+
+解决字符串过多 出错,   解决传入的值没有限制    的问题
+	应用 mapper 动态代理 机制 ---解决接口要实现类  ---约定优于配置 
+	
+	命名空间 对应 接口全限定名称    
+	id  对应 方法名称    
+
+	mapper对象	sqlsession.getmapper(接口.class)
+
+
+
+
+标签  
+	<choose>  <when>  就选择一个
+
+
+<trim>  前缀                        后缀
+<trim prefix="WHERE" prefixOverrides="AND |OR ">  ---
+  ... 
+</trim>
+
+
+	set       自动            会自动去掉 , 逗号
+
+
+foreach 一般 在 in 后面   
+要遍历的集合的
+collection 是类型  list   array
+
+open 是以什么开始  
+separator以什么分割
+close 以什么结束
+
+另外一个动态 SQL 通用的必要操作是迭代一个集合, 通常是构建在 IN 条件中的。 比如: 
+
+<select id="selectPostIn" resultType="domain.blog.Post">
+  SELECT *
+  FROM POST P
+  WHERE ID in
+  <foreach item="item" index="index" collection="list"   
+	
+     拼接模式
+      open="(" separator="," close=")">  //必须要添加 这个 不然 sql 有会错
+        #{item}
+  </foreach>
+</select>
+
+
+
+
+-$ {}  和 #{} 的区别
+	#{} 先(预编译)   设置占位符   然后  再(设置值)取值     也有的说 有会''  上引号
+  	${} 原样 输出 ,没有占位符   会当成一个sql语句的 一部分执行   有sql注入的问题
+
+使用场景 
+	#{} 取值的时候 用
+	${} 分组 group up 或者 排序  order by 使用                      这两个都是通过列名                      ${}取不到简单类型
+
+Caused by: org.apache.ibatis.reflection.ReflectionException: There is no getter for property named 'username' in 'class java.lang.String'  
+ 			找不到这个   用 标签  @param  
+
+标签 @param 参数 用来 给 (如果没有属性)
+	原先的只能 传 一个object
+	 用的mapper接口但是底层也是用的 selectOne  ( namespace + id ,Obiect )
+	原先可以用map  
+	@param   
+	多个参数 其实  会封装成一个  map  
+
+
+resultMap
+	type : 要封装的类型;
+	id: 起一个名字
+
+	里面的标签  <id>    封装主键信息
+
+
+	<result>    封装的普通的信息
+
+	association(联合查询)(也就是对应关系的 一个对应 标签)----关联one对象     属性(这个关联property属性)   列(column 要执行任务的参数)      命令  需要在对应的 mapper来  (调用语句)去查询
+	association---多表 查询   javaType  必须配置  
+	额外 SQL 方式可以不配置 javaType 属性（select 元素那已配置了），下面讲的多表查询方式一定要配置
+	
+	原理 是当一个 调用器 用了  然后进行 传值 跳转-----如果有外键的话 就直接去那个表直接 建立sql 就行
+		
+		<columnpa---前缀-->
+		<association javaType="cn.woIfcode.Umis.domain.Department" property="dept" column="dept_id" 
+								select="cn.woIfcode.Umis.mapper.DepartmentMapper.get"></association>
+	
+
+关系  
+	就是把生活中有关系的数据通过 MyBatis 持久化到数据库，且存储的数据也能表示出来这种关系，再由数据库中把有关系的数据查询出来在页面展示。
+	保存：页面的数据 ----> 使用 Java 对象封装 ---> 通过 MyBatis ---> 数据库表的数据
+	查询：数据库表的数据 ---> 通过 MyBatis ---> 封装成 Java 对象 ---> 页面展示数据
+
+	、关联关系（Association）
+
+	A 对象依赖 B 对象，并且把 B 作为 A 的一个成员变量，则 A 和 B 存在关联关系。
+	在 UML 中依赖通常使用实线箭头表示。
+
+
+	单向    就是 类似于 一个类 包含另一个类的对象   ,  只能走向一个方法
+	双向    彼此都有彼此的对象
+
+1-1 关系 类似 外键
+
+
+1对多   外键 建立在  多                          这个和后面的保存 有直接关系
+
+//关系型存储 (多个表)  注意需要把 id 给返回  不然 外键列就不行  获取到ID了 
+保存的时候要 先保存  one 然后再保存多的     
+ 
+	类设计, 让对象之间有关系
+	表设计, 让表之间数据之间有关系
+	写 Mapper 接口 XML 
+	再写单元测试
+
+
+
+
+延时加载
+	在MyBatis,查询员工对象的时候,会积极的把部门对象也给查询出来.总共发送了两条SQL.
+	默认是积极加载的.
+
+	1.如果想让部门对象是延时加载(延时发送SQL),需要在总配置文件中添加配置信息,支持延时加载.
+	在总的配置文件中添加如下配置,可以开启延时加载:
+	<setting name="lazyLoadingEnabled" value="true"/>(默认是false,所有的关联属性都是立即加载的)   当使用懒加载时,只有在该对象调用关联属性时(比如e.getDept())才会执行额外的sql,其他情况不执行
+	,                          											(查询的时候 就不要用与它相关的了)
+	2.在调用对象中的任意属性都会触发关联属性的加载,需要配置按需加载:
+	<setting name="aggressiveLazyLoading" value="false"/>(默认为true.只要调用对象都会把关联属性加载出来)
+
+
+
+	3.在调用对象中的clone,hashCode,equals,toString方法的时候都会触发关联属性的加载,但是我们希望toString的时候不要去加载关联属性:
+	<setting name="lazyLoadTriggerMethods" value="clone"/>(表示,当对象调用clone方法的时候采取触发的关联对象的加载.)
+
+	三个属性配置都可以在中文文档中找到.
+
+
+

@@ -1,0 +1,12 @@
+throw 更加精细
+
+throws 也是更精细
+
+
+try{}catch(        |         ){}   可以或者什么类型  两个  但是这两个必须是平级 
+
+
+
+try(这里面打开的资源 会自动关闭){}  catch(){}                 
+
+查看  接口AutoCloseable    在上面的try括号里面的 要实现 AutoCloseable这个接口

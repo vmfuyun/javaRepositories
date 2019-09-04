@@ -1,0 +1,79 @@
+//final修饰符
+
+/*
+为什么得需要使用final修饰符:
+    继承关系最大弊端是破坏封装:
+		子类能访问父类的实现细节,
+		而且可以通过方法覆盖的形式修改实现细节.
+
+-----------------------------
+
+多个修饰符之间是没有先后关系的. 
+	public static final  ;<<===推荐用这种
+	public final static  ;
+	final static punlic	;
+
+-----------------------------
+
+final本身的含义是“最终的,不可改变的”，
+	它可以修饰非抽象类，非抽象方法和变量。
+注意：
+	构造方法不能使用final修饰，
+	因为构造方法不能被继承，肯定是最终的。
+
+-----------------------------
+
+final修饰的类: 
+	表示最终的类, 该类不能再有子类.
+
+只要满足以下条件就可以把一个类设计成final类：
+	①　某类不是专门为继承而设计。
+	②　出于安全考虑，类的实现细节不许改动,不准修改源代码。
+	③　确信该类不会再被拓展。
+
+面试题:
+	列举5个Java中内置的使用final修饰的类.
+		java里final修饰的类有很多，
+		比如八大基本数据类型保证类和String等。
+
+-----------------------------
+
+final修饰的方法:  
+	最终的方法,该方法不能被子类覆盖.
+什么时候的方法需要使用final修饰.
+	1):在父类中提供的统一的算法骨架,
+		不准子类通过方法覆盖来修改. 
+		此时使用final修饰.模板方法设计模式.
+	2):在构造器中调用的方法(初始化方法),
+		此时一般使用final修饰.
+
+注意: 
+	final修饰的方法,子类可以调用,但是不能覆盖.
+
+-----------------------------
+
+final修饰的变量: 
+	最终的变量,常量,该变量只能赋值一次,不能再赋值.
+		final是唯一可以修饰局部变量的修饰符.
+*/
+
+//final class SuperClass //错误: 无法从最终SuperClass进行继承
+class SuperClass
+{
+	//final public void doWork(){} 
+	//错误: SubClass中的doWork()无法覆盖SuperClass中的doWork()
+	public void doWork(){}
+}
+
+class SubClass extends SuperClass
+{
+	public void doWork(){}
+}
+
+class FinalDemo 
+{
+	public static void main(String[] args) 
+	{
+		System.out.println("Hello World!");
+	}
+}

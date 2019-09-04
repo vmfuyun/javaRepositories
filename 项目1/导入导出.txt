@@ -1,0 +1,24 @@
+在员工页面..
+	面向对象的思想看  xls 文件是什么 
+	一个工作簿       表格   行  列----分析结构
+
+	poi--下载上传代码工具   
+
+	1,按钮 
+	2,添加contorller的方法   有页面跳转就有返回值,  hssf 是2003版本的
+	3,创建work 结构写入数据  写入行 是一个对象 一般肯定要循环写入  -- 一般放在service层	
+	4, 下载之前需要指定 告诉浏览器 文件的表头 一类 把文件写到 响应的输出流去  二进制- 用的字节流
+
+	员工导入
+	1,添加模态框,添加导出按钮点击事件,弹出模态框
+	2,创建模板-模板可以直接下载,怎么做? 可以指向模板文件地址(该文件不在WEB-INF目录下) 在WEB-INF下必须通过contorller
+		文件上传-准备工作,1,post请求,2指定格式上传格式3,上传控件 type="file"
+		后台使用MultiPartFile 接受 上传控件的name和参数名字一致   
+		 在SpringMVC 配置上传解析器   Multipartresolver的实现类叫CommonsMultipartresolver 上分解器  必须加 id 名字叫 Multipartresolver (必须)
+		注意结构
+	3,用poi来读取上传的对象的输入流 生成xls对象
+		再获取中间的信息  -怎么获取? 通过HSSFWorkbook的方法实现    sheet.getLastRowNum() 
+    poi API 判断类型 在文档  可以做ppt.word,execl的转换一类
+
+
+	

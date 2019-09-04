@@ -1,0 +1,104 @@
+  解决的问题  是  得不到源码    怎么调取对应  的方法 和  对象   之类的
+
+通过 一个 对象  得到他的 类型
+
+全限定名称
+
+先加载    会有字节码对象  
+初始化   
+
+编译类型  运行类型
+
+
+描述类的 类 叫 java.lang.Class     类加载到内存 就会创建 class类对象
+把所有的类的成员   抽离出一个个类 
+  所以操作反射  
+1  获取字节码对象   
+2  通过class对象可以获取方法字段 一类的对象 然后 各个类成员的类 有各自的方法 
+
+class类来 描述 类的   所以这个类就有获取类这个事物的 所有方法
+并把类中的每个成员  描述成一个新的类型
+class类   描述所有类
+Construcor表示所有的构造器     
+Method 所有的方法
+Field  所有字段
+
+反射强悍 损耗性能
+
+元数据 : 就是描述数据的   数据 
+反射 :在运行中动态的去获取某一个类的成员信息(构造器,方法,字段,内部类,接口,父类等)
+
+
+class使用 泛型 来获取自己想要的类型 的字节码文件
+
+获取字节码对象
+1, 类名.class
+2,getclass 方法
+3,静态方法forName(String className);
+
+第三中用的最多
+
+
+Class<T>. 用来表示 哪个类的字节码
+
+8大基本数据类型的包装类中,都有一个常量:TYPE,用于返回该包装类对应基本类的字节码对象
+System.out.println(Integer.TYPE == int.class);//true
+
+数组类型.class
+数组对象.getClass();
+
+
+      init  是初始化 类型     
+
+
+用泛型   来确定一下 是哪个类的 字节码对象
+
+多读源代码
+
+同一个类 在内存中 是同一个字节码对象
+一个类在 JVM 中只会有一个 Class 实例
+
+class类描述类的类     ,,,,,理解 类是描述对象的  描述类的类   说明 对象就是类
+class实例   jvm中的字节码文件  或者是类 ,接口
+
+运行优先基本数据类型
+
+
+基本类型 有一个type
+
+class描述类型
+Object描述是对象
+
+获取类 的构造器
+1,获取类的字节码对象
+2,再获取构造器               获取指定的构造器的话  通过参数列表来  获取
+通过  Declared  可以无差别的找到构造器
+	
+		public Constructor<T> getDeclaredConstructor(类<?>... parameterTypes)
+        	                              throws NoSuchMethodException,
+               	                  
+		            SecurityException返回一个Constructor对象，该对象反映Constructor对象表示的类或接口的指定类函数。
+		 parameterTypes参数是以声明顺序标识构造函数的形式参数类型的类对象的数组。
+		 如果此类对象表示在非静态上下文中声明的内部类，则形式参数类型将显式包围实例作为第一个参数。 
+		参数 
+		parameterTypes - 参数数组 
+		结果 
+		Constructor对象为具有指定参数列表的构造函数 
+
+
+
+4通过反射获取构造器 来创建对象
+		public T newInstance()
+ 		             throws InstantiationException,
+      		               IllegalAccessException创建由此类对象表示的类的新实例。 该类被实例化为一个具有空参数列表的new表达式。 如果类尚未初始化，则初始化该类。 
+		请注意，此方法传播由nullary构造函数抛出的任何异常，包括已检查的异常。 
+		使用此方法有效地绕过编译器异常检查，否则将由编译器执行。
+		 Constructor.newInstance方法通过在（检查） InvocationTargetException中包装构造函数抛出的任何异常来避免此问题。 
+
+		结果 
+		由该对象表示的新分配的类的实例。 
+
+枚举是反射也没用
+
+
+通过object 有个子类  设置调用private修饰的

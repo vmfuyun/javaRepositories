@@ -1,0 +1,6 @@
+
+wait(),
+notify(),
+notifyAll()
+这三个是Obj的方法
+

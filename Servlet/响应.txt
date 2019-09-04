@@ -1,0 +1,15 @@
+HttpServletResponse   
+ 
+getOutputStream....字节输出流对象     (文件下载)
+getWriter..............字符输出   
+上述不能共存
+
+响应的时候 一般要设置返回的类型 setContentType()---text/html    设置返回类型是什么
+			setchar...encoding()-----编码
+		
+
+	//也必须设置在头
+			setContentType("text/html;charset=UTF-8")  //里面的内容在html上面(静态页面那边)
+写的时候 可以写出 html格式的        也要处理乱码
+
+resp.sendRedirect("/Select.html");   设置跳转哪个 界面 

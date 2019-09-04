@@ -1,0 +1,91 @@
+1,  前后端分离:    
+	1,是一个web应用开发的一种架构模式
+		前端,后端分开成两个项目来分来部署, 前端 后端 主要通过 ajax restful api接口 并使用 json数据来 交互,  并行开发.
+	注意事项:  restful 接口定义流程: 1, 资源路径 / 一般是 表名;--  也可以遵循  / / /   例如: 攻略的评论    攻略/评论  
+				 2, 请求动作 get -获取 
+					  post-创建 
+					   put-更新
+				  	   delete 删除      
+				 3, 请求参数  根据前端的 需求来分析 需要传什么参数
+				 4, 返回结果  ..... 
+	 注意事项: 1, 当使用form表单提交的时候, 当是put需要 添加属性name为_method=put  ,,,,一般情况如果是不会改变的话 就用隐藏域 
+								
+	    <filter>
+	        <filter-name>httpPutFormContentFilter</filter-name>
+	        <filter-class>org.springframework.web.filter.HttpPutFormContentFilter</filter-class>
+	    </filter>
+	    <filter-mapping>
+	        <filter-name>httpPutFormContentFilter</filter-name>
+	        <servlet-name>springDispatcherServlet</servlet-name>
+	    </filter-mapping>
+	
+	    <filter>
+	        <filter-name>HiddenHttpMethodFilter</filter-name>                                                 ---会获取_method的参数 并转成 方法名叫对应的参数名
+	        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+	    </filter>
+
+	    <filter-mapping>
+	        <filter-name>HiddenHttpMethodFilter</filter-name>
+	        <servlet-name>springDispatcherServlet</servlet-name>
+	    </filter-mapping>
+
+2, jrender的使用  主要功能是渲染,
+	方法: $(选择器).renderValues({有对应的属性名},{这里可以填写render-fun 对应的函数  fn(item,value)  })    
+		render-loop=数组   该方法主要为了遍历集合 数组  ,, 但是上面的选择器必须是 这个属性的上一级
+	  render-fun="函数名"    对应上面的函数名 表示要调用的函数    render-key="" -得到渲染的值,  和上面的对应     
+					   这个方法可以添加对应的数据来实现 前端的数据传递
+	render-要填充的东西="属性名"---
+3,ispublic 类型的 渲染需要用到 render-attr="checked=ispublic"   处理true , false 的方法     
+4,data-json=''  一定要是单引号
+5,数据库把表的时间  设置成自动的 操作  current-timestamp   或者  now()函数表示当前函数  
+6, 数据库 查询最大值 max 的时候,,, 如果没有这个值的话  会出现null    一般使用ifnull (max(),0)----  来拼接sql  表示如果没有值的话 使用0 
+7, 前端路由: 前端通过把数据存放在 sessionStorage 每次跳转页面的时候  
+		 只要引入了后就要检查对应的 数据(例如登陆信息 是不是存在 来判断权限 一类的)   
+
+	例子: 
+		/*前端路由*/
+	var userstr = sessionStorage.getItem("user");    ---- 获取条目
+	var user;		
+	if (userstr) {			--判断
+	    user = JSON.parse(userstr);		--进行解析  供后面用
+	} else {		
+	    window.location.href = "/login.html"; -----没有跳转到 后面
+	}
+
+8, 文件上传 (包括图片一类)....  一般需要在 controller判断   !=null && .getSize>0     ,,
+	,  一般情况 使用 string类型的话 使用 StringUtil.haslength()
+
+9, 二级联动: 
+	首先进入之前就把 第一级 进行查询出来并 渲染 一般使用 拼接的方式     或者 render-loop     ---获取对应的val() 值
+	添加值改变事件  然后对应的执行 ajax 进行查询 渲染 (拼接)   
+10, 两层的联合查询    就是在association  再加上 association  注意在   拼写 sql的时候 要使用对应的两个前缀   叠加 表示才能对应的封装进去
+11, 后台 的项目  
+	  使用 把数据绑定在  按钮上的话 ...一般使用  domain 添加 getjson方法  来实现   /// 关联对应的话  要进行 非null 进行判断
+12, PageHelper  1,不进行分页  要设置 pageSize=0 是不会进行分页   ----返回全部  
+	          2,  合理化分页  ------reasonable  ，默认false禁用
+			 启用合理化时，如果pageNum<1会查询第一页，如果pageNum>pages会查询最后一页
+            			    禁用合理化时，如果pageNum<1或pages会返回空数据
+13 , 指定 请求头 headers="accept=  ""  指定会生产这个 
+14, 额外sql 查询 会出现代理   ---封装的时候 去除
+		  -domian  需要去除  handler  使用 @jsonIgnorePropertion("handler")---json封装的时候 去除掉 这个属性
+15, servletContext---    获取对应的路径  
+16, a 标签的 跳转  target="_parent" 属性  表示 跳转父界面  -----为了 整体效果
+17, freeMarker 生成模板   作为 输出大 html 片段的方式  
+					为前端回显数据   回显前端的 一种方式
+
+	 Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
+                 configuration.setDirectoryForTemplateLoading(new File(servletContext.getRealPath("templates")));
+                 configuration.setDefaultEncoding("utf-8");
+                 Template template = configuration.getTemplate("template.ftl");
+                  template.process(map, response.getWriter());
+	
+	前端回显数据的三种方式    ;:::  
+		render方式 --适用于 数据量 少  
+		前端clone 方式  适用于 代码块性   
+		后端 直接返回 html-- freeMarket 方式
+
+18,,,   前端的  
+	数组传值时，不添加[]($.ajaxSettings.traditional = true;)
+19, 前端 循环数组 或者 集合
+	不知 对应的名称的话 使用 .循环数组(xxx.self)
+20, 前端 的 class的 添加  addClass   removeClass

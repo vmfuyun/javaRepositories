@@ -1,0 +1,18 @@
+目的 把配置文件的信息交给框架  让他区执行某一个sql语句
+	
+
+
+核心  
+	 sqlsession  对象    =工厂 openSession
+	对象.insert 执行注意是  对象和表之间的转换  String 类型的是传的mapper.xml的  标志.id
+	
+
+启动框架     加载xml文件  传入信息  并获取到Sqlsession对象   然后就可以操作了
+	事务默认是手动的
+	操作完毕 一定要 手动去提交事务  
+	对象.commit();
+	注意关闭   对象.close();
+
+
+
+	//获取主键    通过mapper. xml  设置id 的地方设置一个 是否要主键 useGeneratedKeys   ,后面添加 keyproperty = ""传到那

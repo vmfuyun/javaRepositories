@@ -1,0 +1,9 @@
+java Web 服务器分类 
+	1)http  静态网页  html
+	2)web服务器 实现了javaee部分规范   没有实现J2e的EJB 规范    		Tomcat 
+	3)应用服务器 全部的实现了javaee规范 				  Weblogic,WebSphere
+
+
+Servlet容器为javaWeb应用提供了      运行时环境    服务器帮助我们管理servlet     
+
+Servlet容器也叫 JavaWeb容器,或者Servlet/JSP  --->Tomcat

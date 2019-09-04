@@ -1,0 +1,76 @@
+一开始  一个猫 多个项目
+二阶段 一个猫 一个项目	
+三阶段  一群猫 部署同一个项目  集群     nginx(负载均衡)来分发 | 动静分离 单独加一个 静态服务器存放静态的资源
+四阶段  一群猫 部署 同一个项目的不同业务模块  分布式   再不够就用 分布式加集群   
+		  服务之间的交互 用dubbo + zookeeper  |   数据库 主库 从库 (主从分离,读写分离)要主从同步 | 分库分表
+		
+		redis
+	登陆的session共享问题, 查询数据缓存
+
+sso 单点登陆  一次登陆 一路通行
+
+遵循 dubbo 的 最优实践   
+	 公共的 放 接口 domain  工具类   异常   
+	
+domain 一定要有序列化  一般是父类进行实现  序列化 然后子类进行 继承
+	
+api  为了调用别的   controller   存放 domain  mapper  servie 的接口  
+	
+
+父项目:
+	管理 版本  dependencyMan 
+真正的服务: 
+	其实是 业务层的 实现类型 
+
+注册 ; 
+	pc端 消费者
+	@autowired 是模板之间的
+	@reference 是服务之间的   service 和 controller 分离 成立两个服务
+
+	@enableDubbo 在消费端是 不用使用的     ....     生产者 必须用
+
+
+	在service 要写 这个返回值是干什么呢   
+	
+	创建 自定义异常类  为了更换好的 提示 错误信息   异常的封装  
+		区分自己的异常和系统异常
+	
+	dubbo 的统一异常处理     (会拦截)   会自动抛出 原先的异常 
+		   如果对应的方法上抛的异常是一致的话   就直接 抛出去 
+		   所以接口和实现类都要 throws 自定义的异常类
+			告诉dubbo 不要封装自定义异常
+	
+	统一处理  使用 controller的增强类 ,,@controllerAdvce    Aop形式  在不改变原先的方法的情况 下 ,, 增强方法
+		 通过对异常的类型的   来区别开来
+	
+	ExceptionFilter处理逻辑：
+	（1）服务提供者实现了GenericService接口，直接抛出；
+	（2）如果是checked异常，直接抛出；
+	（3）在方法签名上有声明，直接抛出；
+	（4）异常类和接口类在同一jar包里，直接抛出；
+	（5）是JDK自带的异常，直接抛出；
+	（6）是Dubbo本身的异常，直接抛出；
+	（7）否则，包装成RuntimeException抛给客户端。
+	解决方式（针对ExceptionFilter的处理机制，使其满足抛出条件）
+	（1）服务提供者实现GenericService接口；
+	（2）使用checked异常；
+	（3）服务提供者的api方法上直接throws自定义异常；
+	（4）自定义异常类放在服务提供者的jar包里；
+	（5）实现dubbo的filter，自定义provider的异常处理逻辑；
+	（6）网上还看见直接修改dubbo的ExceptionFilter源码，将自定义异常加入抛出支持后重新打成jar包。
+
+	 
+	项目架构 总结  
+		遵循了 dubbo 规范 就是 把 服务 (也是service (里面是实现类))  和 controller 分离  变成  生产者和消费者
+		website 是 消费者 是不用 贴 @enableDubbo 原因:  贴这个 enableDubbo 标志  可以提供服务  所以消费者可以不用
+		service和api 是 一个整体  是生产者  ,,  不管在哪 api都是 都是为了 提供服务的  也就是 总的提供商
+	
+	springBoot  
+		在 service 和 api 这两个组件   需要一个main  ,,所以对应的 别的地方是需要一个配置类 来配置 ,,
+			在主方法上肯定要 引入 配置类  使用的是 @import(xxxx.class)  来引入配置类  关键      
+		mapper 接口要被使用的话 需要开启 mapper扫描注解    
+			配置类 要使用 本组件(项目)的properties文件    就必须使用 PropertySource来引入
+	
+
+
+   

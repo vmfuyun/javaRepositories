@@ -1,0 +1,143 @@
+项目的入口:
+	Applicetion.java文件  --在java-main-里面  
+	图标在 resources===  banner.text  
+看代码	先从contorller看起     
+
+前端请求实现 通过  ====
+======================================================================
+
+
+	AnnotationConfig理念    springBoot的基础   --约定优于配置
+1,注解配置	
+	@Configuration  贴在类上   这个类就是 spring 的配置类替代原先的xml配置--配置类上要添加 @bean
+	@bean 贴在方法上 把方法的返回对象交给 spring容器管理 
+			  --使用return new xxx(); 方式       
+		调用的时候 使用ContextConfiguration (classes=class 来获取)
+	
+Ioc管理:			--applictionContext 的继承体系 有一个注解的 继承类  
+	@ComponentScan  
+		组件扫描 --一般是表示扫描贴了Component   对应的类交给 spring 管理,,   
+			在springBoot上 是默认 找当前 包的     也可以指定 包  
+	@bean 的参数
+		id  就是这个方法的名字   一般是名词                                 bean 的参数配置类 的bean 的名字是按着方法的名字来起的
+		init-method                      (连接池的init方法)  
+		destroy-method             (close 连接池的时候用) 
+	@Scope  作用域  来指定是多例 还是 单例的  
+DI注入  
+	通过对@bean 的 方法 的参数上直接注入,                       
+		然后使用 set方法
+配置文件导入
+	@import(" class")--引入其他的配置类             主引次的
+	@importResource("classpath:")----引入xml文件  应用场景,事务,aop  
+	
+	    Spring中所有的属性 归一个环境对象管理
+@propertySource 把property文件的内容读到Spring的环境变量上去   
+		 类的 对应属性 使用@value("${url}")  来引入
+	方式2: 注入环境对象方式  Environment  然后从这个 对象 来获取 对应属性      
+
+自己写的 直接贴    别人写的 直接在配置类 进行 写方法 贴注解;;;
+	运行环境的切换   一般使用两个类 或者多个配置类 来对应加载 对应的配置  并起别名 
+	中间的 运行类 加载import两个配置类 并 使用
+	在实际 运行的 类上 通过@ActiveProfiles("test") 注解来  中间的运行类 是运行的 哪个类
+
+
+
+Spring Boot      
+	hello 程序: 
+	1, 导入 依赖(parent 父项目)   
+	2,  创建 对应的类  贴@controller @SpringBootApplication  
+		定义一个方法 进行 web的   
+	  3, 主方法 SpringApplication.run(.class,String...args)  
+
+1, 为了什么是jar包?
+	1,jar 更加 便捷  更加方便, 在SpringBoot 都是打的jar 就是为了方便部署
+2, SpringBoot的父项目(parent)是什么?
+	它定义了 基本上(有可能使用的) 要使用的 版本 和 依赖 插件,,调用的时候 就直接调用就行 不用管版本
+	
+	tomcat 专门为Spring Boot 开发的 嵌入式 tomcat 
+3, @SpringBootApplication 注解是 进行了把所有的配置进行了配置  其实把所有xml配置 做成一个注解     这个注解会加载appliaction.properties
+	其实是一个@Configuration    还有一个 自动配置的注解   
+	  还有一个 组件 扫描   (其实就是把这个类 当配置和当一个bean来管理)
+4,SpringApplication.run
+	 启动SpringBoot应用 
+	加载自定义的配置类 完成自动配置
+	把当前项目嵌入到Tomcat中 
+	启动嵌入的Tomcat服务器
+
+SpringBoot应用的 独立运行
+	java -jar   xxx.jar    这样运行     	一般使用命令提示符  tab 可以快速的 输入 想要的文件
+	maven默认是只把自己写的 打包  是不能运行的   
+	
+	要运行SpringBoot 应用  需要添加 SpringBoot的打包插件   也用maven的package来打包
+	
+	优点: 
+		1, 独立的Spring应用程序
+		2,无需Tomcat  ,使用内置的,,Tomcat,,  无需部署war  
+		3,减少maven配置,
+		4,自动配置Spring
+		5,提供生产就绪型 功能----日志 一类的监控
+		6,xml文件 无需
+		7,容易和第三方框架集成
+	缺点: 
+		1, 版本更新较快,可能出现较大的变化
+		2, 约定大于配置, 所以经常出现一些很难解决的问题
+
+Boot test 测试 如果在同一个包下  可以省略 @SpringTest()  .class  
+ 
+resources	
+	templates   存放模板 比如 ftl
+	static 是一个 静态资源  相当于webapp
+	application.properties 默认配置文件 , 框架会自动加载-- 一般会放连接数据库四要素
+spring-boot-starter-* 一般是boot的工具包 
+
+
+排除资源
+#默认排除的资源 
+spring.devtools.restart.exclude=static/**,templates/**,public/**        
+#增加额外的排除资源 
+spring.devtools.restart.additional-exclude=public/** #处理默认配置排除之外的 
+spring.devtools.restart.enabled=false #禁用自动重启 
+
+
+
+Spring Boot 参数设置
+	改端口
+	1, 启动 项目的时候. 传入 java -jar xx.jar  --server.port=80    生产的时候用的比较多
+	4, application-{profile}.properties或者YAML文件    ---- application-后面的就是开发者模式 或者 别的模式   profile 模式名
+	5,application.properties 添加server.port=80 就可以了   
+	yaml格式 
+		断层     :  然后空两个  然后 值 空一个
+  
+       application.properties 优先级
+	项目/config/---是最优
+	
+	
+	属性绑定  
+	application.propreties 会自动被加载
+	配置连接池:  @value 标签就可以直接获取到对应值;
+	 更好的方式:@configurationProperties("jdbc") 贴在对应的类上  表示就是 获取以这个开头的值 会自动注入
+	更好的方式: 配置类的话 使用@bean @configurationProperties("jdbc")   就会直接去 注入
+	 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

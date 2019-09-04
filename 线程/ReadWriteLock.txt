@@ -1,0 +1,9 @@
+为了解决 读读互斥的现象.
+	ReadWriteLock     readWriteLock  = new  ReentrantReadWriteLock();   读写锁
+
+	readWritelock.readLock().lock()  读加锁;	
+	对象.readLock().unlock();  读操作释放锁;
+	
+	对应也有写加锁;
+
+写操作在读 之前

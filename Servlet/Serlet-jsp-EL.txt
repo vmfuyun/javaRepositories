@@ -1,0 +1,5 @@
+Servlet   可以去查    
+ 
+jsp是一个 Servlet 有内置对象    9个                                  作用域对象(共享数据) 比Servlet多一个 pagecontext    
+
+EL 内置对象 主要有 pageContext 可以访问 jsp中的所有     是jsp和 EL的桥梁    

@@ -1,0 +1,75 @@
+Controller  控制器   相当于servlet
+一般用这个结尾  创建类的话
+	
+前端控制器
+	Front Controller---类似于过滤器 或者 servlet 
+
+处理请求的单元 叫 处理器    在 spring 叫 handler(自己用) / Controller    尽量以Controller
+
+
+学MVC都要配置  前端控制器
+	springMVC 基于 servlet实现了
+	怎么接受请求  怎么封装  怎么跳转  
+
+开发步骤
+	1,依赖 spring-webmvc
+	2,前端控制器----在web.xml 中配置servlet----DispatcherServlet---init需要配置一个参数classpath:--     load-on-startup第一个启动
+	3,处理的类  处理器   实现 Controller  覆盖方法 并 创建 ModelAndView 对象   add ojb--共享  /   setViewName 跳转到界面
+	4, bean  处理器映射器 BeanNameUrlHnadlerMapper	配置处理器实现了hanlder接口的类        处理器适配器handleAdapter     视图适配器ViewResolvet
+
+
+流程分析
+	
+
+配置细节
+	web.xml文件  上下文位置  url-param 要设置成/    
+	init 配置 
+	 name是contextConfiglocation   内容配置位置参数
+	value 是classpath:....xml文件
+	
+注解版      loc解析器    <context:comp.....>
+	mvc 解析器<mvc:a..注解-driven>
+	如果是处理器 就贴 @controller          方法的话  需要返回 ModelAndView , 可以贴requestMapping("")里面是路径  这个注解也可以贴在类下  就是中间路径
+静态资源访问问题
+	url-param	/   会覆盖原先的   就访问不到静态资源
+			/*不对
+			.do 结尾  只能以这个结尾才能访问
+	解决方案		
+			1,mvc.xml配置文件 加<default-servlet-handler>
+			2,                       <mvc:resource location="classpath:"  mapping="">   这种方式 静态资源就可以随便放了  
+				location 是resource类型 也就是 一个 	资源路径      所以可以加 classpath     
+				后面的 mapping 就是把 静态资源映射成什么路径可以访问  一般  设置成/**
+	
+
+请求 和 响应
+	
+	响应
+	Controller    ---返回void    就会变成 servlet
+	方法的话 可以接受任意类型的 参数   也可以返回 任意类型
+	可以返回 MoldeAndView封装了moldmap和view-其实是一个路径    有一个moldmap封装了数据	
+	mv.addObject(单个参数)--获取的话 通过 对应类型名获取
+	
+	配置视图解析器的前后缀(mvc.xml)   默认的是在 webmvc包的--di..properties文件
+	
+	用逻辑视图 需要设置 prefix前缀(/xxx/xxx/)   ,, suffix    后缀     在mvc.xml  ,,   物理视图=前缀加逻辑视图+后缀      当你访问的时候  就不用管那个前缀了
+	
+	返回 String类型---返回的是视图--逻辑视图(配合model来共享(通过request请求共享的) UI tools)  一般处理器 必须要有视图和model   
+			也可以请求转发 加上forward:/ 加上/是根目录      //请求转发  填写 forward 这个后 就不会   使用前后缀
+			也可以重定向    redirect:			//不会使用前后缀
+	
+	请求
+	只有req才能获取到 addr 访问地址
+	可以把请求的参数名 当处理器的方法的参数列表 来获取 出来的值   如果没有的话 当null  
+				当参数名字   不一致  怎么办  :贴标签 @requestParam
+				也可以直接填写这个对象  会自动封装---------------------封装规则是 基本类型 传的是空会报错   ....尽量全用 包装类型 也是必须的
+	在web.xml配置 post请求过滤器(想servlet需要有什么 应该用什么)名字叫characterencoder
+
+	注解
+	处理器的参数 默认是共享的  按着request.setattribute(类型,数据) 
+	@ModelAttribute  把默认的共享数据改成 指定的名字
+	日期转换
+	@dateTemaFormat(pattern="")  按着指定格式来解析
+	如果是字段的话  就直接去贴在哪个字段哪里
+
+SSM 整合
+	call h  看谁调用了这个

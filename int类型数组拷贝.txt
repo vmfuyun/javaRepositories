@@ -1,0 +1,19 @@
+   
+	
+首先确定  源数组, 目标数组, 源数组的起始位, 目标数组的起始位, 拷贝的个数
+	   src     dest       srcpost         destpost        length 
+
+
+	用到的方法   名称 copy
+
+	这种智能拷贝int数组的数     不够强壮(传数首先要确定 数是没问题 即 要先验证)
+  
+static void copy(int[] src,int srcpost,int[] dest,int destpost, int length)
+{
+	// index为每次的索引
+	for(int index = srcpost; index < srcpost + length; index ++)
+	{
+		dest[destpost] = src[index];
+		destpost ++;
+	}
+}

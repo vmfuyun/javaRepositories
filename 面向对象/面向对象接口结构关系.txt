@@ -1,0 +1,81 @@
+//类和类以及类和接口的关系图
+
+/*
+
+*/
+
+class Animal
+{
+}
+
+//定义一个爬行类接口
+interface IWalkable
+{
+	void walk();
+}
+
+//再定义一个水生类接口
+interface ISwimable
+{
+	void swim();
+}
+
+//两栖动物接口
+interface Amphibians extends IWalkable , ISwimable
+{
+}
+
+//猫
+class Cat implements IWalkable
+{
+	public void walk()
+	{
+		System.out.println("好奇害死猫");
+	}
+}
+
+//鱼
+class Fish extends Animal implements ISwimable
+{
+	public void swim()
+	{
+		System.out.println("水里的空气,是我小心眼和坏脾气");
+	}
+}
+
+//蛙类
+class Frog extends Animal implements IWalkable , ISwimable
+{
+	public void walk()
+	{
+		System.out.println("蛙跳跳");
+	}
+
+	public void swim()
+	{
+		System.out.println("蛙游游");
+	}
+}
+
+public class InterfaceDemo3 
+{
+	public static void main(String[] args) 
+	{
+		//用对象创建猫
+		//Cat C = new Cat(); 不推荐
+
+		//用接口创建猫
+		IWalkable w = new Cat();//面向接口编程,存在多态
+		w.walk();//体现多态特征,执行Cat类中的walk
+		
+		//用接口创建鱼
+		ISwimable f = new Fish();
+		f.swim();
+
+		//同时用到多个接口,用对象创建
+		//多接口对象,若只用到某一接口,可用该接口创建
+		Frog frog = new Frog();
+		frog.walk();
+		frog.swim();
+	}
+}

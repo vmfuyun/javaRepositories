@@ -1,0 +1,84 @@
+在目的概况  广州游记 
+	-只有广州
+	游记列表-显示全部的
+	
+	字段--所见所得     然后隐藏字段  然后 关联对象
+	游记 需要后台 来 审核  
+	别的人 写的话 需要审核-----关键
+
+	在mapper中注意 userinfo   用strategy主题来换   
+
+	目的地明细下的游记  travels
+	看 是不是一个html   是的话 使用 模板   
+	参数 使用 destId=-1  在 sql 添加 判断   
+	替换点击量 和查看量   注意 头像和昵称 
+	
+前端范围查询解决方案	对于多个类型的查找(范围查找)的 弄法  可以 后端 直接指定 一个 对应的范围对象 来 实现    
+	然后在 sql 通过 qo 的字段 days 字段的 最值来判断    
+
+	前端有几个 对应的 查询     (重)    一般是使用的 是对应的一个 例如 :  travelTimeType: -1      , 通过这个 数据对应 后端的 一个范围查询
+				这个范围查询  最好是 使用一个 常量  来实现  如果是 数据的数据 过多的话  就是用一个 map 来封装   
+
+	在对应种类 类  创建一个 map 的常量  key = daystype     value =  TravelCondition   
+			尽量 使用  范围   -1 integer.max_value(最大值)  然后对应前端的 范围   
+
+
+	sql 注意修改    ||   月份   
+
+	排序   对应的类使用get   通过pagehelp    第三个参数
+
+游记日志   
+	把参考 靠过去   把游记的靠过去  list     注意   查询的qo
+
+	游记明细的 detail     内容         吐司 注意判断 size   
+
+	注意 查询内容      页面 右边 有对应的图片  在sql 添加目的地 图片
+
+	写游记 : input      图片的 处理 使用的是在   controller 添加 对应的value
+
+	百度的富文本   一 在 util 添加 对应的类   二 controller 添加对应的方法 映射	
+		
+	保存或者修改操作 : 
+		怎么看是跳转还是不跳转;  看对应的什么请求;异步的话 就不用 跳转了  !!!
+		当对应的 参数封装!   
+			封装 作者 直接 注入 然后travel.setau
+			文章摘要  一是自己截取     通过content 是不是大于200,  大于 直接截取  
+				二是运营 来输入
+			创建的时间 在插入的时候    
+			内容的插入 注意  id 是和 游记的id 一致  
+				更新也一致 
+			最后的更新时间 直接在   之前new data        
+		保存和修改后的 对象是无法在 controller 获取 id的
+	注意: 要在qo 里面加上 状态  相对应的在 xml 添加 上查询条件,,,  只有当前用户 才能有编辑
+内容评论
+	游记明细 评论
+	mongodb 		
+	添加两个项目 comment 的api , server.  添加依赖,对应的配置(公共的 和 mongoDB) 对应的配置  主方法 一类的
+	对应的创建 service 和 domain      
+	
+	jpa
+	建立repository  建立 IstrategyConn  接口  ;
+	继承MongoRepository <指定要操作的对象,id的类型> 就可以获取要做操作对象的参数  
+	@repository 注解
+	原理
+	 spring-data 在加载类的时候  使用 aop方式实现 crud pageing query 等功能
+
+	mongoDB     1, 有一个 domain @docment 对应 集合   @id 对应 mongodb的_id
+		      2, 建立一个 仓库标签 @repository  并继承  jpa对应的持久层  并设置操作对象和 id类型
+		    
+	评论类型:  微信评论, 盖楼
+		2楼	无限楼
+
+		攻略评论  添加data-标题   创建时间  
+		评论 列表显示  comment    分页 创建一个qo  strate zommentqur  有明细id
+		分页 是page 是spring的   
+	
+	dubbo 序列化  一    
+
+	点赞 : 
+		登陆,异步, 
+		
+	
+
+
+

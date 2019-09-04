@@ -1,0 +1,139 @@
+ Elasticsearch 是一个开源的分布式 RESTful 搜索和分析引擎，能够解决越来越多不同的应用场景。  
+	java编写 
+	9200端口 没有密码是不安全  x-pack是一个安全管理(通过插件来安装)    setup-passwords 开启生成默认密码  要去记录 不然会登陆不上 
+	要把x-pack的密码设置成 kibana的  要一致           
+	
+	6.x后 使用的是 一个索引(字母的小写) 只能由一个 类型   也就是 ||||||     一个index 只能由一个 type 	
+	mapping  就是对索引字段名段 名称 及其 数据类型 进行 定义 ,,也就是结构        /\\/ 对 key 进行了定义 规定了存什么
+			test    会分词
+			keywork   不会分词
+	文档    就是Lucene索引,搜索的原子单位 
+	
+	分片: 
+		把一个文件 分到多个片    提高安全性  服务器稳定    
+	          副本:    稳定性  可用性  
+	    默认是 5个分片  一个副本
+	
+	分词器:    "tokenizer" :"standrad"   会按空格分词   ....    内容小写    (((( 中文 分词器  ki  
+
+	倒排 索引   
+		通过内容 来 分词  然后 生成 索引 来     是一个 优化 方式
+		 对应来 查询  就能找到对应的  文档
+	
+	_是它的关键字     version  乐观锁
+ 
+	一般 添加的时候 会直接有ID  所以 为了更好的 指定 ID  用put方法
+	shards 从几个分片去看   
+		max_score--得分 
+	
+
+
+
+	dev Tools ---restful 操作 可以进行CRUD   
+		GET / 可以直接获取到原始的   一般是直接生成的 会 一目了然     
+			 完全的 restFul  	可以是对象属性    
+		结构是 使用了
+			  索引(index)     type       (id 文档中的内容一类)     / 为一个分级      
+		post 的话    "doc":{添加}   会返回一系列 成功的信息一类的   类似 resultJson  
+		 
+		put 修改  不用指定数据对应的   数据 类型  是通过 version 版本来区分  并且 result 代表的是这个操作是 什么操作
+			测试结果是  添加 或者修改的话  都会把原先 的数据 进行 覆盖操作
+		delete  都要使用的是  index  type 文档      
+		
+		操作的 资源路径 没有指定 id 的 话  会自动生成 id   ....  
+	想对 索引 进行一个 搜索   就再索引后面添加 / 分级 _search      会把数据(信息) 生成在 hits 的数组里面 
+		
+		批量插入  post _bulk   一行为 一个 分 {"index":{"_index":"xxx","_type":"xxx"}}
+					          {这里是 baby 类似 html}  上面是 一个标志索引,类型  
+			多个写入就可以了	
+		----------------------------------------------------------------
+	条件过滤   (全文检索)
+		GET 索引/_search 
+			{ 
+			      "query":{"match":                  匹配
+				         {条件}	   条件是 一个 按 属性来 判断 
+				   }
+			}
+		----------------------------------------------------------
+		多个条件
+			用布尔类型   
+		GET 索引/_search
+			{
+			      "query":{"bool":                   --布尔类型
+					{"must":	  ----两个全部满足  
+						[{"match":条件1} ,{"match" : 条件2}]  match 是匹配的意思
+					}
+				    }
+			}
+			
+		取反的 就是 must_not
+		or 的   使用 should(可能的意思)
+		 index/_count 取 数据个数
+	    GET index/_mapping  映射-----------
+	    PUT index/类型/_mapping  对 mapping 进行设置     ... .setting 也是对分片 进行片 进行设置
+	   geo_distance 通过 距离 和 坐标 来检索     
+		
+
+		排序  "sort"   "order":"asc"   |  "dest"  这样来排序 直接 通过 , 添加 条件的方式      
+				前面也可以是 字段     多个可以一起 叠加   排序  {"form":start, "size": pageSize  }
+			
+	也可以按一定的 范围来 使用 "query":{"range":{范围条件 "gte":30,"lte":40 }}  大于 小于  
+				可以通过什么 来排序  使用的是 "sort":[{"age":{"order":"desc"}}]  注意是数组
+	模糊查询  
+		区分位置 不会被分词器拆分     "query":{"match_phrase":{属性:值}}
+		不区分  是用的是      { "match_all":{}}        通过 属性来查询 一类的
+	
+	投影查询 :  查哪一个列 
+		"_source":["name","age"]     也就是必须 是 "_source"对象中 字段  
+	 检索
+		"query":{"match":{字段:值}    }   match 后面的条件 会被拆分    注意打分不一样 打分其实类似于命中率
+		
+	范围查找:    range   指定一个范围   大于  小于 一类的	
+		一般用在 "filter":       filter 是会有 缓存 所以 会更多  使用到  
+					 到大数据
+
+
+	统计;;;;    (桶聚合)
+		"size":  ,   分页  设置为0 不让显示
+		"aggs":{
+		            自定义分组字段:{
+			"terms": {"field": 字段 , "size":  显示的数量,  order: {"field": 按着哪个排序 }}    ----匹配  
+			"aggs":{   		-----数量统计 不用 这个
+				自定义统计字段:{
+					分组运算:{ }   ----- 函数    avg,  stats 是显示全部
+				} 
+				}	
+			}			
+		}
+		范围 查询 统计
+		"size":0 直接输出结果
+		range 聚合  [ {"from":值,"to": 值},{"from":值,"to": 值},.....]
+		
+		对字段统计
+		 "aggs":{ "city":{   "terms":{"field":"","size":10}   
+	type 都会有一个属性
+		"analyzer":  分析器(standard) 会把text 转成  两个  也就是分割   . 的话 无法分割  会把空的分割
+			simple 会把 . 分割   分析器很多的
+	   	"tokenizer" 分 好几个模式 "standard" 是标准模式
+		"filter" ::::::	["lowercase"] 小写分割
+
+		"filter": 过滤    /// 可以 通过 检索方式 也就是 匹配   /// filter 必须要在 添加 或者  query 的下下层
+		
+	批量处理   _mget  查询  
+		
+		_bulk  增删改     要分行  前面 是 动作 要统一
+	
+	打开后 cluster_name: 集群的名字
+	
+	kibana    (ki 办 呢)  js 也是跨平台的
+	可以应用于安全分析, 或者叫 大数据分析 都可以
+
+
+
+
+	ik分词器
+		match 是会把后面的条件 进行分词,,      
+		查 映射    get /index/type/_mapping           text 类型 会被分词      keywork 不会被分词         
+
+
+

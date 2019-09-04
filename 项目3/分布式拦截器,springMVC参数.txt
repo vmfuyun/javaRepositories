@@ -1,0 +1,20 @@
+ 
+	一般 使用 springMVC的interceptor  原因是 spring mvc 的 组件比较强大,,,
+		 可以操作 mapper 接口 以及service  一类的     
+		 实现方式  1,继承 handler InterceptorAdapter   2, 实现 handlerInterceptor   
+	获取cookie 	一般使用 工具类 方便操作  
+	
+ 怎么把每一个 方法 访问 区别开来?   
+	1, 在拦截器  使用 注解 ,通过对 handler 判断  handler instanceof handlerMethod  来强转
+	2, 然后 获取 对应的访问方法的 是否 贴有 自定义的注解   如果有表示需要 登陆才能访问  类似于权限检查
+	3, 判断 是否有session cookie 或者在redis 查询 看看是否有对应的 必须有的userInfo对象  , 没有false 并response 重定向
+	
+操作准则 
+	操作对象 之前先想想有可能为空不?  想不出来 就直接用! 到时候或者空了 再修改
+springMVC 映射方法或者叫接口的 参数 自定义!?
+	1, 实现HandlerMethodArgumentResolver  接口(处理方法参数的分解器)  复写 supportsParameter,resolverArgument
+		supportsParameter  是对参数类型 是否有注解等等 一类 进行判断 供 resolveArgument 进行处理
+		resolveArgument 处理准则 通过本地webrequest 传入 request字节码对象 就可以获取对应的 请求对象 
+				然后就可以进行 一系列操作 , 这个方法 是想办法把 参数转成自己想要的 应该再拦截器之后
+	2.自定义注解 用于声明要转成自己的参数  
+	3,和拦截器一样 都需要 spring注册  添加addArgumentResolvers  ,一般 spring 有几个 对应的 组件 

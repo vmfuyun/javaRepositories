@@ -1,0 +1,12 @@
+怎么获取这个对象   
+1, 在servlet              super.getServletContext();------------
+2,通过请求对象      request.getServletContext();----------------------要先获取 request对象 就是请求对象,  
+3,通过session 对象来 获取 request.getsession().getServletContext();
+
+
+
+getRealpath(String path)-----------得到绝对路径  输入一个 当前的  相对于 项目的路径
+getContextpath.....上下文路径   经常用来当  链接
+
+getInitParameter (String name) ....全局参数 指定名称的 
+       <context-param>-----web.xml   ------其实是一个项目的

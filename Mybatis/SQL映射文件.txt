@@ -1,0 +1,13 @@
+ 名字    XxxMapper
+
+
+
+
+
+
+
+
+
+mapper namespace (标志)="mapper接口的全限定名称"   来区分文件
+
+全局配置文件   设置映射文件 要是包名起步

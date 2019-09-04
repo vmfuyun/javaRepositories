@@ -1,0 +1,23 @@
+拦截器
+	类似于servlet的 Filter过滤器      1, 定义一个类  实现接口Handler interceptor  或者 继承子类
+				 2, 覆盖这个方法 preHandle   前置拦截
+				3,postHandle 后置拦截
+				4,afterCompletion 渲染拦截
+
+
+	interceptor 	
+
+mvc.xml
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/> --------要拦截的路径                 ---拦截器 是可以用/**    但是 过滤器 是不能  
+			<mvc:exclude-mapping path="/begin.do"/>  -----放行的路径
+			<bean class="cn.wolfcode.ssm.web.interceptor.CheakBeginInterceptor" ></bean>   ---对应的复写的拦截器
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+
+
+
+登陆操作 
+	mapper接口的话... 多个 参数的话需要添加@param 注解/////

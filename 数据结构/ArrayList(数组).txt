@@ -1,0 +1,17 @@
+java 在内存的申请空间的时候, 例如 new int[],  是会申请一个连续的空间,  
+	当你要删除一个 元素的时候,是不能把那个内存进行删除的, 只能进行移位操作,然后把引用修改.  这也是Arraylist的删除操作,,(关键)
+
+	new申请的内存地址是随机的   
+		ensureCapacity 保证内存     扩容 一定要按着实践的数组的长度来实现  代码如下
+	
+	int oldCapacity=elements.length;   --->原先的数组长度
+	if(oldCapacity-capacity>0)  return;     --->说明原先的长度是够用的 所有不用扩容,
+	int newCapacity= oldCapacity+(oldCapacity>>1);   为什么要进行 加 运算?  因为 直接乘的话 会有浮点数,,, 但是用位运算的话 是不会有这个问题的
+		以后的操作能用位运算的就位运算  
+
+	泛型  让所有的 对象都能实现 添加 或者通用,怎么办? 只能使用Object  因为所有的类都是默认集成object
+	
+	一般 clear 只是把 数组中的 元素的引用去掉,
+	一般把对象设置成null  就会没有引用,gc运行的运行的时候 就会被回收
+	
+	finalize方法 这个一般不要用,  即gc工作的时候,最后执行的方法

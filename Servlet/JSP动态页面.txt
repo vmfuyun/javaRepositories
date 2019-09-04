@@ -1,0 +1,33 @@
+为了去掉java代码中html代码
+	目的就是 java直写 java代码
+
+文件头  上面 是和html的区别  
+
+    jsp 一般在放WEB-INF中
+
+需要处理逻辑的  servlet     
+
+界面不写死----JSP       直接访问 JSP是拿不到数据的  
+
+<%=new date().toLoca..%>     
+jsp/jspx文件是由 Tomcat--->conf--web.xml 的jsp Servlet处理    
+
+原理
+1,Jspservlet  会把jsp 转成 java文件   然后编译成字节码文件
+2 会把字节码文件 放在work 里   实际是继承 http Jspbase    实现了 httpservlet   实际 也是servlet实现动态
+3,就是把我们原先做的 拼接 做到了 Jsp
+	
+	hello.Jsp  --->Hello_jsp.java---->Hello_jsp.class        拼接的字符串会在_Jspserver方法里去
+--------------------------------------------------------------------------
+三个指令     page       include    taglib(类似于 导入源包)     提供全局信息     
+		errorPage    只当出现错误会转到一个jsp的文件               
+
+配置全局配置  本项目 web.xml        
+
+JSP有四个作用域   其中有一个比较特别   pageten....   有一个findAtt.....  寻找  作用域 内的值 (指定name
+
+pageContext             PageContext                             当前JSP作用域对象       也是 一个作用域对象(可以用来传递数据)
+
+
+
+               

@@ -1,0 +1,98 @@
+1, 项目的搭建 需要注意的地方: 
+	1,分布式的结构 遵顼dubbo的最佳实践-把公共的异常,服务接口,服务模模型放在API项目下, 并模型实现序列化 ,并优先使用 值调用,
+		异常的处理一般情况, 把自定义的异常直接声明在服务提供者的方法上,例如: throws DisableException ; 供消费者获取异常{方式很多,这个比较方便},原因是duboo的异常处理机制;
+	2,尽量把服务的实现单独出来,为了更好的后续开发,或者解耦 .
+2, api的调用   ---->短信验证,天气预报...京东万象,阿里 只要是接口的Api调用都是同一个方式
+	  //方式1：HttpClient 这个开源框架， 完全可以模拟出浏览器所有操作
+      	 //方式2：jdk自带的    百度  java调用第三方http接口方式
+3, redis缓存设计
+	1,模型基础类,前缀,和存储时间 提供全参构造器.后面的模型类继承基础类,目的为了统一操作,并要求redis的key是带有各自的前缀 更好的辨别;
+	2,基本service接口,专门为其它的service服务接口的实现类 提供基本的redis操作, 基础接口的设计 一般遵循通用原则,参数使用模型基础类,泛型;为了兼容所有的操作
+	3,注意spring-data的使用   多记一下
+	4,key-value 的设计   zset的排序功能  参数已经存到redis  但是还是要使用  就考虑使用映射的方式了!!! 剩下的就是 key 是什么?value是什么?原则是和前端的页面相对应
+4, redis的登陆操作
+	代替原先的缓存功能;注意session,注意查询对应user对象的存在与否,并每一次查询要设置一下存活时间
+5, 分布式的登陆控制
+	一般使用的是拦截器,自定义注解,来控制      ---->注意配置类,或者启动类,注册
+6, spring-mvc的映射方法参数注入
+	使用的是方法参数解析器handlerMethodArgumentResolver--->自定义注解...省略具体去看中段总结	----> 注意配置类,或者启动类,注册
+7, 评论操作
+	mongodb模块  1,domain (@document @id) 2,Repository 继承mongodb接口注意泛型1代表要做的实体类  2表示id的类型
+		        3,service             spring-data模式
+	
+	如果会频繁使用事务和关联查询，并且最求服务的稳定性最好还是选用MySQL
+	如果数据格式不确定，却少数据库管理人员，不怎么使用关联查询和事务，不是特别追求服务的稳定性可以使用MongoDB
+	不是很重要的数据可以使用MongoDB，比较重要的使用可以用使用MySQL。
+	
+	ElasticSearch：ES是一款分布式的全文检索框架，底层基于Lucene实现，虽然ES也提供存储，检索功能，但我一直不认为ES是一款数据库，但是随着ES功能越来越强大，
+	与数据库的界限也越来越模糊。天然分布式，p2p架构，不支持事务，采用倒排索引提供全文检索
+	站内搜索,
+	
+	redis:性能极高, 它通常被称为数据结构服务器，因为值（value）可以是 字符串(String), 哈希(Map), 列表(list), 集合(sets) 和 有序集合(sorted sets)等类型。
+		应用场景:  缓存 队列  排行榜相关 按照用户投票和时间排序 计数不超过60秒的页面浏览量  实时分析正在发生的情况，用于数据统计与防止垃圾邮件等
+
+
+	mongodb:性能优越,json格式存储,无事务  应用场景:  日志,评论内容的存储 ;
+		物流场景 订单状态在运送过程中会不断更新 使用MongoDB 内嵌数组的形式来存储，一次查询就能将订单所有的变更读取出来
+		一般用于 对事物要求不要,速度比较更新快的 存储 , 操作比较灵活
+8, spring监听器
+	监听的是ContextReFreshedEvent的事件  ,第一步是监听器的注册，第二步是监听器的运行。 
+	@Component	必须要贴上 让spring管理    
+	 implements ApplicationListener<ContextRefreshedEvent>    --必须要实现应用监听器
+	onApplicationEvent  复写这个方法           一般使用于 把sql的数据复制到redis ,, redis数据初始化,等容器启动只执行一次的操作例如: 初始化管理员账户 等等
+	一般情况下 放在压力比较小,或者 首先开始的项目或者服务  建立 listener包
+9, Spring的定时器
+	redis 自动处理机制:  redis 会把 会把 最旧 最少 使用 的数据 删除掉
+	Spring的定时器  Scheduler   
+		1, 建立一个job 一般在压力比较小,或者首先开启的服务,建立一个类 贴上@component 
+		2,建立一个方法 贴上@Scheduled(cron="")  cron指定的是定时器规则 比如 每三个小时执行一次,有专门的cron表达式(百度)   
+			 //秒 分 小时 月份中的日期 月份 星期中的日期 年份
+		  	//0 0 0 1/1 * ? 
+		3,在主方法(启动类) 开启定时服务支持   @EnableScheduling
+		redis存到sql中     应用于 周期性操作   把redis数据同步到mysql  
+10, elasticsearch搜索
+	聚合搜索:   
+			GET /luowowo_strategy/strategy/_search
+
+			{
+  "size": 0,
+ 
+			   "aggs": {
+   
+				 "themeGroup": {
+    
+					  "composite": {
+   
+						     "sources": [
+          {
+            "id": {
+              "terms": {
+                "field": "themeId"
+              }
+            }
+          },
+          {
+            "name": {
+         
+			     "terms": {
+                "field": "themeName"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+		主要是 composite是可以查询多个分组结果    对应的spring-data的操作 也是这个命令
+	关键字搜索(全文搜索) 
+		使用的是multi_match  多个匹配      一般和分词器一起操作    
+		match
+	高亮显示 
+		可以自定义高亮的颜色一类 ,                                               应用于站内搜索
+		new HighlightBuilder.Field(fields[i])     
+               		     .preTags(preTags)
+             	       	      .postTags(postTags)  
+		还有一个问题就是 什么字段进行高亮   指定  
+		还有就是 查询出来后 需要把 高亮的结果 替换到 查询的结果  
+	

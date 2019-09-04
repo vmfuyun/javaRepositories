@@ -1,0 +1,92 @@
+//模板方法设计模式
+	一般模板方法的子类 需要覆盖的方法  叫 doXxx方法
+/*
+需求:统计不同操作的耗时时间模板操作。
+	OperateTimeTemplate.
+
+---------------------------------
+
+统计String连接10000此时和int相加10000次的时间差
+
+---------------------------------
+
+模板方法设计模式:
+	在父类的一个方法中定义一个总体算法的骨架(模板方法)，
+	而将某一些一些步骤延迟到子类中，
+	因为不同的子类实现细节不同.
+	模板方法使得子类可以在不改变算法结构的情况下，
+	重新定义算法中的某些步骤.
+
+---------------------------------
+
+抽象父类负责定义操作中的业务骨架，而把某些具体的实现步骤延迟到子类中去实现.
+
+抽象父类至少提供的方法：
+	模板方法：一种通用的处理方式，即模板(总体算法的骨架)；
+	抽象方法：一种具体的业务功能实现，由子类完成；
+
+注意：
+	抽象父类提供的模版方法只是定义了一个通用算法，其实现必须依赖子类的辅助.
+
+模版方法作为模版样式不准子类覆写,咋办?(final)
+抽象方法的权限又如何设置?(protected)
+
+*/
+
+//操作的模板类
+abstract class AbstractOperateTimeTemplate
+{
+	//模板方法:总体算法的骨架
+	final public long getTotalTime()
+	{
+		long begin = System.currentTimeMillis();//开始时间
+
+		//集体操作:让子类去覆盖完成
+		doWork();
+
+		long end = System.currentTimeMillis();//结束时间
+
+		long time = end - begin;
+		return time;
+	}
+
+	//具体操作:子类必须覆盖次方法(抽象方法)
+	protected abstract void doWork();
+}
+
+//String的连接10000次
+class StringOperate extends AbstractOperateTimeTemplate
+{
+	public void doWork()
+	{
+		String str = "";
+		for (int i = 0; i < 10000 ;i ++ )
+		{
+			str += i;
+		}
+	}
+}
+
+//int的相加10000次
+class IntOperate extends AbstractOperateTimeTemplate
+{
+	public void doWork()
+	{
+		int sum = 0;
+		for (int i = 0; i < 10000 ;i ++ )
+		{
+			sum += i;
+		}
+	}
+}
+
+class MathodTemplatDemo1 
+{
+	public static void main(String[] args) 
+	{
+		//统计String连接10000次和int相加10000次的时间差
+		long time = new StringOperate().getTotalTime();
+		System.out.println(time);
+		System.out.println(new IntOperate().getTotalTime());
+	}
+}

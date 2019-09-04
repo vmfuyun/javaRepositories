@@ -1,0 +1,90 @@
+//面向接口编程思想
+
+/*
+多态的好处:
+	把实现类对象赋给接口类型变量,
+	屏蔽了不同实现类之间的实现差异,
+	从而可以做到通用编程.
+
+案例:使用USB设备来工作.
+*/
+
+//制订USB规范(接口)
+interface IUSB
+{
+	void swapData();
+}
+
+//USB鼠标
+class Mouse implements IUSB
+{
+	public void swapData()
+	{
+		System.out.println("鼠标移动ing");
+	}
+}
+
+//USB打印机
+class Print implements IUSB
+{
+	public void swapData()
+	{
+		System.out.println("打印中ing");
+	}
+}
+
+//主板
+class MotherBord 
+{
+	//6个元素的数组,代表有6个usb插口
+	private static IUSB[] usbs = new IUSB[6];
+	//表示插入的位置
+	private static int index = 0;
+
+	//插入设备的方法
+	public static void pluginIn(IUSB usb)
+	//public static void pluginIn(Mouse m) 非接口写法
+	{
+		//m.swapData(); 非接口写法
+		if (index == usbs.length )
+		{
+			System.out.println("插满了,排队");
+			return;
+		}
+		usbs[index] = usb;
+		index ++;
+	}
+
+	//取出usb的每一个接口的设备并工作
+	public static void doWork()
+	{
+		for (IUSB usb : usbs )
+		{
+			if (usb != null)
+			{
+				usb.swapData();
+			}
+		}
+	}
+}
+
+class USBDemo 
+{
+	public static void main(String[] args) 
+	{
+		//对象创建鼠标
+		Mouse m1 = new Mouse();
+		MotherBord.pluginIn(m1);
+		//接口创建鼠标
+		IUSB m2 = new Mouse();
+		MotherBord.pluginIn(m2);
+		//再插一个鼠标
+		MotherBord.pluginIn(new Mouse());
+
+		//安装打印机
+		MotherBord.pluginIn(new Print()); //非接口写法中报错:插不了打印机
+
+		//调用主板的工作行为
+		MotherBord.doWork();
+	}
+}

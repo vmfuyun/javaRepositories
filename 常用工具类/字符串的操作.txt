@@ -1,0 +1,31 @@
+java.lang.CharSequence  是String  StringBuffer (线程安全)  StringBuilder(线程不安全)  的接口   
+
+当一个类里面用 private     final修饰  字段就是 封装   看底层  看到 对象是 存到 char[] value 里面了还是final修饰 所以是死的
+
+
+可变的  字符串是  Stringbuilder                   Stringbuffer  内容是可以变化的
+
+
+String类型对象  比较
+String s = "";  是在常量池 直接引用的   
+使用new的最少在堆里面 建立一个对象
+		
+	
+转实际值 用 intvalue      
+
+转包装   .valueof
+
+
+String 转 用 parseint
+
+
+
+
+
+
+
+String类中的equals 比较的是内容  "name".equals(字符串变量);   比较语句'
+  方法 主要有  getBytes()  得到baye数组
+	toCharArray()  转换Char[]
+
+

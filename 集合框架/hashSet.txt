@@ -1,0 +1,5 @@
+查询快    
+
+不允许重复         1 先判断hashCode 相等      equals 为ture  视为同一个 对象  就不村了
+	              hashCode 相等            equals  为 false  存在 之前对象的槽位上
+		都不想等 就存

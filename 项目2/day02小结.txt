@@ -1,0 +1,51 @@
+需求分析:
+1.admin注册用户列表(关键字查询,分页)
+
+2.app我的功能页面/mine/profiles.html  
+简单渲染  target="_parent"   实现 页面显示完整的方案  一般用于在a 标签的 跳转
+
+3.app编辑个人资料/mine/info.html
+背景需要通过css方法回显----添加样式 需要注意 前面是一个 属性  一般认为是属性
+表单隐藏域:id,_method,headImgUrl,coverImgUrl    --为了让后台实现 更新数据的完整 api
+
+图片上传:
+js:在页面添加隐藏的表单,包括文件框,点按钮时触发文件框的点击动作,利用文件框的值改变事件提交表单,
+   在表单的回调函数,需要把url回显到img,以及表单的隐藏域,利用一个变量标记是修改头像还是背景
+
+后台:使用阿里云图片服务器,直接用提供的文件上传工具,最后需要根据插件规定的结果返回Map(status 0/1, url,msg)
+
+更新用户信息时,sql需要去掉email和password
+
+更新成功后把user对象(该对象是前台传的)重新设置到sessionStorage
+
+4.接口安全处理 (登陆 修改数据 拦截器   要修改的方法 必须登陆才能 访问)
+自定义注解,利用拦截器,判断执行的方法是否需要检查session,如果需要检查,并且没有session,就返回401状态码
+更新用户信息时,需要判断是否为当前登录用户
+
+5.admin地区管理页面
+利用treeview插件显示地区
+进入页面先查询所有根地区,利用懒加载来查询子地区
+插件必须需要根据规定的格式显示,需要在controller处理好数据再返回(id,text,tags)
+
+懒加载:
+1.在节点属性添加lazyLoad:true (controller返回的数据的map中) (才会出现+号)
+2.点击加号后会自动调用lazyLoad的函数,该函数在list.ftl中的treeview里面声明(全局属性)
+通过以下方法可以把子节点添加到父节点上
+$('#treeview1').treeview('addNode', [ data, node ]);
+
+
+
+
+接口设计:
+修改个人信息接口
+1.资源路径 /users
+2.请求动作 put
+3.请求参数 user对象
+4.返回结果 user对象
+
+
+上传图片接口
+1.资源路径 /images
+2.请求动作 post
+3.请求参数 file
+4.返回结果 Map(status,url,msg)

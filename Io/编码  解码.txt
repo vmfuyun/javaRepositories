@@ -1,0 +1,12 @@
+
+  编码      String类型的 getBytes(  "        编码 UTF-8  一类          "    )  得到一个byte 数组
+
+
+解码    
+    	byte[]    转String                       new   String ( Byte[],   "    编码类型               "       )
+
+如果 编码错误了     必须  按它原先的  编码会去  得到字节组   然后  再重新解码
+
+
+服务器默认的是  ISO-8859-1
+

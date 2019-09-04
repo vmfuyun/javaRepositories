@@ -1,0 +1,10 @@
+
+ForkJoin框架特点:
+	主要有一个窃取模式:会把所有的任务 切分成一个个小的任务 然后,一个线程完成后, 会去获取别的线程的任务
+
+
+使用fork方法可以分割任务: (自己的任务完成后)也可以窃取 另外一个线程中的任务,  任务执行完毕后 使用的是join命令  然后把所有的任务 的结果进行  --->合并
+	创建ForkJoinPool实例:就可以调用 ForkJoinPool的submit(ForkJoinTask<T> task)或者invoke(ForkJoinTask<T> task)方法来执行指定的任务	  
+	
+	recursiveTask<>  是有返回值的  --->里面有一个compute方法   是会有拆分(需要有一个临界值 也就是拆分的最低值) 并且后面要使用join进行合并    
+	

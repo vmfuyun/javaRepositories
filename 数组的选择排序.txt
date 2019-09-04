@@ -1,0 +1,65 @@
+/*
+选择排序(Selection Sort)：
+基本思路：选择某个索引位置的元素，然后和后面元素依次比较，
+若大于则交换位置，经过第一轮比较排序后可得出最小值，
+然后使用同样的方法把剩下的元素逐个比较即可。
+可以看出选择排序，第一轮会选出最小值，第二轮会选出第二小的值，直到最后。
+第一轮从arr[0]和后面元素相比较，第二轮从arr[1]和后面的元素相比较，依次类推。
+N个数要进行N-1轮。选择排序每一轮只进行一次交换，
+相对于冒泡排序效率高一些。
+*/
+//选择排序
+public class ArratSortDemo2 
+{
+	public static void main(String[] args) 
+	{
+		int[] arr = new int[]{2,9,6,7,4,1};//新建数组arr,初始化
+		printArray(arr);//调用printArray方法输出arr数组
+		slelctSort(arr);//调用slelctSort方法
+		printArray(arr);//输出调用printArray方法后得到的arr数组
+	}
+	static void slelctSort(int[] arr)//新建名为slelctSort的方法,用来排序
+	{
+		for(int times = 0;times < arr.length - 1;times ++)//以times作为选定的索引位置,并且是轮数
+		{
+			int minindex = times;//定义一个变量来接收times的值
+			for(int i = times + 1;i < arr.length;i ++)//以i作为选定的索引位置的后面的数
+			{
+				if(arr[i] < arr[minindex])//做判断,如果当前选择的索引位置上的元素大于后面的元素,则值为true
+				{
+					minindex = i;//如果判断为true,就把大于当前索引位置上的元素的那个元素的索引值赋给minindex
+				}
+			}
+			swap(arr,times,minindex);//一轮比较完成后进行位置交换
+		}
+	}	
+	//swap方法,负责互换两个元素的位置(前面学过)
+	static void swap(int[] arr,int index1,int index2)
+	{
+		int temp = arr[index1];
+		arr[index1] = arr[index2];
+		arr[index2] = temp;
+	}
+	//printArray方法,负责按照规定的格式输出打印数组
+	static void printArray(int[] arr)
+	{
+		if(arr == null)
+		{
+			System.out.println("null");
+			return;
+		}
+		String ret = "[";
+		for(int index = 0;index < arr.length;index ++)
+		{
+			ret = ret + arr[index];
+			if(index != arr.length - 1)
+			{
+				ret = ret + ", ";
+			}
+		}
+		ret = ret + "]";
+		System.out.println(ret);
+	}
+}
+
+选择排序面试也会用到,牢记

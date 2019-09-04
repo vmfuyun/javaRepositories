@@ -1,0 +1,31 @@
+------冒泡排序------
+这是最简单的排序法,基本思路;
+对未排序的各元素从头到尾依次比较相邻的两个元素大小关系,若大于则交换位置,
+经过第一轮排序后可得出最大值,然后使用同样的方法把剩下的元素逐个比较即可.
+
+
+	可以看出若有N个元素   (length 比 索引大一),
+           那么一共要进行N-1轮比较,
+		第M轮要进行N-M次比较.
+		------例如------
+public static void main(String[] args) 
+	{
+		int[] arr={2,9,6,7,4,1};
+		printArray(arr);
+		bubbleSort(arr);//排序
+		printArray(arr);
+	}
+	//冒泡排序
+	static void bubbleSort(int[] arr)
+	{
+		for(int times=1;times<=arr.length-1;times++)
+		{
+			for (int i=1;i<=arr.length-times ;i++ )
+			{
+				if(arr[i-1]>arr[i])
+				{
+					swap(arr,i-1,i);
+				}
+			}
+		}
+	

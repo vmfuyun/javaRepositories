@@ -1,0 +1,98 @@
+$ git remote add origin                 git@github.com:michaelliao/learngit.git       关联连接库
+
+$ git commit -m  'fist' 		提交 必须要有-m 和描述
+
+
+$ git push -u origin master    上传信息库                   一般先commit   然后再 push  
+
+多看提示
+
+git remote add origin 码云pull地址将本地仓库项目与远程仓库项目进行关联       origin是一个名字而已
+
+git remote rm origin - 先删除远程分支
+git remote add gitee-origin 码云 - 重新添加关联远程分支，
+注意，这个时候add 的时候使用新的远程分支名称gitee-origin，
+而不是默认的origin
+之后点pull，后push
+pull的时候可能因为前面如果你本地和远程名称使用不一致造成的pull失败，
+
+则使用如下命令：
+正常：$ git pull gitee-origin master
+
+名称不一致（远程与本地仓库）：$ git pull gitee-origin master --allow-unrelated-histories     这个时候需要合并一下 直接 合并
+   
+接着
+$ git push gitee-origin master
+
+
+
+
+
+页面的使用 和 介绍
+	1 code 库(网页路径)后面加 compare---可以比较出这个库的版本的变化  比较版本的区别  添加了什么
+	2, Issues 问题 交流的地方  讨论区
+	3,pull requests 提交申请
+	4,Projects---项目管理 例如 开始今天要做的功能 一类-- 看板 挺好的 
+	5,settings--   gitHub  pages 部署服务... 可以搭建自己的网站  
+		webhooks---消息提示
+		Danger Zone 操作仓库 删除 归档---   
+
+$ git diff  比较不一样的
+
+回退
+$ git reset --hard HEAD^ 回退到上一个版本
+$ git reset --hard <commit id> 回退到指定的版本     使用$ git log 查看版本号
+
+在commit之前必须 add
+
+丢弃工作区
+$git checkout -- file  这个file是对应的文件名        解释 -- 前后各一个空格   情况1:没有提交, 进行丢弃会把暂存区的 回退
+							  情况2: 提交了  进行丢弃会把暂存区的 回退
+删除 
+$git rm 文件名      
+删除 需要进行 commit
+
+
+查询状态
+$git status
+
+
+分支管理
+创建分支
+git branch <name>    
+查看分支
+git branch
+切换分支
+git checkout <name>
+合并分支
+git merge <分支名字>       --->把后面的分支 合并到 当前的分支 {}{}   一般情况是 在master操作 ;;  
+
+git文件冲突
+相同位置  出现 什么办 删除或者什么的
+
+删除分支
+git breckout -d <name>
+
+远程仓库
+网上有----
+
+注意.gitignore  是git 上传,, 不上传的配置
+
+
+idea   
+	check out from version control
+	创建自己的分支
+
+	注意:
+
+
+
+
+
+
+
+
+
+
+
+

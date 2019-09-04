@@ -1,0 +1,34 @@
+IoC	使用注解开发	----贴在 实现类 真正的类上面--  设置单例还是什么..加@scope------加init-merhod=....使用@postConstant
+	@Component	：定义Bean   重点
+	@Controller	：WEB层
+	@Service		：Service层
+	
+
+DI	属性注入：
+	普通属性	：@Value
+	对象属性	：@Resource--javaee提供
+	@Autowired	：按类型(找)注入属性(和方法)，按名称	@Qulifier("指定名字") 这个单词在全限定名字那
+	@Resource	
+
+尽量配置 DI解析器---
+	<context:annotation-config/>
+IoC解析器---组件扫描
+	<context:component-scan: base-package>----扫描哪个包
+
+
+
+aop	<aop:aspect-autoproxy> 注解解析器
+	注解是 @Aspect   一般加在加强类
+	
+	@Pointcut 切点 必须里面必须要有  接入点语法execution()
+	@Before 
+
+tx	<tx-annotation-driven     transaction-manager=""/> 扫描器   //必须有一个 datasourtlTxmanager ---内置类的管理者 来关联 连接池 property  
+	@transactional
+	@transactional(realonly=)--是不是只是只读		//事务就是环绕增强 
+	
+
+
+Spring内置注解扫描器
+	<bean  class="" >   -----这里面是 内置的类 MapperScannerConfigurer.....一类的 一般是类名包括Scanner扫描  , Configurer 
+		<prooerty name=""    value="包名">  这里面一般是一个参数名 一般也是见名知意(包名是mapper接口的包) 例如:baseMapper  

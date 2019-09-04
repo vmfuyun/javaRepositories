@@ -1,0 +1,106 @@
+1,使用的是 freeMarker    FreeMarker是一款模板引擎： 即一种基于模板和要改变的数据，
+	并用来生成输出文本（HTML网页、电子邮件、配置文件、源代码等）的通用工具。	
+它不是面向最终用户的，而是一个Java类库，是一款程序员可以嵌入他们所开发产品的组件。
+
+是一个 以 ftl结尾的模板,    主要有两个方面     模板    +      数据 = 输出   这种模式  
+
+	基本语法: 
+		表达式形式  一般是用# 开头
+		<# assign   key="value"/>  赋值形式
+		<# list 集合 as 变量/>  遍历类型     ----集合是不用用${}来获取的 直接获取就行
+			${变量_index}  获取的是集合的索引  是从0开始  为了达到要求 可以在里面 加1
+		<#include  "../xx/xx.xx"/> --引入别的文件  注意点点       ---- 
+		<#if  变量??  &&  变量?? >  判空操作 变量?? 返回的是一个boolean值   如果变量是非空的 返回一个true		
+		
+		freeMarker的  .ftl文件 是不能有空值的  有空值 就会报错  
+			解决方式一  用    变量!   
+			二 用if 变量??         
+		时间的格式输出  ${date?string("yyyy-MM-dd HH:mm:ss")}
+		三元运算符类型的  --  ${(变量)?string('  ','  ')}----类似于变量是不是空  是空string前面的.. 非空  后面的 string类型的   
+					注意里面是个点 可以用 !
+		
+	在js的回显 选择框 一类   下拉框selsected使用 value  比较合适 
+	      选择框<input type=che...>  是通过使用属性值来判断选中没有选中 使用 checked   都是说的属性
+			   需要通过获取 到该doc的对象 的 jquery形式 ${doc} 通过${"#id"} 用prop 添加属性来选择
+
+
+
+配置  到spring 
+		需要配置  FreeMarker  的模板路径 还有编码
+	视图解析器     是否把session数据共享文档   模板后缀    和  输出格式   contextType    text/html;charset=UTF-8
+
+
+分页插件    PageHelper  
+		解决数据库改变 sql语句也要改变的情况,,   
+	使用: 在mybatis-config.xml文件添加 插件配置  
+		<plugins>
+	        	<!-- com.github.pagehelper为PageHelper类所在包名 -->
+		        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+			<!--当pageNum<=0时，将pageNum设置为1-->
+		            <!--当pageNum>pages时，将pageNum设置为pages-->
+		            <property name="reasonable" value="true"/>
+		        </plugin>
+		    </plugins>
+	  指定sql语句分页---需要在service层 使用 pageHelper.strat(当前页数,每页信息条数);  
+			下面的就是 要执行的 sql语句对应的mapper方法 注意该sql不能有limit    该mapper.xml文件不能有count查询
+				查询出来的 结果是一个 list集合  然后封装到  pageinfo -->  new pageinfo(list);
+bootstrap 模态框
+	主要去百度 按着文档 完成  必须放在 baby里面    
+	数据的回显  使用一个属性  data-xxx   获取的时候用   $(# .  : ) .data("xxx") 获取的就是对象了 直接就可以获取
+
+jquery-form 表单异步提交插件
+		主要有两个 需要注意的方法   
+			   当form表单  没有submit按钮的话   使用ajaxSubmit 方法
+			使用 $(按钮).click(function(){ 
+				  $(表单).ajaxsubmit(function(data){               ---固定模式
+					   data是返回的信息      })     })
+			有submit按钮    
+				直接使用  ajaxForm方法  
+				$(表单).ajaxform(function(data){
+						data是返回的信息})
+
+jquery-bootstrap 消息提示插件  
+		主要有---$.messager.alert("温馨提示","执行成功,两秒之后自动刷新");----里面是两个参数  这个是一个提示框
+		  $.messager.confirm("温馨提示", "真的要删除吗?", function () {
+		            $.get(url, function (data) {
+		                hanlerMessager(data)
+		            })
+	
+		        })
+		$.messager.confirm()      确认框---第一个提示语  第二个提示语  第三个是函数   
+
+jquery-validate--验证基本输入   引入插件
+		主要有
+		先写规则  $("#form表单").validate({
+				rules:{参数:值 , 参数:值}这个规则,messages:{参数:{参数:参数值,参数:参数值}} 错误信息
+					注意格式   参数一般是表单的input的id值
+				})  规则和后面的验证 参数要一致
+
+批量删除;;
+	1,添加 单选框  <input type=che...>    选择一个全选   使用  点击事件$().change()-->加   $().prop("checked ",this.checked )
+	2,把数据绑定在 --按钮上-- 使用 data-xx 特性    $().each(function(index,data){})--来获取所有的id数  然后存在 var arr=[] 使用 arr.push(),
+	3,如果获取的到数据 是0   提示框jquery-bootstrap  的$.messager.alert();    
+		大于0 提示确认框  $.messager.confirm()      确认框---第一个提示语  第二个提示语  第三个是函数   
+		在函数里 发送 $.get(url,{json格式 key:value},fn)fn是有返回的信息    
+	对应 在后台建立 url  对应建立mapper sql 通过 
+		<foreach collection="array" open="(" separator="," close=")" item="id">
+        		    #{id}
+      		  </foreach>  来删除   注意 collection 一般是array 或者 list   或者包装了 list 的 对象属性
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+

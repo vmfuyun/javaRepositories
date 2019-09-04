@@ -1,0 +1,75 @@
+		
+	
+	
+	先确定映射 后 再进行 添加操作...  不然 会对应不上 mapping --关键
+	
+	JPA 
+	domain 
+		@Document  (indexName,type,) 贴类 ---会自动映射到elasticsearch服务器中   结构是 indedx/type/文档
+	
+		@Id -文档id 贴字段  
+		@Field - 字段
+
+	ElasticsearchRepository  -- 要去继承 为了让spring 生成 动态代理    要贴 @repository 表示是 dao层
+	optional 容器 为了避免 空指针
+	ElasticsearchRepository 继承了这个接口的  然后贴上@repository 会被spring 创建对象并 初始化   就有有了 搜索 等等的方法  关键
+		
+	分组查询 使用 ElasticsearchTemplate  
+	
+
+		SearchQuery  检索查询
+				
+	分页排序
+		NativeSearchQueryBuilder  建设者模式  构建 对象  供后面的 search 接口 用 
+		通过builder.withSort(SortBuilders.fieldSort(""))   SortOrder 用什么来 排序
+		
+		withPageable.pagerequest.of(page,size)---第几页 , 每页几个   页数是按着页数-1 ,, 分页是固定的
+		
+	bool 运算: .should  .should  条件是这个两个  
+	含有    QueryBuilders.  条件的 工具类   
+	
+	分组  使用的是 addAggregation
+		 builder.withIndices("rbac").withTypes("user");   要设置对应的东西
+		      封装后的结果 使用map   获取里面的
+			然后 得到对应的 数据  要强转(类型是你按哪个字段分类的类型)  然后 获取对应的 桶  
+			然后 进行 遍历
+
+
+	分组简单实例  
+ NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder();
+        builder.withIndices("rbac").withTypes("user");
+        builder.addAggregation(AggregationBuilders.terms("groupDept").field("deptId"));
+
+        Aggregations aggregations = elasticsearchTemplate.query(builder.build(), response -> response.getAggregations());
+        Map<String, Aggregation> asMap = aggregations.getAsMap();
+//        System.out.println(asMap.get("groupDept").getClass());                 // 这个类型一般是 上面 field 的 类型 然后加 Terms
+        LongTerms dept = (LongTerms) asMap.get("groupDept");	   //  下一步 就是得到桶  然后对桶 进行 遍历
+        for (LongTerms.Bucket bucket : dept.getBuckets()) {
+            System.out.println("key=" + bucket.getKeyAsString());
+            System.out.println("doc_count=" + bucket.getDocCount());
+        }
+
+全部查询   有一定的差别    
+	
+	  NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder();
+        builder.withIndices("rbac").withTypes("user");				----------------需要添加对应的 索引和 类型
+        builder.addAggregation(AggregationBuilders.terms("groupDept").field("deptId")
+                .subAggregation(AggregationBuilders.stats("stat_age").field("age")));
+
+
+        Map<String, Aggregation> asMap = elasticsearchTemplate.query(builder.build(),
+                response -> response.getAggregations()).getAsMap();
+        LongTerms dept = (LongTerms) asMap.get("groupDept");
+        for (LongTerms.Bucket bucket : dept.getBuckets()) {
+            InternalStats stat_age = (InternalStats) bucket.getAggregations().getAsMap().get("stat_age");        --- 需要对 桶 进行来 对应 强转
+//            System.out.println(stat_age.getClass());
+            String avg = stat_age.getAvgAsString();
+            String max = stat_age.getMaxAsString();
+            String min = stat_age.getMinAsString();
+            long count = stat_age.getCount();
+            String sum = stat_age.getSumAsString();
+            System.out.println(String.format("count=%d,avg=%s ,max=%s,min=%s,sum=%s" ,count,avg,max,min,sum));
+        }
+
+
+

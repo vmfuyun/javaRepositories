@@ -1,0 +1,13 @@
+new  (线程类以及子类) 新建
+
+调用start方法     runnable   可运行
+
+
+runnable   调用  wait后  进入waiting(等待)  状态
+        
+waiting        调用  notify   或者notufyAll   唤醒    进入 runnable(可执行)
+
+sleep()是不会释放锁资源,睡眠时间到了后,会进入就绪状态                                     wait() 是会释放锁资源
+
+
+

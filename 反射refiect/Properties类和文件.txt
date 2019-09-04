@@ -1,0 +1,28 @@
+这是一个继承了 Hashtable <Object,Object>的类    就是一个  Map 体系的继承者
+setProperty 方法  用来添加    参数 全是 <String, String>
+getProperty 得到 proper文件的数据通过key来获取   注意 这个类的k ,v 都是String类型
+
+//properties类 有公共的无参的构造器
+properties 这个文件  必须要通过这个类  来加载 
+void load(InputStream)//注意先创建inputStream对象 new file("文件路径")
+//注意是文件字节流
+
+//写死的路径是不对的(意识 一看是绝对路径都是有问题的)                                                                                                                                  
+//方式1:使用相对路径   											    这个源文件的
+	最好   就是相对字节码文件(bin文件)的位置 (怎么拿到 相对路径呢?  通过当前线程的引用  得到类加载器classloader()--得到路径getResource())
+//                                                                                                       					关键是     得到类加载器
+
+//方式 2 通过反射  这个类 . class (字节码对象都会有 类加载器(class loader)的引用  然后得到类加载器 )  . getResource...
+
+
+
+这个文件放在 Source Folder  一编译就到了bin     会到编译的字节码文件(到后面会只给class)
+	      建立resource   可以建立 . properties文件  
+
+格式  
+	#注释, 数据格式是 key=value形式
+	username=root
+	password=admin                     //注意=后面是什么就是什么,不要空格, 不要加""引号 取数是严格按着这个来
+ 
+
+

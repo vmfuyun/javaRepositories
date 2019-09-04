@@ -1,0 +1,108 @@
+过滤器所在的位置是  浏览器和 服务器的中间               要实现 javax.servlet.filter
+
+作用 : 
+	1,一常规的方式调用资源
+	2,利用修改过的请求信息调用资源
+	3,调用资源后 在响应之前 对响应进行修改
+	4,阻止当前资源的调用 转向别的资源调用
+主要是 对请求和响应 进行修改
+
+
+简单使用
+	1做编码处理    2登陆校验   3 过滤非法字符   4 mvc框架的 分发器
+
+Filter开发流程
+	1 实现 javax.servlet.Filter 
+	2 复写 三个方法   doFilter()        init()   destroy()  
+	3 doFilter中写代码---想要拦截后 干什么
+	4配置web.xml-----和servlet 差不多的配置 但 全是 filter 开头   
+			url-prteem  是要拦截的路径  /* 所有都拦截 ;  /*.do  拦截do 结尾的  ;  /do/ 以这个路径来拦截 ; /holle.jsp 拦截jsp  
+	
+		 //the request to pass along the chain.请求沿链传递 即 传向下一个过滤器
+		//the response to pass along the chain.响应沿链传递。
+	5 放行 chain.doFilter(req,resp);  ----------这是一个接口方法 
+	注意	 一 当设置的路径没有的话 会报错
+		二 过滤器 是单独存在的  要和servlet分离开  是用来监控 servlet 所以必须要有servlet
+
+
+
+生命周期
+	Tomcat启动的时候  就创建了对象 并初始化   
+	过滤的时候 执行 dofilter方法
+	当正常关闭的时候 关闭
+FilterConfig
+
+映射细节  
+	FilterChain  过滤器连
+	执行顺序 由 filter-mapper 来决定---------- 验证通过  并且 过滤器开始和结束的顺序是 先进 后结束 类似于进栈出栈
+	注解 (webfilter) 是由类名的首字母决定
+	   先进后出
+
+
+	可以配置多个url 过滤多个
+	req http版本的是可以拿到URI 和URL    这样就可以通过filter 得到 是过滤的是那个servlet 还是哪个jsp
+		
+	
+
+	请求转发是不会 被过滤器 过滤的   怎么办?
+	配置 web.xml 在<filter-mapper>加上dispatcher...标签   要配置两个 不然会把默认的覆盖  
+			配置在单个mapper 是适用于本过滤器
+			注意几个参数  是 表示要拦截的动作  主要有request , forward,error
+
+处理乱码  
+	创建过滤器  把设置编码的 放在过滤器
+	为了解决硬编码的情况   
+		利用 filterconfig 的 init 来获取 编码 写在web.xml  <init-param>
+	问题 如果客户忘了 配置 编码的值  怎么办?
+	        进行判断 如果有值 就选择 没有值就按默认 配置走 (保证不出错)
+	问题 如果别人设置了编码  我们又设置 会有问题 怎么办?
+	       获取上一个的编码    request.getCharactterEncoding() 判断是不是空 如果是空 就进行覆盖 setcoding  
+	明知别处有设置编码 非要设置 
+		通过一个init 参数 来判断要不要覆盖   <init-par..>focr 来一个ture 来判断 要不要覆盖  
+		就变成 如果是没有设置就设置      不为空 并且老的编码是null 或 force 为ture 要覆盖 	
+登陆过滤器
+	   登陆servlet 接受请求 封装对象                   所有都要做 判断是否登陆   很繁琐
+		     把数据放在session 
+		     跳转
+	先把原先的做了    然后做过滤器的   判断有没有 session 的getArr..("") 
+		                 条件是 需要放行 两个  一个是 登陆的jsp和 登陆的servlet  通过 URI来判断  
+			如果没有的话  就重定向    并 return   	// 注意  必须return               
+							       在一个过滤器中 如果处理完 一种情况后就 return
+	问题 放行的太多了 怎么办? 
+		定义一个字符串 然后通过 Arrays.aslist 来检查 如果是包含   不包含的进去重定向
+	硬编码  
+		定义一个init标签   
+		 但是如果多的话  怎么办?  
+		单独一个路径 或者叫文件来存放要检查的 然后把url加上路径
+
+@WebFilter("/*")  ---贴标签  表示对所有监控
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	

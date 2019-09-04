@@ -1,0 +1,16 @@
+database     DB         存储文件  
+管理系统      DBMS       
+
+mis  信息管理系统
+键值存储   Redis   
+列式 HBase
+文档 mongoDB  应用于回复
+
+
+ddl 创建语句
+
+dml操作  改查 
+
+dql  查询 
+
+

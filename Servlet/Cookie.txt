@@ -1,0 +1,66 @@
+Cookie:是客户端技术
+
+当第一次访问的时候 就把数据取出来 然后放在 cookie里面
+Cookie的操作 
+	创建对象 
+		Cookie cookie = new Cookie(String name,String value);
+		参数: name 当前Cookie的唯一的名字
+		         value 存储在cookie中的共享数据 	只能是String
+
+2   把Cookie放入响应中   
+	response .addCookie(cookie);   //响应对象写入   注意是addcook....
+
+3   获取Cookie  
+	因为cookie在请求头 里   多以之际 request getCookies()  返回一个数组  Cookie[] 
+	getname  .....
+	get value........
+4   中文问题
+	cookie 中不能用使用中文
+         编码  
+	URLEncoder.encode(msg,"UTF-8")                //  把中文变成 非中文的字符串   重要
+         解码
+	URLDecoder.encode(msg,"UTF-8")	     //把非中的字符串改成 中文的字符串
+	
+	注意 变成非中文  是在 设置 cookie的时候    ------和 请求之间的 共享是 一个 提供的 一个接受
+	要注意 cookie是一个请求头 的一个行   所以 要当 一个 特殊的行  来对待
+5  修改属性名的属性值
+	创建一个新的 同名   Cookie
+	获取cookie对象然后setValue 然后   别忘了 resp .addCookie(cookie)  放回去       //修改中文的话 注意要先编码
+
+6 Cookie的存活时间  
+	会话型         关闭就销毁
+	持久性       cookie   存活几天
+	 设置        Cookie setMaxAge(int seconds )   
+		==0 删除                        //一次请求 就删除
+		<0会话     -1
+		>0 存储制定秒数   --------一般设置999999999
+
+Cookie的domain  
+	不同的ip或者 叫不同的域名 进行数据交互  就必须要设置 domain和path     
+	设置Cookie的path为"/"  二级域名共享  
+	设置Cookie的Domain("")     例如 Domain(".baidu.com")
+	
+	默认是不共享的	
+
+	面向路径    当路径是/cookie/的  才会去发送这个请求
+那些限制会Cookie	 
+	cookie中有一个 path 属性的  来限制 什么情况下带回 
+	默认是同一个路径带回    cookie是面向路径的  所以不同路径下是不会带回
+	把path设置成/ 就会所有情况都会带回 (setPath)
+
+
+缺陷   1):多个人使用同一台电脑的时候,可以查看浏览器的Cookie,不安全.
+    2):Cookie存储中文比较麻烦(得编码,再解码).
+    3):Cookie的value是String类型,一个Cookie就只能存储一个数据,如果需要存储多个数据,就得死还有N个Cookie.
+    4):一个站点对Cookie有限制:
+      Cookie大小限制在4KB之内；
+      一台服务器在一个客户端最多保存20个Cookie；
+      一个浏览器最多可以保存300个Cookie；
+    5):在设计上就有问题,考虑生活中问题.
+       Cookie是浏览器和服务器之间数据交互的凭证.
+       在生活中,我们是把识别数据存储到服务端.
+
+//总结
+//使用请求操作 共享  每次页面的  同一数据 是无法完成 数据的传递的
+//当 一个信息或者叫参数是 一直随着信息 就需要用  会话技术 或者 cookie技术来  跟踪技术
+	

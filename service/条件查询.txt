@@ -1,0 +1,58 @@
+多条件查询其实是 where 语句的 拼接
+
+1 用一个对象来封装多条件查询参数        如果继承了原先的 查询对象  肯定 全部就能用了   (注意思想 继承)  查询的话  继承吧   	    
+			继承为了接受前端发过来的数据 需要把原先的接受对向替换成子类   并且子类  尽量子类去提供一个构造器 用于传递父类的参数
+							 (继承 父类的方法 属性方法是可以共享的)
+2   mybatis的动态sql      
+	用if 来拼接sql语句	
+ 	注意有一个  concat(    ,       ,     )拼接函数     这三个位置 都可以填写 与也可以用表达式     当 第一个参数不存在的话  怎么办   用where标签
+				大于 小于符号不能用 怎么办用      转义符注意是一个   ;   结尾
+		MyBatis转移符号		为什么要用转义符? 因为xml文件< 标签是用这个表示的
+	
+		&lt;     <  小于号
+		&gt;    >  大于号
+		&amp;  &  与符号
+		&apos;  '  单引号
+		&quot;  " 双引号
+	写的话  要先写出整个语句  然后再拆分
+
+
+
+  表单 数据丢失问题      
+	也就是 get  和 post请求 问题            
+	 当是链接 (get请求的时候)    是不会提交post请求的值    怎么解决呢   通过js函数来解决	//   点击事件   给 get请求点击事件
+		function ..函数    通过 byid来获取  指定的表单       				//<a href="javascript:gotopage(${result.prevapage})">上一页</a> 
+		也可以通过documenent.forms[] 获取的是多个表单    得到表单就可以调用表单的所有数据
+	注意所有的链接(get请求的) 都要调用这个js方法
+
+
+<script type="text/javascript">			js
+	function gotopage(pagenum){
+		//alert(pagenum);
+		document.getElementById("currentPage").value = pagenum;                      // document 通过 id   值   来给value 设置值      
+		document.forms[0].submit();					//提交    forms 是多个 表单  是个数组  用 0 开始排
+									//js 是不是同时  给 不同的 form 提交的表单的
+	}
+</script>
+
+
+
+
+
+多条件查询和分页的书写步骤:
+1 创建查询对象 QueryObject(封装了分页的两个用户输入)
+  创建 XxxQueryObject (封装了多条件查询的条件,分页两个用户的输入)
+2 创建PageResult 封装查询到的结果数据和分页条信息
+3 在service 中去定义查询的方法  PageResult  query(XxxQueryObject )
+    1 调用dao的查询满足条件的总记录数的方法
+        等于0: 返回 空集的PageResult
+        大于0 : 调用dao的查询满足条件的数据,然后封装成PageResult
+4 在dao 中创建 List listData = queryForList(qo)   int  totalCount =  queryForCount(qo)
+5 在Mapper中完成queryForList 和 queryForCount sql 语句的书写
+    where 标签  if 标签  转义符(&lt;    &gt;) 
+     模糊查询需要使用concat函数做值的拼接			//concat函数  拼接
+6 测试dao功能queryForCount ,queryForList 
+7 测试service 层的query方法,测试通过
+8 书写页面的多条件查询的条件收集和分页条的信息
+9 在Servlet 中去接收请求参数封装成对象(XxxQueryObject)
+10 解决表单数据丢失问题				//      注意  get请求(链接<a>标签) 是无法把表单的数据提交的

@@ -1,0 +1,7 @@
+HashMap:数组,
+Hashtable:线程安全,
+concurrentHashMap,分段锁资源,   16锁,  更好的操作,防止所有的操作被锁死,
+
+
+
+copyOnWriteArrayList()  可以通过这个  动态的获取对应的值.  并也能把并发修改异常 屏蔽掉

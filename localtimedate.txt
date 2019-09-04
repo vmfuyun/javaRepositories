@@ -1,0 +1,7 @@
+在java8中Date这个类中的很多方法包括构造方法都被打上了@Deprecated废弃的注解，取而代之的是LocalDateTime,LocalDate LocalTime这三个类：
+
+LocalDate无法包含时间；
+
+LocalTime无法包含日期；
+
+LocalDateTime才能同时包含日期和时间。

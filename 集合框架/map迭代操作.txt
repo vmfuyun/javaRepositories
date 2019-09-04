@@ -1,0 +1,49 @@
+通版
+
+Iterator it = list.iterator();
+while(it.hasNext()) {
+　　Object obj = it.next();
+}
+
+
+
+1    
+通过获取所有的key按照key来遍历
+//Set<Integer> set = map.keySet(); //得到所有key的集合
+for (Integer in : map.keySet()) {
+    String str = map.get(in);//得到每个key多对用value的值
+}
+
+
+
+
+2
+
+
+通过Map.entrySet使用iterator遍历key和value
+Iterator<Map.Entry<Integer, String>> it = map.entrySet().iterator();
+while (it.hasNext()) {
+     Map.Entry<Integer, String> entry = it.next();
+       System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
+}
+
+
+3
+
+
+通过Map.entrySet遍历key和value，推荐，尤其是容量大时                        基本必须要转换成 Map.Entry
+for (Map.Entry<Integer, String> entry : map.entrySet()) {        
+    //Map.entry<Integer,String> 映射项（键-值对）  有几个方法：用上面的名字entry
+    //entry.getKey() ;entry.getValue(); entry.setValue();
+    //map.entrySet()  返回此映射中包含的映射关系的 Set视图。
+    System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
+}
+
+
+
+4
+
+通过Map.values()遍历所有的value，但不能遍历key
+for (String v : map.values()) {
+    System.out.println("value= " + v);
+}

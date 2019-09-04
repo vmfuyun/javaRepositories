@@ -1,0 +1,41 @@
+图片的 显示
+	可以直接 通过放在webapp下直接 访问到      输入的是webapp下面的路径     可以通过 empty来 判断  来显示 本地图片	
+	
+	文件上传下载  --  改enctype="multipart/form-data"------ 以后直接百度  记住
+	input 标签 的 type =file		
+	
+	对应controller控制器 参数 要用 MultipartFile---封装了上传所有的信息
+				但是 这个 类型的 参数名称 必须和 对应的 form表单  里面的<input>的name 一直 一致
+				通过 MultipartFile类型的  getsize方法   和 判断是不是null 来判断 是不是传过来的 图片 是不是接受了  ----
+	通过 MultipartFile 的 transferTo( File  )   把图案转换成文件
+		需要配置解析器   上传解析器
+<bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"></bean>  
+		必须是这个  可以去搜索 然后去获取
+
+
+	web.xml文件 必须去 配置一个 multipart 标签 在<servlet>标签 里面
+			<max-file-size></max-file-size>  最大的文件大小
+
+
+	然后就可以获取到 图片了
+
+	然后注入  servletContext  来获取 路径  get  realpath ( /文件名)  就可以存储 文件... 获取 存储文件的路径了 
+		
+	只有 servletcontext才能拿到项目WEB-INF外面的绝对路径
+	
+			可以通过 uuid 来存储 一个任意名字的  
+		也可以通过 Multipart.getOriginalFilename 原来的名字   是整个名字   这样就存储了    
+	
+	怎么取出来呢?  一个 比较好玩的方法	
+	把字段 存储 String类型的  webapp文件下的   ---  路径到--名字 如下
+	<img src=  '${ not empty u.headimg    ?     u.headimg     :     "/img/none.png"    }'        height="50px"  >
+	 通过三元----
+	这样的话  如果有值 就直接显示出 照片了  ---------很巧妙----  
+	登陆的小头像 可以这样整 
+
+
+
+总结   
+	文件上传解析器 
+		Tomcat内置的StandardServletMultipartResolver   必须在web.xml前端控制器 配置<multipart-config>
+				

@@ -1,0 +1,43 @@
+ 
+
+
+  <!--分页插件-->
+ <dependency>      		
+    <groupId>com.github.pagehelper</groupId>
+      <artifactId>pagehelper</artifactId>
+      <version>5.1.2</version>
+</dependency
+
+在mybatis-cfg.xml文件中
+<plugins>
+        <!-- com.github.pagehelper为PageHelper类所在包名 -->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <!--当pageNum<=0时，将pageNum设置为1-->
+            <!--当pageNum>pages时，将pageNum设置为pages-->
+            <property name="reasonable" value="true"/>-----------------------此处设置是实现上述表示的 配置
+        </plugin>
+    </plugins>
+
+
+为什么 用分页插件 ?
+	因为 当单位要换数据库的时候, 如果是所有的sql语句都是用的 limit  分页,....     需要全部改代码 或者文件信息     是个很麻烦事情
+	为了 解决 数据库的 sql语句 差异性   引入 分页插件
+	
+	该插件是 代理模式实现  
+	
+	分页 基本分为 两块 ---一是哪个sql语句
+			二是封装到哪   ---  这个插件 也是要告诉它 这两件事
+
+	
+	使用: 
+		在sevice层 使用 PageHelper.startPage(前端传的两个参数   ,,要去第几页,一页多少条数据);----重
+				紧挨着上面的就是 要执行分页mapper方法-----    重 如果多个话 需要用多个  
+		
+		源码是  public static <E> Page<E> startPage(int pageNum, int pageSize) {
+   			     return startPage(pageNum, pageSize, true);
+    			}
+		这个插件有一个 pageInfo-----看源码 看到 有所有分页后的结果集  ---一类  如果用到这个  尽量去看源码 不至于对应的属性对应不上   重
+	
+		sql 语句查询  封装成一个list集合  然后 用new pageinfo(list) 来分解封装
+	
+			

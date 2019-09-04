@@ -1,0 +1,140 @@
+1,访问登陆页面  使用的是get请求   
+2,登陆的验证    使用 post方式  
+3,shiro发起的登陆验证
+4,验证账号--自定义realm--
+5,验证密码--shiro在账号正常的时候 验证密码  密码错误 抛出异常
+6,处理验证的结果
+	 错误onLofinFailure() 有异常
+	成功onLoginSuccess()无异常
+7,响应页面中需要的结果数据
+	自定义过滤器,来继承FormAuthenticationFilter  --处理form表单认证的过滤器==对结果集的处理
+
+web.xml
+	Shiro通过一个ShiroFilter入口来拦截需要安全控制的URL，然后进行相应的控制，
+	ShiroFilter类似于如Strut2/SpringMVC这种web框架的前端控制器，
+	其是安全控制的入口点，然后判断URL是否需要登录/权限等工作。
+	
+	配置
+		shiro过虑器，DelegatingFilterProx会从spring容器中找shiroFilter
+		url为/*           名字要一致  
+自定义realm 供查询的资源
+	extends AuthorizingRealm   复写 doGetAuthenticationInfo 认证方法
+				(传的参数是 需要进行认证的Token  可以强转成usernameToken---一般只要是有为token的都可以强转)
+					 注意复写 不能添加多余的异常 只能try{}catch(){}
+					不成功可以抛出一个异常 例如 unknownAccount 没有账号异常 throw--new 
+						或者 抛被绑定异常      
+					principal--主体信息 也就是账户 一般会传这个对象 供后面的授权操作方便
+					credentials 凭证-密码	
+			
+		
+				复写doGetAuthorizationInfo 授权方法  ---  
+	注意token的方法 getPrincipal--得到Username
+
+
+
+
+配置安全管理器
+	<!-- 配置安全管理器SecurityManager -->
+		<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">  --注意是一个默认的web安全管理器
+		<property name="realm" ref="userRealm"/>--ref为自定义的realm数据源
+	</bean>
+shiro.xml
+	注意:名字必须要和web.xml中配置的名字一致  
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager"/>  安全管理器
+		<property name="loginUrl" value="/login.html"/>      ---登陆页面
+		<property name="filterChainDefinitions">
+			<value>
+				/js/**=anon
+				/images/**=anon   ------------  anon 是匿名 或者访客
+				/style/**=anon	   ---过滤规则  等号前面是路径  
+				/logout.do=logout	-----  有时候打开路径被拦截到 会跳到login.html
+				/**=authc			找资源的时候 是去找前面名字相同的的路径
+			</value>
+		</property>
+	</bean>
+
+FormAuthenticationFilter 自定义过滤器            ---是一个Authentication  form表单认证过滤器
+	继承FormAuthenticationFilter 
+	  复写 onLoginSuccess 登陆成功   注意返回json格式的 (使用fastJson  toJSONString)  (还是需要一个jsonresult)  注意参数 返回fasle 表示本次拦截处理完毕 
+	复写onLoginFailure  登陆失败  可以通过 异常的信息来判断是什么错误   注意返回类型response.setContentType("text/json;charset=UTF-8");
+
+
+加密过程 看源代码方式 一般从它的功能开始分析 然后 打你想看的那段
+	看到是在simpleCredentialsMatcher类的doCredetialsMatch方法来比较密码		
+	token是一个char[]数组封装(也就是前端传的),,,,  查出来的真实的是用的字符串 一般为info结尾 也就是真实的密码
+	真正比较的时候  把上述的转成baye[] 数组 然后用的 ^ 异或 比较--不同就是true  然后或运算得到 是不是 0 
+	源码
+	int result = 0;
+		result |= digesta[i] ^ digestb[i]; 
+                   return result==0;
+	
+	到自定义的realm 输入属性credentialsMatcher   进行注入 <class = "HashedCredentiasMatcher"> 哈希匹配器<hashAlgorithm--加密算法的名称 这个属性的赋值 是通过setHashAlgorithmName来的      加密的名字在这个类的子类上  
+	通过对credentialsMatcher  凭证匹配器 进行注入   					                      <hashIterations  加密次数							
+	 
+               加密过程                                          加密名称               加密的数据源         盐                 加密次数
+ 	obj  obj= new SimpleHash(String algorithmName, Object source, Object salt, int hashIterations)
+
+	加盐过程                                               主体信息账号            加密次数                    盐      一般为主体(账号)为盐        自定义realm 名字             
+	new SimpleAuthenticationInfo(Object principal, Object hashedCredentials, ByteSource credentialsSalt, String realmName)
+
+
+
+授权 - 权限: 
+	员工发起访问系统的资源,检查员工的权限   
+	
+	员工拥有的全部权限在--在数据库中查询
+	访问的资源需要的权限--通过访问的方法上面的注解--  用shiro的注解更方便
+
+	shiro权限注解  
+		@requiresPermissions(value={"xxx","xxx"},logical=Logical.OR)   ---logical 的and表示 拥有所有的权限才能 操作这个方法 必须要有
+	reload方法--加载权限
+		要自己去扫描  ---改扫描的注解类  改成requiresPermissions.class
+	配置注解扫描器	
+		文档     开启扫描器之后,shiro会为了贴了注解的对象生成代理对象(增强功能)   ---
+				用的是cglib 继承方法  增加检查权限的功能 (注解不会被继承) 就是说代理对象没有注解
+			在容器里获取的是controller的代理对象     reload方法 从applicationContext获取的是代理对象
+	
+	web环境的Shiro-   自定义realm-doGenAuthorizationInfo方法---增加角色和权限 -超管-role= admin  ,权限premission=*:* 最高权限
+		主要做的事情-- 进行叫角色,权限的授权
+			//获取当前登陆用户的角色和权限,封装到AuthorizationInfo对象并返回
+			//如果当前用户是超级管理员,添加admin角色,和所有授权,并返回 return;
+		/通过sn来确定角色---
+			//如果不是超管,查询当前用户的角色,和权限,完成授权, 并return
+				组装验证信息 让shiro 验证  主要是SimpleAuthorizationInfo类
+	验证没有权限后 提示错误 可以用xml文件 统一处理方式  
+			异步请求使用 代码方式  定义一个类专门处理这个异常    @ExceptionHandler(UnauthorizedException.class)  专门用这个来处理请求
+					response.setContentType("text/json;charset=UTF-8");  注意返回异步请求的话 用这个  然后用resp来写出去
+
+
+
+	shiro标签 - 页面上不显示没有权限的按钮  ---用的是 shiro-freeMarker依赖  因为是ftl文件
+	    	   复写freeMarkerConfigurer 的 afterPropertiesSet方法  (不要删除父类的不然原先的标签就不能用了)获取 configuration  然后注册 setSharedVariable("shiro",new  ShiroTags);
+		告诉shiro  直接把mvc.xml的freeMarker配置对象 改成这个子类
+		<@shiro.haspermitssion>  ---有这个权限 显示
+		<@shiro.principal  property="属性名"/>-- 获取主体中的属性
+	加密项目分析-
+		1,在哪加密  在service层----保存或者注册的时候  --注册就是添加的时候 注意if 语句判断
+		2,在自定义的realm 把前端输入的密码(token中)进行加密指定盐-  配置一个凭证匹配器在shiro.xml..HashedCredentialaMatcher-设置加密算法和加密次数 -然后让shiro进行去匹配
+		 @Autowired 可以贴在字段或者setter方法  当贴在setter方法的时候 会给该属性赋值
+			凭证匹配器给自定义的realm 通过 setCredentialsMatcher方法父类    给了realm类  一个就是说realm类需要凭证凭证器
+
+		sql数据库 手动加密  update employee set password = md5(concat(name,password))
+
+缓存机制
+	mybatis的缓存 一级 是sqlssion
+		       二级 是基于mapper.xml文件  开启Cache 缓存   增删改 查 都会刷新缓存  也可以设置 
+	集成EhCache
+		1,对什么缓存--在页面除了登陆以外 都会发送sql来查  主要是有shiro标签时候 就会去查询<@Shiro.xxx />  
+		2, 需要配置一个shiro-ehcache.xml  eternal是不是永久保存
+		在shiro.xml配置 ehcache管理器  属性添加参数配置  classpath:shiro-ehcache.xml
+		把ehcache管理器配置到安全管理器...
+		在修改了权限的 方法 最后去清理缓存
+	清空缓存
+	1. 如果用户正常退出，缓存自动清空。
+	2. 如果用户非正常退出，缓存自动清空。
+	3. 如果修改了用户的权限，而用户不退出系统，修改的权限无法立即生效。
+	4. 当用户权限修改后，用户再次登陆shiro会自动调用realm从数据库获取权限数据，如果在修改权
+	限后想立即清除缓存则可以调用realm的clearCache方法清除缓存。
+	在自定义的realm中自定义一个方法  直接调用父类的clearCache方法注意除
+	

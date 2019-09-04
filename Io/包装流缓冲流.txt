@@ -1,0 +1,22 @@
+  包装流
+1,隐藏 实现(也就是节点流,节点流是和数据一起处理的) 
+  new 包装流(流对象)   
+   当创建对象的时候 需要传一个别的流对象  那就是包装流
+
+关闭  只要关闭包装流  就行
+
+以下是 包装流  
+
+缓冲流    
+	byte[] buffer  = new byte[1024]     这个是缓冲区
+Buffered InputStream   
+Buffered OutputStream
+Buffered Reader
+Buffered Writer   
+
+都有一个buffered   缓冲    大小是  8192  (1024*8)
+
+
+字符流有一下特性
+换行                 输入流对象.newline();                   //跨平台 换行  
+读取一行     readLine();                            读到没有了  返回的null

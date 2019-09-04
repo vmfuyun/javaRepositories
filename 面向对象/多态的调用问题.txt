@@ -1,0 +1,94 @@
+多态 字段没有多态 调取编译类型的
+
+多态时方法的调用问题:
+前提:必须存在多态情况:
+存在父类:SuperClass ,子类SubClass,方法doWork
+-------------------------
+测试代码:
+ SuperClass clz=new SubClass();
+clz.doWork();
+
+情况1:doWork方法存在于SuperClass中,不存在SubClass中.
+       
+class MethodCallDemo{
+     public static void main(String args[]){
+          SuperClass clz=new SubClass();
+           clz.doWork();          
+    }
+}
+class SuperClass{
+      public void doWork(){
+         System.out.println("SuperClass.doWork");
+     }
+}
+class SubClass extends  SuperClass{
+}
+
+结果:编译通过,执行SuperClass的doWork方法.
+从SubClass中去找doWork方法,找不到,再去父类SuperClass中去找,找到.
+
+
+
+情况2:
+doWork方法在子类SubClass中.不存在SuperClas中
+
+class MethodCallDemo{
+     public static void main(String args[]){
+          SuperClass clz=new SubClass();
+           clz.doWork();          
+    }
+}
+class SuperClass{
+}
+class SubClass extends  SuperClass{
+      public void doWork(){
+         System.out.println("SubClass.doWork");
+     }
+}
+
+此时的执行结果:编译错误:
+    编译时期:会去编译类型中去寻找doWork方法.找不到.
+
+
+情况3:doWork方法存在于SuperClass和SubClass中
+
+class MethodCallDemo{
+     public static void main(String args[]){
+          SuperClass clz=new SubClass();
+           clz.doWork();         
+    }
+}
+class SuperClass{
+      public void doWork(){
+         System.out.println("SuperClass.doWork");
+     }
+}
+class SubClass extends  SuperClass{
+      public void doWork(){
+         System.out.println("SubClass.doWork");
+     }
+}
+此运行结果:编译通过,执行SubClass.doWork()方法
+
+情况4.doWork方法存在于SuperClass和SubClass中,但是doWork是静态方法
+此时这种情况我们称之为隐藏,而不叫方法覆盖.
+
+class MethodCallDemo{
+     public static void main(String args[]){
+          SuperClass clz=new SubClass();
+           clz.doWork();          
+    }
+}
+class SuperClass{
+      public static void doWork(){
+         System.out.println("SuperClass.doWork");
+     }
+}
+class SubClass extends  SuperClass{
+      public void static doWork(){
+         System.out.println("SubClass.doWork");
+     }
+}
+此时执行结果:编译通过,执行SuperClass的doWork方法.
+静态方法的调用只需要类即可.
+如果使用对象来调用静态方法,其实使用的是对象的编译类型来调用静态方法,和对象没有关系

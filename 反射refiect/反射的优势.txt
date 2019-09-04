@@ -1,0 +1,10 @@
+反射 可以通过 获取 全限定名称   Class.forName("限定名称"   String类型的)
+就可以 创建对象
+
+
+
+把这个限定名称 放在 properties  例如 forname=权限定名称   就可以直接改properties就可以不改代码了
+
+反射是框架的基石
+必须是 公共 无参  构造器
+通过获取properties的内容就可以  灵活的去创建对象

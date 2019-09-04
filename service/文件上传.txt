@@ -1,0 +1,36 @@
+上传 必须要用 form method为post 因为post 是没有大小限制的
+1  enctype = 是需要修改的    是一个data结尾的    数据提交 必须是 二进制的方式  也包括文本
+	控件 input    type  file      name      上传文件的控件必须是有name 的    
+
+ 注意  
+	表单使用 2进制 提交    在 servlet 用  getpara--- 是无法读取到的  
+	怎么去拿呢   肯定存在请求里了  2进制就是个流     通过req.getinputstram()    再通过 扫描器  可以得到信息  (扫描器是自动读取 一行)
+	注意   读出来的 效果类似于  (文件上传有这个) context-type : -...........一个编号  
+			                                   
+				每个内容 以这个编号起头       属性名    和  属性值 之间有一个 空行分割  
+为了更好的 读出数据   怎么办   导架包
+注意  web 项目都要放在lib里面   ----  一般都会有文档   doc   或者  site  -- 或者  index.html     一般尽量把 源码放在    架包名是 uplord  阿帕奇的
+	当导入架包 如果提示找不到类  一般是附件(依赖的其余的架包)没有导入
+	
+	is form filed  判断是不是一个表单 文件 
+	其中 get file name  见名知意  文件里 属性名    
+	getname  是文件的话  是整个文件名  否则为 null 
+	getString 是拿到内容   属性值  可以直接指定编码 
+
+	fileItem.write(file)-----有直接写出到指定的文件 
+
+
+细节  
+	文件名相同的情况 :  会覆盖 原先的文件    怎么处理 保证文件的唯一  UUID     --> filenameUtils.get extension以这个扩展名   这样就保证了 文件的唯一
+	把文件保存到项目里 让项目也能用 ....  req.getsevrletContext.getRealpath("/upload/")  
+
+文件类型约束 
+	写死一个 包含文件后缀的变量   然后再去判断是否 包含 (contains) 怎么去判断?  切开spil 然后用 集合 Arrays.aslist   集合有安全的包含方法去判断
+限制文件大小	
+	在创建的 新对象来处理的
+	setFileSizeMax  ---单个文件的大小设置
+	setSizeMax ------设置所有的数据大小
+
+
+
+	

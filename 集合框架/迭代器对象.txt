@@ -1,0 +1,8 @@
+Iterator     迭代器对象    只能从上到下  
+	
+     boolean   hasNext()      来判断当前指针 后  是否有下一个元素
+     Object       next()           获取下一个指针元素并 移动指针
+
+ListIterator    Iterator的子接口   支持双向迭代
+
+Enumeration    适用于古老的 Vector

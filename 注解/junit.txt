@@ -1,0 +1,31 @@
+用junit 必须要 path 加上    junti       
+
+并且 是公共  无参   无返回       的 方法               必须要在包中
+
+可以通过  接口 生成 测试类        通过 右击 接口    new  - junti  ....
+
+
+写一个  实现方法  测试一个     不然容易  心蹦
+
+如果测试 (要自己创建 测试环境    例如  创建对象啦    get  set 方法啦   之类的)
+
+
+断言    猜测的意思
+assert 断言     equals  这个是用来  判断自己的预测
+ecpected   期望
+
+was   实际是什么
+
+
+@Test(timeout=100)   测试  期望 要在这个反应时间  之内
+
+
+junti   可以做一些  初始化和 或者赋值 操作        @Before   在test  之前运行
+				       @After   在 test 之后的 操作
+				       @Beforeclass   是所有方法之前     只运行一次 (运行静态方法 static)
+				        @Afterclass  是所有的方法  之后   只运行 一次(运行静态方法static)
+
+
+
+
+做一个类的测试类     打开   new  有一个  junti  text case  是专门做 测试用的  

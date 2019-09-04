@@ -1,0 +1,44 @@
+   	
+	数组的长度  数组名.length
+	数组的设置  数组名[index] = 值;  修改数组的单个元素  其实就是个赋值
+        数组的索引  数组名[index];        [0,数组名.length-1]从零开始
+	获取元素    元素类型 变量 = 数组名[index];
+	遍历数组元素 
+	     使用 for(int index =0; index < 数组名.length;index ++)
+		    {
+			system.out.println(数组名[index]);   
+				}
+	
+
+
+
+操作数组常见的异常:
+	NullPointerException:空指针异常(空引用)  其实就是数组没有初始化
+        当一数组   例如:String[]bs = null; 表明bs数组没有初始化 
+				或者可以理解为把原先开辟的存储空间 清除
+
+	ArrayIndexOutOfBoundsException:指针越界 索引过界
+
+
+寻找数组中的最大 最小值: 
+ 打印数组的大小值  直接system.out.println(类名.方法名(变量或者数组名))
+	
+	//求数组的最大值方法
+	
+	static int max(int []a)
+	{
+	  int max = a[0];
+	  for(int index =1; index <a.length; index ++)
+		{
+			if(a[index] > max)
+				{
+					max = a[index];
+				}	
+		}
+			return max;
+	}
+	public static void main(String []arges)
+	{
+		int []sum =new int[]{1,-2,10,30,-100};
+		System.out.println(Arraygetmaxdemo.max(sum));
+	}

@@ -1,0 +1,6 @@
+math.random();这个方法是生成 [0,1)的随机数double类型   这样就可以找除相关区间的数了
+
+Random是一个用于产生伪随机数的类     有一个方法是next...这个点点可以换成任何基本类型   (填写数)   
+
+UUID			128位  16进制      	
+UUID.RandomUUID()                                                           注意String类的一个方法  sub string() 括号里面填写  需要的字符的          索引   开始    到 结束

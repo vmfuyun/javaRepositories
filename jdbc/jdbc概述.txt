@@ -1,0 +1,35 @@
+就是连接数据库的一个包 模块  JPA      注意几个单词   Connection 贾琏   (数据库连接对象)      
+注册驱动 大体上是  驱动的字节码加载到虚拟机jvm     如何 不导入包  用其方法和对象  就用反射
+  这就需要反射 把字节码加载到虚拟机(创建字节码对象 其实是把字节码加载到虚拟机的作用 ,参考class类的forname 的方法详细)
+
+各个数据库厂商 都会遵循着JDBC规范  编写自己的 实现类     也就是架包  jar   (解决的是怎么连接,发送sql, 获取信息,解析,断开..)
+不能 导入 驱动包
+在sql包中,   
+1 获取 连接对象  Connection   (注意这个类)         准备 加载驱动包(是字节码的)    把相关的架包  放在一个lib文件夹里 然后添加上
+
+获取数据库连接对象:   贾琏  
+	1,加载注册驱动		Driver  驱动的程序 ()要实现的接口   	
+				registerDriver(Driver driver )注册驱动   需要一个 Driver对象   
+				但是 这个Driver类有一个说明  直接用Class.forName()加载驱动  
+				原因是1 加载字节码会加载静态代码块 (要理解 static的代码块的作用)
+					驱动类 有一个静态代码块 会注册驱动
+				
+				
+	2,获取数据库连接对象  Connection 
+			Driver Manager 驱动管理(由一个方法getconnection(String url , String  user,String password));
+			url (可以连接到数据库的地址,包括ip,端口,数据库名)
+				jdbc:mysql://localhost:3306/javaweb
+				协议                ip           端口     数据库名
+
+
+JDBC 的操作模板   贾琏欲执释     (欲 预编译)                 Statement(语句对象) create创建
+		1,加载注册驱动
+			Class.forname()
+		2,获取连接对象 
+		connection conn = drivermanger.getconnection(url,user,password)
+		3,创建语句对象
+		conn.createStatement ...                        
+		4,执行 executeUpdate  (注意 execute是执行 )
+		5,释放 语句对象.close 	后开先闭
+		           连接对象.close
+			

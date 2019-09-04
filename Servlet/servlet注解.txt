@@ -1,0 +1,17 @@
+注解(Webservlet)  
+	注意metadata-complete(是否要忽略web组件的注解) 一般是false   不忽略
+	
+	用注解来代替 web.xml的值      例如 在web.xml 文件中 
+		@WebInitparam(value = "/m1")(                      必须是/打头其实是path    一般是通过这个路径在访问资源
+			initParams={  
+				@WebInitParam(name="" , value="")
+				@WebInitParam(name="" , value="")
+			}
+		)
+
+	@WebServlet(value={"/m","/s"}, 
+		 loadOnStartup = 1, 
+		initParams = { @WebInitParam(name = "encoding", value = "UTF-8") })
+
+启动时初始化Servlet      一   xml文件    <load-on-startup>             
+		     二 注解  只要@WebServlet(value="" load...)

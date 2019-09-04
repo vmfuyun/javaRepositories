@@ -1,0 +1,62 @@
+遍历 直接的 for循环  for(int i = 0;i<arr.length;i++){}     
+	数组.foreach (这里面是回调函数) 一般 理解是 所有的元素    都执行这个操作
+	for  in  可以遍历出所有的索引 通过 arr[index]来获取所有的信息 	  需要用中括号 
+
+
+
+
+
+DOM 
+	window-->主要有几个主要的内置对象 	location 位置对象 有href属性--超链接  location.href  
+						location.reload()  重新加载  刷新     ------	
+<onclick="fun()"> 这样可以间接的进行跳转页面      
+	document.forms[] 拿到form表单 指定的第一个
+document.getElementById()  ---通过id来获取 这个表单元素
+	
+	弹框操作--alert()--     确认窗 confurm() 如果打印这个结果 是可以获取的true或者false   ----   输入窗 prompt(); 需要赋给变量
+	
+	定时器 
+		一次性的(只执行一次)       setTimeout(fn,time) 返回timer  一次性一段时间后执行这个
+		周期性的 (间隔性) 	       setInterval(fn,time) ----周期性 
+				clearTimeout(timer)清除一次性定时器 
+				clearInterval(timer)  清周期性的 定时器   -----要在函数里  不然不生效
+
+
+获取元素
+	可以通过id ,class,tagname-标签名        注意 是加载完毕后才能拿到
+
+获取属性 
+	自定义的需要 用getAttribute("属性名");   和[] 这中设置   
+	特殊的  属性名和值一致的 checked,selected----  可以通过 元素对象.checked=true | false
+	class属性    要通过className 来设置值  
+	属性名 有- 横杠的  需要把横杠去掉然后 把首字符大写
+	操作 readonly属性        readOnly=true | false           特殊
+
+节点的增删改
+	document.createElement  创建
+	a2.appendChild(a3);  添加
+	a1.removeChild(a4); 删除
+事件的四个核心对象  
+	事件驱动编程中的几个核心对象：
+	事件源：谁发出事件通知，发出消息；也就是事件主体（通常指元素和标签）；this
+	事件名称：发出什么样的通知的名称，比如鼠标到我头上了，我被别人点了一下；
+	事件响应函数：谁对这个这个事件感兴趣，当这个事件发生时要执行什么样的操作；  
+	事件对象：一般来说，当事件发生时，会产生一个描述该事件的具体对象，包括具体的参数等一起发给响应函数，
+		好让他们通过事件对象来了解事件更加详细的信息。  --函数的参数--event
+事件的绑定----一般是 页面加载完后
+	事件绑定指给某元素绑定某事件的处理函数。有三种方式。
+	1、在标签上使用 onclick 属性配置（只能绑定一个处理函数）  点击事件
+	2、在 js 代码中，使用 "元素.onclick=响应函数"进行事件监听（只能绑定一个处理函数）  --
+		--类似获取一个元素(标签) 然后元素.onclick = 对应一个函数 一点击就执行这个函数
+	3、 使用方法来完成对元素事件监听（能绑定多个处理函数）
+	添加    (标签对象)	[Object].addEventListener(“name_of_event“, fnHandler);
+		name_of_event：直接使用事件名称，事件名称没有 on；fn 响应的函数
+				例如点击事件 click---
+		多次添加监听后，触发顺序: 先添加，先执行。         
+		
+	删除	[Object].removeEventListener(“name_of_event”, fnHandler);
+		fnHandler : 移除时，传入的"事件响应函数"，必须和添加时，传入的是同一个（通过相同标识符引用的那一个函数）
+		匿名函数，每次创建的都不同。
+	
+怎么判断 对 某一个功能  适用  ---可以通过  对象.这个功能方法  如果 支持 或者 有这个方法  就会是 true  就会进去  否则是 undifind的  也就是false
+	

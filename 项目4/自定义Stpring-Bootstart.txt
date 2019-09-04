@@ -1,0 +1,26 @@
+起名字: 自己起的名字是 按着 自己的名字开头,  boot开头是它自己提供
+	redis-spring-boot-starter
+	建立自己的redisTemplate  为了更好的操作 连接  使用 jedispool
+	set方法 ,和原先的一样 看判断是不是要设置时间,     get方法       --->对应的需要判断beanTostring    ,,, stringTobean
+	exists,判断是否存在,
+	设置失效时间 expire
+	incr 递增
+	decr 递减	
+	keyPrefix 接口 get     定义了两个 前缀和 失效时间 
+	
+	redispropperties 配置类  注意@configproperties
+	redisAutoConfigution自动配置类 条件是Onclass jedisPool,jedis
+	注意满足的前缀,的问题
+	
+	对pool进行 @bean配置
+	MET-INF
+	进行spring.factoies的配置
+	
+	为了更好的读取  在bootstrap.yml    name: 添加redis
+
+	userserviceImpl创建token 存redis
+	
+	key 在redis实现keyprefix  通过调用者的简单名称来当key来区分
+	
+	在api建立util的cookits 的工具类 CookitsUtil
+	

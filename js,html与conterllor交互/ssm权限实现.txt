@@ -1,0 +1,41 @@
+# RDAC模块
+ 超级管理员 复选框 显示 隐藏 
+    获取到事件源 当需要操作doc对象的话 可以用this
+ * 删除的话 需要考虑原先的元素有没有事件 有的话 需要 用detach
+ * closest("")找当前对象jquery对象的上级元素,括号里面填写要找的上级元素的id,或者class格式
+  *显示 需要添加到之后 之后用 after , 之前用befor
+
+例子:
+	 $(function () {
+                           $("#admin").change(function () {
+                               if (this.checked){
+                               role=$("#role").detach();
+                               }else{
+                                   $(this).closest(".form-group").after(role);
+                               }
+                            })
+
+
+
+* 权限 
+
+  *  生成权限数据: 需要用户需要的话 就需要页面
+  * @RequiredPersmission(name="",expression="");
+  *  扫描所有的controller的所有方法
+  *  获取注解信息 存数据库(反射) 
+  * 什么时候生成 1 启动的时候 2 用户控制生成的时间
+  
+*  权限的实现
+	1,定义注解  --生命周期--源码/字节码/运行时期---@retention()
+		  ---贴的位置--@target() 方法,类,类型
+		如果想要贴注解的时候 不写属性名 那就定义为value()方法;
+	2,权限表的呈现到页面 只有删除和 重新加载
+	3,实现重新加载 
+		1,获取所有的conterllor类 ---通过spring --->Applictioncontext-->getAnn注解(指定的注解)
+		2,类--->方法 --反射
+		3,方法-->先判断有没有注解 is方法   
+		4,注解-->获取参数 value    ( 注意需要通过 注解的字节码来获取)
+		5,参数[0],[1]  
+		6,存到数据库  创建对象 然后调用insert方法
+	去重--先去数据库去查询 权限表达式 然后利用   list 的conca---那个是否包含的方法 来判断 如果包含的话 就不执行插入语句
+   

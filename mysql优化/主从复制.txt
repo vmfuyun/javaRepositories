@@ -1,0 +1,23 @@
+
+log-bin  保存DML操作
+1,在主节点中需要开启log-bin文件,主要是主Mysql起线程把所有的DML操作都记录在log-bin文件
+2,Mysql的主从复制采取的是被动注册的方式,把数据进行同步
+3,从mysql在发送同步,并开启relay-log文件
+4,主Mysql把log-bin文件以二进制数据通过网络传到从节点
+5,从Mysql会开启一个Io线程接受主节点的数据 并写入到relay-log
+6,Mysql会开启线程,把realay-log中的日志进行重做
+
+要写在[mysqld]下面
+在win做的话 修改my.ini
+在linux下,修改/etc/my.conf     这两个都是在[mysqld]下
+
+并添加上对应 配置   主要配置的是  log-bin 主服务器,         从服务器 配置relay-log 
+
+主从复制 :
+	主要接触到三个线程,IO线程--负责把主节点的数据写入到 relay-log
+			binlog线程--主节点把DML操作记录到log-bin文件
+			sql线程--负责读取中继日志解析出操作 进行重做
+  
+
+
+在mycat上面看到的就是一张表  就是逻辑表

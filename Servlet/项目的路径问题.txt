@@ -1,0 +1,20 @@
+ 	
+             一个web项目中可以设置多个<utl-patternt>  也就是说 一个项目就可以有多个资源名称 但是 name 是一致
+	
+              一个程序可以有多个mapping 但是name必须一直   想请求过程 先找server.xml-->web.xml--->url
+
+	<url-aptternt>必须是唯一性必须是 /  开头
+	
+	支持通配符 *         /*任何资源都可以访问到            /system/*请求的资源必须是以/system/开头  权限限制
+			
+
+	
+
+	* . 扩展名   以此扩展名结尾的可以访问  没有用/斜线 开头
+
+	servlet-name的元素不能是default   因为 存在一个这个名字的 来处理静态资源    在Tomcat根/conf/web.xml里
+	
+	
+
+name 尽量是这个类的简称   所以先写class
+Tomcat中的config的web.xml...全局默认servlet 也算是一个项目

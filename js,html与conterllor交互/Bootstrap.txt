@@ -1,0 +1,48 @@
+1,  是一个 前端的框架  动态的页面 通过 class 来获取   注意引入 js文件   
+	使用的话 要使用容器  container   ---一般测试看效果 
+	栅格 系统    就是把页面分成特定的 几个  区域   必须在container 容器中
+
+
+
+分页的插件   
+	jQuery分页插件（bootstrap powered）     基于 bootstrap 框架之上的  所以需要把 原先的 插件 安装上      js代码 必须要放到低端
+	基本用法
+	插件需要jQuery（必需 - 1.7.0或更高版本）。
+
+	您可以使用Bootstrap CSS样式和标记（或使用您自己的）。
+
+	以下代码显示调用<ul>标记上的函数（它也可以是<div>标记）。----------------------------必须是着两个标签<ul> 和<div> 才能显示分页
+	$('#pagination-demo').twbsPagination({
+	  totalPages: 35,
+	  visiblePages: 7,
+	  onPageClick: function (event, page) {                             ----page 是要去的那一页
+	   //可以通过这个地方 进行  表单的提交和  数据的 修改
+ 	 }		//需求 要高级查询数据的时候   选择 页数的时候 一起提交数据 (模糊查询的数据 和  去的页数 )   
+							需要把 查询的表单那(form) 创建一个 隐藏的 <input> 表单 来设置要去的页数 
+ 	});							           然后一起提交     注意不要设置相同 的id 一类的东西 不要设置submit
+
+	一起提交 例子:
+	
+
+
+	<form method="post" id="searchpage" action="#">
+	    <input type="hidden" id="countpage" name="countpage" value="1">
+	    <input id="name" type="text" name="keyword" class="form-control">
+	    <button class="btn btn-primary">查询</button>
+	</form>
+
+
+	<script>
+	    $("#pagination_zc").twbsPagination({
+	        totalPages: 40,
+	        visiblePages: 5,
+	        startPage: 1,
+	        first: "首页",
+	        prev: "上一页",
+	        next: "下一页",
+	        last: "未页",
+	        onPageClick:function(event, page) {
+	            $("#countpage").val(page);
+	            $("#searchpage").submit();
+	        }
+	    })</script>

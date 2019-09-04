@@ -1,0 +1,5 @@
+把 四要素放在 properties  
+//从源文件位置来加载  classpath
+用xml 来读取       properties   resource =
+
+四要素那  的 value 用${key}   注意 是要用"   "  引起来

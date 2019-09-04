@@ -1,0 +1,8 @@
+Tomcat  --->conf--->welcome,,,, 设置默认打开静态界面  
+
+自己做的话    在自己的web.xml 覆盖<welcome-file-list>  尽量加/
+
+启动服务器 初始化 servlet配置    
+问题    第一个访问 很慢  
+解决  启动的时候 就初始化  
+      在web.xml中 加入 <load-on-startup>来配置优先级  负数说的是不管用   在servlet.

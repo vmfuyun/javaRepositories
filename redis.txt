@@ -1,0 +1,99 @@
+redis 没有事务 只能成功  
+	单线程执行,没有并发线程安全问题
+
+	key是一个String      value  可以是 string   ,  hash 类似于bean 也是个 map   ,  list  set     ,   zset(treeSet 会排序)   
+	
+命令  
+	flushdb  清除数据库 数据
+	set 
+	get
+	getset
+	incr	
+	decr	
+	incrby
+	append  会返回拼接后的长度
+	setnx  存之前判断有没有,0 - 没有存(c语言中 0 是false), 1 - 存了(非0 就是true)
+	setex  key  秒数(timeout)  value   规定存 一段时间 (验证吗防刷)
+	mset 批量输入 k-v模式
+	mget 批量取出(通过key)   , 取出来 在 java 会变成 集合
+	keys * 获取所有的key\
+	del key  删除
+hash类型
+	hset key hashkey hashvalue ---> key 为数据对应的 key  ,, hashkey  hashvalue 就是要存储的
+	hexists   key hashkey 判断有没有
+	hmset 写入多个
+	
+list类型
+	rpush key value 右边添加 多个添加 空格 隔开
+	lrange key start end 查看--指定范围 全部的 输入 0  -1
+	linsert  key before|after refval  newVal
+	lrem key coint value 去掉几个 相同的
+	ltrim key start end 去掉 开始 结束
+set类型
+	sadd key value  添加set集合
+	sinter 求交集  
+	sinterstore var key1 key2  把key1和key2的交集 存入 var
+	sunion key1 key2 并集   
+	srandmember key count 随机获取set集合中的元素
+	smembers key 查看
+	sdiff 比较差异 输出左边的集合的
+	
+zset类型
+	每一元素都会有关联一个double分数  用来排序
+	zadd key num member    --num用来排序 
+	zrange key start end  排序输出
+	zrangebyscore key min max  (可以带有分值输出)指定分数范围来排序
+	zrank key member   指定member 来看是第几个索引
+	zremrangebyscore key min max 通过分数删除(也有通过排名删除)
+	zcount
+java操作redis
+	方式1: jedis.jsr -
+	方式2:spring data redis--redisTemplate 
+应用场景
+	经常查询的 数据  存在Redis中比较合适(当缓存)  一般Redis存的value是 json
+	Redis在一段时间内 会把数据存在磁盘中 incr 递增加1 (点赞)
+	热门推荐 把首页的数据以list形式存在Redis
+	 抽奖 set形式
+	好友推荐  有可能认识的人 -- 用的 是set的集合 操作   (有特殊符号的 使用"" 比较好)    
+			先把1 对应的好友的 集合 求并集
+			然后 并集把1 去掉  
+			然后再随机推送
+Redis集群模式
+	哨兵模式
+		主从同步  主数据库只负责 增删改   从数据库 负责查
+		如果有的服务器 挂掉后  会选举一个当主  然后服务
+	集群模式
+		要求集群模式要求最少要用 3主 3 从
+		负载均衡	
+	
+		
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

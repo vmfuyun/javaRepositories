@@ -1,0 +1,10 @@
+BaseAvailableRule:选择请求最小的服务
+
+RoundRobinRule:使用轮询的方式依次选择每个服务进行访问
+
+WeightedResponseTimeRule:对RoundRobinRule的扩展，可以根据服务的运行情况来增加权重,并根据权重挑选实例。
+
+RandomRule:从服务实例列表中数据选择一个服务进行访问
+
+RetryRule:实现了重试机制的轮询选择
+

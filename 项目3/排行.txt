@@ -1,0 +1,20 @@
+封面  
+	1,文章 -->domain     sql表删除目的地  ---把mapper的攻略id换成正常的 --service-mapper注入   comtroller  分页    先做后端    靠页面
+	2,controller 相关攻略明细 改id添加 list  ,把上面删除    detail 把strategyid添加上   对应的把明细 加上
+	前端: 
+		StratrgyController -->改成index返回   查前5    单独建立方法     然后想下走  ,,  注意状态 和排序 和 limit
+排行
+	分析 一定要先去 看前端是什么意思 是在什么条件下    分析后    选择数据库  用哪个     怎么取数据  然后再确定 什么弄   
+	
+	分成 每一个排行   一个key     key--value               set
+		 再 statiskey 加前缀    
+	    模式 是前缀  是xxx _sort :  value是  vo _id    这个value设计的 正好是vo的key    这个id是攻略明细的id 这样就可以 通过分数把攻略的明细给排序了 
+	在攻略controller 实现 国内 国外 排行		zset 基层使用的是 linkenset
+		怎么分?最好的方案 不要再操作sql了,  建议操作redis ,   使用redisService 的reverseRange 返回一个set 然后通过set迭代查询对应的list
+			注意通用方法的 操作  尽量让方法通用 在redisService  尽量使用泛型      一般情况要把redisService的方法和它操作的原始方法一致
+    		重点---	一般情况看 前端的字段,,也就是上面有什么体现的,例如名字,标题,,,,  想怎么实现把已有的字段 实现排序  value---怎么和对应的字段 映射上;     
+				一般情况: 不要去改变原先的 结构      尽量让他 是映射 出对应的 数据;     
+			 redis一定要是通用性的    zset 取出使用的是reverseRange 倒序取出
+		初始化数据    一般判断redis有没有值    使用rank  如果返回的是有数据的话; 说明有 该数据  
+		
+	游记推荐

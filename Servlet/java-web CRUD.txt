@@ -1,0 +1,60 @@
+ 超链接 是不能访问到WEB-INF里面的文件(包括jsp)   
+	 所以 当把文件(jsp,)放在WEB-INF里面的话  
+	需要通过 链接到 Servlet (拼接 get请求) 然后请求转发到里面的文件
+
+表格居中  style(风格) text-align: (文本) center    
+
+width 80% 是相对比例
+
+${pageContext.request.servletContext.contextPath}  上下文路径      注意
+
+<input  type="hidden" (默认的)  不显示 但是后面有name  和value 的时候   会一直带有
+
+taglib 添加库  foreach 的 items 是要遍历的 集合 或者 数组 一般用EL表达式 ${ }来表示  注意不能有空格
+
+
+
+DAO 注意  
+	驱动类名称 driver              com.mysql.jsbc.Driver   
+	url      jdbc:mysql :///数据库名称
+
+
+
+SQL语句   
+	修改语句  update  表名   set  不需要带括号  注意
+
+
+流程 
+	1 先创建 DAO层  注意结构   domain  
+		  		dao
+				        impl
+				test---                     先把测试类写好
+				mybatis-cfg.xml      
+				XXXmapper 
+				util       工具 加载 resou......      sqlsession......      getsqlsession...    先测试第一个保存  保证 mybatis没问题后   实现直接复制
+	2 service 层  注意逻辑的建立     Service包  XXX Service    直接复制DAO 			 然后之后的可以加内容
+					impl包      XXXServiceImpl 实现       ----
+
+	3,servlet 层 表现层     页面的跳转 (尽量全部) 都要经过  也必须尽量经过 servlet   保持安全
+		有数据的共享的话 就用 request .get Request Dir    () .forwark(req.resp)
+		
+		没有数据的共享 就用resp . sendRi....(path)
+		
+	写的顺序 一个 一个功能的实现    先容易 后难  例如  一个项目来一个个的 分层  分模块   接口 分功能来 一个个测试  来实现
+		找源  原则  
+	注意 get请求的拼接    一个个的拼接来  供 servlet 判断   
+	表格 <table>  <tr>			
+		表单  <form  action=""  method="" >  <input   type =""  name=""      value="">      注意 hi 开头的是默认  隐藏  , submit是提交
+	时间类型的  需要转化一下格式       jstl 有一个 库 是 fmt   有一个格式化  fmt:formatdate  value="${}" patterm="yyyy-MM-dd"
+	注意库和第三方   
+	<c:forEach var="stu" items="${s}" varStatus="vs">
+			<tr>
+				<td>${vs.count}</td>                               这是 添加序号的    注意  是通过  foreach 的一个 变量值来实现的  
+	
+	注意结构 
+	webapp
+		WEB-INF 
+			lib 
+			classes
+			web.xml               -----WEB-INF 里面的是  不能 直接访问  也就是说需要请求跳转 
+

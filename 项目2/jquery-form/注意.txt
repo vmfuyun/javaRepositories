@@ -1,0 +1,8 @@
+ $("#searchForm").ajaxForm(function (data) {
+            $("#_j_tn_content").html(data);
+        });
+        $("#searchForm").submit();  
+
+
+
+ajaxForm   是form 表单  都会先经过 者 注意 关键呀

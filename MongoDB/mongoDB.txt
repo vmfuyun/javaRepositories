@@ -1,0 +1,98 @@
+不对事务 要求太高 就能用mongoDB
+	分布式的文件存储 是关系型数据库和非关系型数据库的之间的 产品
+	
+	是基本使用了 面向对象的   类似于 js 语法    就是添加属性 一类  直接 添加
+	
+	每个数据库    存储的使用的是  集合   是通过 文档   树状结构 的存储  
+		   	      相当于表             行         
+	
+
+基本操作
+	类似于js
+	show dbs 
+	use 数据库名
+	show collections 查看当前库的集合  (mongoDB 是按集合为表的单位的)
+	
+	创建集合
+	db.createCollection("user") --- 
+	
+数据类型	
+	一般都是json形式的  
+	object ID 文档ID 类似于 ID列   每次插入都会自动生成 _id   是文档的主键   值是一个uuid值  为实现分布式 每个主键都是唯一的
+	db.users.insert({ json形式 })     db表示当前的数据库  users集合  insert 插入
+	db,users.find()---查询查看      当find() 填写参数 是查询相关的	
+	
+	更新/修改
+	db.user.updateone({过滤条件 json形式},{设置值 $set:{"age":30}})    修改一个属性  后面是一个{$set:{}}要设置的值
+	db,user.ipdatemany({过滤条件},{$set:{多个在这里面用 逗号 , 隔开}}).....         acknowledged 
+	
+	删除
+	db.user.remove({过滤条件json形式},{justOne:true 是否删除一个})                    如果通过_id 删除的话  填写的时候  需要把 后面全部的 都要填写上 包括数据类型
+					justOne默认是false 就是删除所有
+	查询
+	db.collections.find(query)    如果query 使用的是{}  是查询所有   query是一个查询条件
+	排序查询
+	db.users.find().sort({字段:1})   按着字段来排序   1 是正序    -1 是倒序    		注意是先查询出来  然后通过sort({字段:1})---这样来排序
+	分页查询
+	db.users.find().skip().limit()   一般是先去sort 排序后  分页   skip 是start 也就是开始的索引 (数据不包括开始索引) ,  limit 是显示 几条数据
+	
+	高级查询                           重要 比较 , 逻辑  等值
+	等值    find({字段:值})
+	比较查询 语法 ->find({字段:{比较操作符:值   ,    比较操作符:值,.....}})  多个的话 这样的操做  
+		写的时候注意 完整的 语句 是在 db.users.find()--是一个完整的     
+	注意::     大于是$gt          大于等于 是 $gte   e是一个 equal  (重要)  
+
+		比较运算符 需要用  字段 : {比较符 : 值}
+			集合操作  $in   {name:{$in["xiaosan","xiaoyao"]}}
+	
+	逻辑运算符:  {先确定逻辑 : 然后[{条件1},{条件2}]}----注意哈      
+	    逻辑条件  每一个 都是 {}  是独立的 对象 或者叫 独立的条件  ,,,  先确定是什么逻辑  然后进行条件的 拼接  
+		注意 $not 是需要先添加 字段 然后通过字段来 条件取非
+	
+	模糊查询
+		/^  $/ 表示格式                 .* 表示 % 表示包含  
+	正则
+	name:{$regex:{/^  .*zhang.*  $/}}
+
+设置用户
+	1选择admin 数据库		use admin	
+	2 添加超级管理员 		db.createUser({user:"root,pwb:"admin",roots:["root"]"})
+	添加后  它是会通过自动加密 密码的   使用的是 sha-1 , sha-256   
+	
+spring data mongodb   注意通过spring.fac 的 autoconfig  看这个  就知道 springboot 给配置了什么
+		
+	在 spring data 中一般使用template   当数据库的对应的 数据库对象
+	
+	在mongodb对象的 springdata中 专门 设置了一个 query 和 criteria  来拼接对应的 查询条件
+	更新修改  通过 update 的方法 需要一个query  要配合 criteria 才能生成一个 查询条件 
+		Criteria.where().is()  设置一个等值关系     等价于  {name:"zhangsan"} 
+		Criteria.orOperator(Crieria...)    等价于   逻辑运算  $or      
+	
+	query对象.skip(start).limit(pageSize)  分页
+	 query.with(Sort.by(Sort.Direction.DESC,"id"));  排序    
+
+	 new Criteria().orOperator()    或者 运算
+	new Criteria().andOperator()  并且运算
+	
+	update 是要更新的 参数  一般使用  update.update (key,obj)   来获取    再添加东西的话 使用 .set方法
+	
+
+
+	查询:
+	字段要	一 一匹配 
+	条件查询 和 上面的查询差不多    使用find方法
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

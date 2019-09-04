@@ -1,0 +1,9 @@
+@Override       复写父类
+@Deprecated     标记过时         //是存在到RUNTIME时期
+@Suppress Warings  (value  ="all"   )       抑制警告   扫黄
+
+
+@SafeVarargs      抑制对污染
+
+
+注解的超接口是Annotation

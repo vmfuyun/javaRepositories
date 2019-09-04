@@ -1,0 +1,7 @@
+public interface Iterable<T>
+	实现这个接口允许对象成为 "foreach" 语句的目标。 
+
+就是说 list    set都能用for each     
+
+collection 集合的都能用   for  each
+

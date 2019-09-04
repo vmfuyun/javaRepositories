@@ -1,0 +1,50 @@
+
+发送请求要添加baseUrl
+
+
+解决跨域问题: 
+后台:mvc添加配置,授权某个域名可以访问             配置
+前台:设置ajax默认属性,允许跨域,以及带cookie      配置
+
+
+实现的功能:
+1.注册功能
+邮箱不能重复注册                                           检查email
+注册时需要设置默认头像和封面                      默认添加路径
+
+2.登录功能
+检查用户名密码是否正确                                     
+登录成功,使用UserContext设置用户到session中
+同时,返回user给前端,前端使用sessionStorage存储用户(先转json字符串在存储)JSON.stringify JSON.parse
+
+3.我的个人信息页面
+使用jrender进行渲染,render-html,render-src 
+
+4.注销功能
+销毁session对象,还有前端的sessionStorage的用户也需要清空
+跳转页面,使用window.parent进行跳转
+
+5.前端路由控制
+抽取checkLogin.js文件,判断sessionStorage是否有登录用户信息,有就利用JSON.parse转换为json对象
+如果没有,就跳转到登录页面
+
+
+设计的接口:
+注册用户接口
+1.资源路径 /users
+2.请求动作 post
+3.请求参数 昵称/邮箱/密码 (用user对象接收)
+4.返回结果 JsonResult
+
+登录接口(会话session)
+1.资源路径 /sessions
+2.请求动作 post
+3.请求参数 邮箱/密码  (用user对象接收)
+4.返回结果 JsonResult
+
+注销接口(会话session)
+1.资源路径 /sessions
+2.请求动作 delete
+3.请求参数 无
+4.返回结果 JsonResult
+

@@ -1,0 +1,1 @@
+ 有bean 的操作      bean变 map         map转bean         在commons的utils

@@ -1,0 +1,3 @@
+druid(德鲁伊)连接池:Java语言领域性能最好的数据库连接池(拷贝jar包:druid-1.0.15.jar).
+https://github.com/alibaba/druid/wiki
+使用起来非常类似于DBCP连接池.

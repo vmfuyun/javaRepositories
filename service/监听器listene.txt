@@ -1,0 +1,28 @@
+监听器
+	有一个触发点 就会马上执行  
+web中的监听器 主要监听 作用域对象  的创建   作用域对象的属性 的添加  删除 替换
+	1监听作用域对象的创建和销毁  
+		request:	Listener
+		session;	Listener
+		servletContext   用的多 
+	2,监听 作用域对象的 属性的 添加 删除  替换
+		request   加上AttributeListener
+		session;
+		servletContext 
+
+	ServletContextListener    注意 web全是jee的 se 是没有这个API 的
+
+
+需求 项目启动的时候 创建一个管理员账号
+	1,首次才去创建管理员账号       
+	使用了 登陆的项目  就类似于 登陆查询 看看 数据库中 有没有那个账户  有的话 直接返回 
+	2,							没有的话,会报异常 然后进入异常 然后创建账户保存
+	3,
+
+
+
+
+
+监听器的使用步骤
+	1 创建一个类实现 要监听的作用域对象的监听接口   
+	  交给 tomcat   web.xml  <listener>   session并不是关闭就销毁 (注意) 30分钟后..

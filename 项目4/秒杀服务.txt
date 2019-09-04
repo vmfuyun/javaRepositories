@@ -1,0 +1,72 @@
+ 服务搭建
+	1,       seckill库
+		三张表,把秒杀是建立在商品之上的 
+		oreder_info 记录你下单的商品信息,  seckill_goods,
+		seckill_order通过对user_id和sekill_good_id(秒杀商品表的id)控制来限制 采购信息 只能枪一个
+		通过的就是     user_id和   秒杀商品表的主键id    来限制  通过时间来限制是不是一场 然后 每个商品都是独立的进行秒杀  \\
+			\有没有抢购可以通过判断用户的id和 秒杀的那个表的 id来实现
+	
+
+	分库分表:         有点类似于 负载均衡 取决于 分片规则
+		为了以后的操作,为了更好的实现中间件的分片规则  (有可能用半年,或者取模一类的规则), 
+		 所以尽量单表单查,不然会有多库 jion 运算,性能很低
+		
+		 一定从数据库单独查询 然后把数据在内存中进行 聚合 
+
+1,建立api,server 在server添加api依赖
+	添加good-server 然后依赖sql 一类的 添加feign
+	在码云添加对应的配置
+	秒杀服务
+
+2,前端,  goods.html   从原先的地方 复制出来
+	添加一个string,properties方法  
+	添加api的domain,good的秒杀的,  然后在秒杀添加对应的vo 添加上对应的good的字段,继承
+	通过关系就是goodid  
+	
+	api feign接口  保持和前端一致  resoult
+
+	stringBuiler sb  要指定大小  因为底层是一个char[] 数组 默认是16  为了减少扩容性能降低的可能  尽量之定义下
+	
+	完善list vo 实现list 加判断  创建统一的codemsg
+
+	注意feign的的几个点  
+		1 启动类 贴上@enablefeign s        那个类用 就那边贴 一般都贴
+		2 接口类 贴@feign客户端name 
+		3 方法@requestMapping
+		4 属性贴@requestParen
+	
+cookies的刷新问题	
+	一般在网关, 在之后的拦截  post Filter 进行返回
+	继承zuul
+	引入member api   添加getcookies
+	
+	在shou进行判断
+	以redis的为准,如果失效了  
+	zuul调用memberApi 通过rpc  feign , hystr
+	先去redis看是否有  然后 在member进行reids处理
+
+详情
+	注意时间的格式 在vo设置@jsonformat  注意时区
+	
+	前端美化 时间美化  按钮优化
+		
+	请登录优化  @jsonIgnore  封装隐藏
+	
+	cookies的在参数上注入 使用的是 @cookieValue注解 请写入name 和是否要 强制写入 required 一般设置成false
+
+//sql的知识点
+	update  操作的返回的是:  int 影响行数 
+
+
+
+
+
+
+
+
+
+
+
+
+
+	

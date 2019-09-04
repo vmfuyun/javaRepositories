@@ -1,0 +1,90 @@
+//判断点和圆的关系
+
+//练习:判断一个点和圆的关系(在圆外,圆周上,圆内).
+
+//点对象
+class Point 
+{
+	private int x;//横坐标
+	private int y;//纵坐标
+
+	Point(int x , int y)
+	{
+		this.x = x;
+		this.y = y;
+	}
+
+	public int getX()
+	{
+		return x;
+	}
+	public int getY()
+	{
+		return y;
+	}
+}	
+
+//圆对象
+class Circle
+{
+	private int r;//半径
+
+	Circle(int r)
+	{
+		this.r = r;
+	}
+
+	//判断点与圆的关系
+	//返回 1 = 圆外 / 0 = 圆上 / -1 = 圆内
+	int judge(Point p)
+	{
+		int xxyy = p.getX()*p.getX() + p.getY()*p.getY();//勾股定律
+		int rr = this.r*this.r;//不会写根号,平方下r效果也一样
+
+		if (xxyy - rr > 0)
+		{
+			return 1;
+		}
+		else if (xxyy - rr < 0)
+		{
+			return -1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+}
+
+
+
+//练习:判断一个点和圆的关系(圆外/圆上/圆内)
+class  PointDemo
+{
+	public static void main(String[] args) 
+	{
+		//创建一个点对象
+		Point p1 = new Point (3 , 4);
+
+		//创建一个半径确定的圆对象
+		Circle c1 = new Circle(5);
+
+		//判断点和圆的关系
+		int ret = c1.judge(p1);
+
+		//打印结果
+		if (ret > 0)
+		{
+			System.out.println("点在圆外面");
+		}
+		else if (ret < 0)
+		{
+			System.out.println("点在圆里面");
+		}
+		else
+		{
+			System.out.println("点在圆上");
+		}
+	}
+}

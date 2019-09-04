@@ -1,0 +1,17 @@
+
+alert() 专门弹框    类型 就是var    内置对象 console     . log  (打印到控制台)  document
+function  定义方法  有返回值 直接返回      有参数 直接参数
+JavaScript 的两种书写方式：
+  直接在标签上写
+   <a href=”JavaScript:alert(1111)”>点我</a>    alert 弹框
+  <script> 标签中书写或引入
+   <script type="text/javascript">
+        //  书写 js 代码
+   </script>
+   <script type="text/javascript" src="index.js"></script>
+
+注意 : 引入 js 文件时,不可以使用单标签 <script type="text/javascript" src="index.js"/>
+            使用单标签后面的引入标签将会失效
+
+通过 js来提交 表单  通过document的 byid 来获取表单 或者 控件   
+然后 控件 就有它的所有方法 也就是 type 就是它的方法

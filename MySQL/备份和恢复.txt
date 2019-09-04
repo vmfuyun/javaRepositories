@@ -1,0 +1,18 @@
+  做修改的时候 先备份   后修改        打死也要这样  不要  急
+
+删除表时:
+先删除从表再删除主表
+其中主表中的一条数据,在从表中有多条数据与之对应(一对多的关系)
+
+
+mysql 有一个  mysqldump.exe      数据导出 导入操作   
+
+通过cmd命令进入dos窗口：
+1.导出：mysqldump -u账户 -p 数据库名称>脚本文件存储地址
+   mysqldump -u root(账户) -padmin(密码) test(数据库名称)> f:/test_bak.sql   (路径)
+2.导入：mysql -u 账户 -p 数据库名称< 脚本文件存储地址 
+   mysql -u root -padmin test< f:/test_bak.sql                    通用 工具
+   需要存在一个数据库叫做 目标数据库.
+
+
+工具  备份是psc 格式的

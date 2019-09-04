@@ -1,0 +1,178 @@
+1, 基础模块
+	因为是springCloud作为的技术栈 所以,parent项目使用的是springCloud
+	springCloud的几个组件:               ----->基于http协议,使用的是rest模板 注意!!!
+	注册中心Euraka,服务的注册和发现功能  实现的是一个 目录 或者一个列表,动态的添加
+	配置中心Config-Server,提供所有的server提供所有的配置,也更好的切换各个生产环境,  主要有一下几点:
+			     安全性:配置随着源码 容易造成配置泄露
+			     时效性: 修改配置,需要重启服务才能生效
+			     局限性: 无法支持动态调整: 例如:日志开关,功能开关      配置中心就是 解决了 这个问题
+	网关Zuul:是系统暴露给外界的网关:可以做路由请求,鉴权,监控,缓存,限流等  底层是一个servlet  有前过滤器,路由过滤,后过滤, error过滤器,custom过滤器
+		要配置对应的路由规则:
+		过滤器: ZuulFilter   方法: filterType 对应是过滤器 是什么类型的 前置  后置  ....
+				     filterOrder   过滤排序 越小 越先执行
+				     shouldFilter   什么样的进行拦截
+			          	    run                拦截后干什么
+	会员服务: 
+		springCloud 的API是不能放关于service的东西,一般放domain,feign,Hystrix一类
+		
+		feign是什么?  feign是一个java客户端联编程序!
+			Feign 的第一个目标是将约束分母的复杂性统一到 http apis，而不考虑其稳定性。 也就是 让服务之间的交互 变的更加 简洁!
+			如果Ribbon依赖关系也在类路径上,feign也会负责 负载平衡.
+			实现方式: 在API定义一个接口,贴上feign注解 并写上name="" 如果有降级添加 fallback=   xx.class 
+				在方法上@requestMapping ("/url")
+				在形参上贴上@RequestParen("xx")             
+				哪个服务用 就在启动类上贴上@enableFeignClients
+				要想使用,必须服务提供者,调用者 都必须有这个接口,
+		Hystrix降级,熔断器:
+			四个机制,超时,限流,熔断,降级  ,主要为了解决雪崩效应	
+			雪崩效应:  其中一个服务出现错误,一个请求来过,就会停留在那,如果不赶紧熔断,慢慢的访问这个服务的请求就越来越多,就导致达到服务的
+				请求上限,请求就进不来了,最后这个系统就崩溃了  可以说上连接数,
+			redis的报警操作 出现熔断 会走降级, 在降级的方法上
+			一般在API写有降级方法, 一般是  1,实现feign接口 @交给spring管理 @Component
+		bootstrap.yml文件一般是比application文件提前加载
+		
+	统一异常处理: 
+		一般在common创建基本的CommonControllerAdvice异常处理  注解是@ExceptionHandler(xx异常.class)   也就是说这个方法处理这个异常
+		各个服务继承这个异常处理类  为了实现前后分离 一般返回的就是一个result 并且是json形式返回
+		注意这个基本的处理类是没有贴@ControllerAdvice,  一般是让各个服务的实现类 来贴
+	
+		前后端分离的好处:
+			1,并行开发,效率高
+			2,性能比原先更高,对服务器的压力也比较小,因为前端是有缓存的每次访问我们直接返回它 所需要的数据就可以了,
+					相比原先的返回一个页面过去,效率更快,
+			3,解耦
+			4,责任分离
+		前后端分离的问题,跨域问题:
+			出现的原因: 浏览器的同源策略,同协议，同域名和同端口  
+			1,nginx ,避免跨域,因为nginx是服务端的服务均衡,会有反向代理功能,会建立一个 虚拟的ip 每次访问都是以虚拟ip来访问,所以域名一样
+			2,cors方案:  访问之前,客户端会提前发起请求,看服务端会返回自己想要的数据吗?  如果后端设置了 对应的返回值, 也就是说允许访问
+				   然后每次访问都会带有对应的参数来访问;
+				做法: 后端配置 对应的过滤器,因为以后访问都是经过网关,所以配置到网关的启动类, spring是有这个类的corsFilter
+			3,jsonp方案: 只支持get请求,因为script只能发送get请求
+		密码加密:
+			一般使用的是前端加密.后端再加密的形式
+	登陆--->分布式session问题
+			解决方式1,redis+cookie方式
+			              2,redis+Shiro方式  有一个sessionDao 保存到redis中
+			              3,jwt
+			
+		为了使用jredis 创建自己的starter
+			spring Boot  是spring MVC 的优化  . 默认把我们需要的bean 对象和配置 配好
+			springBoot的自动装配原理:
+				@enableAutoConfiguration    --->对应一个类 selector会去读取META-INF的spring.factories文件 全限定名称的类 
+							创建对象-->该类是个配置类    
+							配置类 的注解@conditionalOnClass  必须有什么类
+								   @conditionOnbean   必须有什么bean
+								@AutoConfigureAfter  在之前 配置好这个配置类
+							!!!!重要!!!!	@ConfigurationProperties  prefix把内存中是该前缀的都会收集到---以后想配置什么 就找这个
+								下面是对应的bean
+			准备:  jedis集成
+			       spring.factory
+			       配置自动装配类
+			       需要创建需要的bean
+			       需要配置文件properties
+			名字尽量是自己的名字
+	
+		redis的设计原则:
+			的key是必须是唯一的   uuid    注意对应的前缀的 基本前缀   各自的前缀
+		登陆逻辑
+			登陆成功--->把数据存到redis中,并把token存到cookis中注意时间 1800  还有工具类cookiesUtil
+			注意:不传password 使用@jsonIgnore 
+	JSR303参数校验
+		JSR303 是一套JavaBean参数校验的标准,
+		在形参上贴上@Valid    再到对应的类的属性上贴上@null 什么的 @parttern()  主要有一个message
+		
+		注意: 要用上对应的  异常处理
+			@ExceptionHandler(BindException.class)     处理这个类型的错误
+		但是这个类型的错误是 变化的 怎么办?   codemsg 使用占位符{0},,,,
+		  public CodeMsg fillArgs(Object... args) {
+        		return new MemberServiceCodeMsg(this.getCode(), MessageFormat.format(this.getMsg(), args));
+		messageFormat 会把默认的{0}  对应的第一个参数  第二个 进行替换   
+		坑::: 注意 statis 是线程共享的 所以 要自己new 一个
+
+	cookis的刷新问题:
+		登陆之后 时间设置的是30分钟,再次访问就要把时间再进行设置成30;   一般在网关的后置过滤器
+		注意,: 如果过程中 时间到了, 一切以redis为准 如果失败了,或者没有什么cookies了 就返回null
+			有错误也不行:
+	
+	商品列表:
+		sql注解版:多参数  使用@SelectProvider  @SelectProvider(type = GoodSelectProvider.class, method = "queryByIds")	
+				建立对应类的 方法 并形参上贴上对应注解@Param("ids")   然后在  这个方法上 拼写sql语句
+
+	controller的认识:
+		三种controller:
+		1,实现Controller方式:
+		2,贴注解
+		访问静态资源<mvc:resources location="/" ,path="">
+	mvc参数注入:
+	DispatcherServlet
+	handlerMapping     包含---> 拦截器+返回方法引用
+	handlerAdpter:	真正的执行业务逻辑
+	
+	怎么实现自动封装?
+	1,根据方法的引用可以获取 该方法的参数列表   -->数组
+	2,遍历数组,获取每一个参数的类型
+	3,遍历内部定义的参数解析器
+		1,httpServletRequest/  HttpServletResponse 参数解析器
+		2,Cookie参数解析器   --所以可以直接注入 Cookies的value   使用的是@CookiesValue(name="",requi=false)  一般使用的false
+		3,Session参数解析器
+		4,对象类型的参数解析器    ---->1,反射并调用无参构造器把对象创建出来 2,request.getParamters()---获取数组,前端传过来的3,通过内省 基于同名匹配,把属性注入
+		5,基本类型的参数解析器
+	
+	自定义参数解析器:
+	1,实现WebMvcConfigurer,复写addArgumentResolver  其实就是一个list集合 贴上@Configuration
+	2,创建解析器 实现HandlerMethodArgumentResolver  复写 supportsParameter   满足什么规则进行注入
+		resolveArgument  如何注入,使用webRequest.getNativeRequest(HttpServletRequest.class)  然后调用getcookis方法,判空,然后再去redis去取 
+		
+	
+	秒杀的实现: 
+		1,判断是否登陆  user==null  result.error 非法异常
+		2,判断秒杀是否开始  vo 判断时间
+		3,判断是否秒杀了该商品
+		4,判断库存是否够不够
+		5,秒杀逻辑   原子性操作:
+			1,对应的场次库存 减一
+			2,创建订单,  order_info
+			3,创建秒杀订单 seckill_order
+		
+		事务(原子操作)保证: 使用的是@transactional
+		查看订单: 注意:	user==null   非法
+				查看不是自己的订单  非法
+				订单==null 非法
+	压测:
+		QPS吞吐量 --->每秒能处理的查询数
+		TPS	----->每秒能处理的事务数
+		问题:多少台服务器? 用户量,活跃用户是多少啦?
+			一般情况   运维才知道  ,   一般情况 218万的用户量 QPS最大也就9000
+	测试结果是 库存都是负数了
+		分析CPU切换   进行到不同的代码, 该代码也不是原子性的 就会出现超卖
+	性能优化:
+		1,把商品表存到redis中,使用redis的Hash  在redisTemplate添加对应方法  查询更快-->商品预热
+		2,重复下单优化-->下单成功把订单存到redis中,再查看到redis查询 更快
+		3,超卖--->(把库存的数据存到redis)在秒杀之前添加 使用redis的原子性递减, 然后再判断是库存,
+			然后再mysql中的库存减一操作 添加乐观锁,即判断一个列的值 必须符合要求,不符合报异常
+			在seckill_order表中添加userId,orderId的唯一索引 UNIQUE
+			当Redis中的库存已经小于零的情况下，我们使用本地缓存ConcurrentHashMap来标记商品已被抢购完毕.--->分段锁机制
+			
+		效果很明显!!!
+		再Redis中的库存叫: 预库存
+		在数据库的库存叫:真实库存
+	为什么用redis?
+	1,基于内存,快!
+	2,数据结构简单  key value
+	3,单线程
+	4,IO多路复用
+
+
+
+
+
+
+
+
+
+
+
+
+
+

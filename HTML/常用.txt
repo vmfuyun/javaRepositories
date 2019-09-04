@@ -1,0 +1,52 @@
+常用元素
+	div ()/span/p     br/h1-h6/style(样式)/script (js的定义标签)
+	<div>:定义文档中的结构;为HTML提供结构和背景;换行, 标记这一个块
+	
+	<h1>到<h6>:定义标题一到标题六,和world一致;
+	
+	<p>:定义段落,使用如:<p>床前明月光</p><p>疑是地上霜</p>   分段
+
+	
+	<style>:用于引入CSS文件,一般放于<head></head>之间;
+
+
+	<script>:用于引入JavaScript文件,一般放于<head></head>之间;
+	
+	a:超链接的属性有  <a href =""   target = "">
+		href(资源源)	target (_blank 新窗口)    
+		同界面  href  和name 相对应 href就输入name值加#
+
+	列表标签: 
+		un order list无序ul
+		order list     有序 ol	   start属性
+	 				list  item        li    dl/dt/dd
+
+	img图片标签:
+		img(src/alt/height/width/title)(属性)
+
+	表格标签
+		table 表格
+			tr  行
+				th|td 列
+		table(border(边框宽度)/cellpadding(边距)/cellspacing(格据)/width)
+		td(colspan(跨列)/rowspan(跨行)/width/height)
+
+	表单:  (收集数据)
+		form     (action(存哪,也可以转到) =""  ,method(传输模式) (get显示在地址栏  post 数据隐藏)= "")
+			input/select  option/textarea
+		input的各种类型
+			submit提交按钮
+	名称	input(value(默认值)/name(传的名字)             /disabled(禁用)(数据不提交)
+		          type=各个类型	               /readonly(禁止修改)/checked(默认值))(属性)
+
+
+
+<font color = "red"> 叩丁狼教育 </font>   这个字体是单独显示的
+每个标签都有id(标志),style(样式),class等核心属性;
+title      规定元素的额外信息（可在工具提示中显示）
+<br/>:单标签,插入一个换行;
+<hr/>:单标签,定义一条水平线;
+
+
+
+

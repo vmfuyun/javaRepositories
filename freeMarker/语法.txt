@@ -1,0 +1,45 @@
+freeMarker是前端视图  类似于 jsp       是以ftl结尾的.
+	数据 + 模板 =输出  
+	主要的几个点 就是 数据源  就是在 conterllor 中处理的数据 需要共享的数据 
+			模板是一个视图解析器 嫁接的  主要注意前缀,后缀  ----类似于原先的视图解析器  以后更换视图解析器 也是这样	
+语法:
+	表达式形式  一般是用# 开头
+		<# assign   key="value"/>  赋值形式
+		<# list 集合 as 变量/>  遍历类型     ----集合是不用用${}来获取的 直接获取就行
+			${变量_index}  获取的是集合的索引  是从0开始  为了达到要求 可以在里面 加1
+		<#include  "../xx/xx.xx"/> --引入别的文件  注意点点       ---- 
+		<#if  变量??  &&  变量?? >  判空操作 变量?? 返回的是一个boolean值   如果变量是非空的 返回一个true		
+		
+		freeMarker的  .ftl文件 是不能有空值的  有空值 就会报错  
+			解决方式一  用    变量!   
+			二 用if 变量??         
+
+		三元运算符类型的  --  ${(变量)?string('  ','  ')}----类似于变量是不是空  是空string前面的.. 非空  后面的 string类型的
+		
+
+异常: 
+	=>是freeMarker 报错开始位置的 标志
+		如果freeMarker取值 没有取到或者 取到的是null or missing  就会报错 
+	解决方法     空值运算符   ${variable!或variable!defaultValue}  表示 如果 这个变量是空的  就不用输出什么
+								或者 如果是空的 那就 输出默认的变量
+			例子: ${(variable)!}---
+
+
+	<!--配置freeMarker的模板路径 -->
+	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<!--文件的编码-->
+		<property name="defaultEncoding" value="UTF-8"></property>
+		<!--配置freeMarker的模板位置-->
+		<property name="templateLoaderPath" value="/WEB-INF/views/"></property>
+	</bean>
+
+
+	<!--视图解析器-->
+	<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<!--是否把session的也共享到ftl-->
+		<property name="exposeSessionAttributes" value="true"></property>
+		<!-- 配置逻辑视图自动添加的后缀名 -->
+		<property name="suffix" value=".ftl"></property>
+		<!--输出的格式-->
+		<property name="contentType" value="text/html;charset=UTF-8"></property>----注意如果是格式不对会变成下载
+	</bean>

@@ -1,0 +1,258 @@
+所有的 设置  都是要在 保存到 文件里     所有的操作 都是 按着配置文件  也就是文件来设置     ,,在linux当中 所有的东西都是以文件的形式 来管理的     
+	# 井号行是注释 行
+	一般的  没有扩展名   不以扩展名来区分文件类型           一般的后缀  只是为了维护人员来 区分用的
+	压缩包: "*.gz", "*.bz2", "*tar.bz2", "*.tgz"等
+	二进制: ".rpm"
+	网页文件: ".heml"
+	脚本文件:"*.sh"
+	配置文件:"*.conf"
+	
+	挂载  --也就是加载上 u盘  一类的外接 设备
+	
+linux目录 作用  ----规范
+	
+	bin 命令目录 
+	sbin    -- system bin 一般是系统环境设置相关的命令     二进制的命令
+	usr/bin  --user/bin 存放的是普通的系统命令 ,任意用户都可以运行
+	usr/sbin      存放的是 超级用户才能操作的     一般sbin 都是超级用户才能操作的
+
+	boot    系统启动的目录   xxx
+	
+	dev 设备文件的保存位置  也就是保存关于设备的设置
+	
+	etc  配置文件保存的位置  服务啦 一类的	
+	
+	home 家
+	lib
+	lost+found  修复用的 每一个都会有 fsck
+	
+	usr/local  第三方 这样用的比较多
+	
+	/sys    /proc  是内存的目录
+	
+	/tmp  临时目录     一般在这做练习  
+	/usr/系统软件资源目录    类似于win  
+
+	服务器 只能重启 不能关机;  重启的时候  应该先关闭服务         一般服务器都不在 眼前  
+			防火墙 其实是一个过滤器  
+	
+	和windows不同
+	linux 严格区分大小写   
+	
+	使用原先的 wolfcode的虚拟机    , 获取所有权 ,  root   wolfcode  
+
+
+	ssh     默认是22端口   ip 账号密码         secureCRT 是连接的用的   f的那个是传文件的   
+	
+修改虚拟即的ip地址:
+	查看ip    命令ip addr     看是ens32 还是什么类型的  和查看 vnet8的网卡  也就是母机的     需要把虚拟的网卡设置成和的母机一样  重要
+	改ip  vi /etc/sysconfig/network-scripts/ifcfg-ens32      按i 进入插入模式  进行修改  按住esc推出键 退出 插入模式  
+								  : 键  wq  保存退出 
+	onboot启动的时候 是不是启动
+	:q! 不保存 退出   
+	:wq 保存 退出
+	
+目录
+	树状      ls ==list   
+	/etc 配置文件
+	/home 家目录
+	. 是当前目录   ..上级目录    一般使用 .. 是使用的相对路径
+	
+	root@localhost ~  #       这个root 当前用户  
+				loacalhost 是机器名   
+				~ 是在哪个目录  
+				# 超管    $ 是普通用户  
+	-a 是简化 
+	
+	ls -a   ==list --all      一般以.开头的是隐藏的
+	ls -l   详细信息       
+	命令 多个选项  是可以 写在一起      
+	ls -lah         -h 是可以看到 大小的
+	
+	命令  [参数] [目录]     目录可以是相对目录 也可以是绝对路径
+	
+	pwd 打印当前工作目录
+	touch 创建文件
+	mkdir -p  递归创建目录
+	ls   查看的结果  -开头是文件      d开头是文件夹   
+	cd      / 斜杠开头是从根开始
+	rm -r -f  删除  -r递归   -f 强制
+	mv 移动 重名  
+	cp -p  复制不改变属性
+	sudo -i 切换用户
+	
+文件搜索
+	whereis   cd 后面的gz 是帮助文件                    环境变量在linux 是按: 分割
+	which   是所有的路径和别名   
+	
+	doc中的 where java 是可以搜到对应的使用的java
+	locate    可以查询到对应文件 速度比较多   注意 使用updatedb  更新
+	find  范围  文件名         指定 -name   模糊查询  需要使用 "*.txt"  这样查询
+
+	grep  选项  字符串(要查询的内容)   目录  		------>	 搜索内容            cat打开日志
+	-i 忽略大小写 -n 行数
+    -C 5 上下5行显示 是大写的C 
+	
+	more
+	less   文件名含有路径的             --->查看日志信6655息6  进入之后可以   /输入关键字    然后n(NEXT)可以查看 到关键词     按q退出	
+	head  查看文件的头         head -n 10  文件
+	tail 查看文件的尾  -f 动态(实时)的显示 日志文件   实时监控 日志信息
+
+	帮助命令 	
+	man    退出使用 q        和more 一样的   可以使用   /关键字   搜索看    也可以看 配置文件   man 直接配置文件名  name 很主要
+	whatis 命令    查看这个命令是干什么的
+
+	压缩 解压缩
+			mvn deploy 上传到私服
+	zip  -r 压缩
+	unzip 解压                              ll  == list  l  详情   别名用法
+压缩的算法不一样	
+	.gz              gzip 源文件                注意源文件会消失  
+		  gzip  -d 解压   
+	.bz2 
+		bzip2	-d
+	
+	打包tar -cvf   达成的名字   对什么目录打包    
+		jcvf			   选项:
+		zcvf     				-c	打包
+						-v	显示过程
+						-f	指定打包后的文件名
+
+		 
+	tar -xvf 解压  x抽取   是一般类型的
+	tar-zxvf 是tar.gz后缀的 解压
+	tar-jxvf  是.tar.bz2后缀的 解压 
+
+	df磁盘占据情况   ---为了看日志和数据库的
+	df -h 显示单位 也就是多少g
+	history   历史   最多是存 999个操作历史   看的当前用户的
+	ehco 回声
+	
+	cat  查看文件   太大的话 就不要用这个了
+
+
+	tail 显示最后10行     可以指定多少行  tail -n 20 文件
+		-f 最新更新的内容         -100f   实时显示最后的100行
+	free  -h 看内存
+
+	vi 文件路径     vi编辑器 为了编辑文件用的  很重要 注意 
+	
+	top 任务管理 
+
+
+	vi 编辑器
+	 vim 模式化编辑器   多个模式 (3中) 也就是 不同的模式 机键的意义不一样
+	
+	三个模式    编辑模式  --> i   输入模式
+
+	vi 文件路径   没有的文件的话 会创建  
+		
+	set nu 显示行数   
+	注意编辑   多去练   
+	
+		
+
+
+
+
+
+
+;
+
+	chmod 文件或目录权限控制     权限只有root 和文件创建者  语法  chmod [{ugoa}{+-=}] [文件或者目录]
+	文件权限  是以 ---三个为分类的 r读 w写 x执行    查看的时候 第一个 是代表是文件- 还是什么目录d   多个赋值逗号隔开
+	语法 或者 是chmod [421] [文件或者目录]   也就是按着 数字的形式进行 赋权      
+	文件的权限    第一位是文件还是目录	文件所有者  所有组    其他人    后面的是 三位的 ---
+	4---r	
+	2---w	
+	1---x                      
+		       查看git    
+	选项  -R 递归修改  就是把所有的文件下的文件都修改权限               掌握对应的数据 修改的转换
+	注意:   当操作的是目录的话 	
+		目录的r权限是 : 可以列出目录里面的内容
+		          w           可以删除目录中的权限的,也可以创建
+		         x	        可以进入目录的                                      关键 目录 的权限 是不一样的
+
+	更改文件的所有者    root+
+	chown [用户] [文件名称]			
+	改组
+	chgrp  用户组  文件名
+	chown -R 用户:组  文件名  全部改	
+
+
+	touch 创建默认创建的  是没有可执行权限的   所以是比较安全的    病毒都没有执行的权限 肯定就是安全的
+	
+	sudo                visudo  
+	
+	服务
+	systemctl start <服务名>   
+		stop
+		restart	
+		status
+		enable
+		disable
+		list-unit-files 查看服务
+	ps -ef 查看进程信息  pid                     | grep  管道查看  过滤用
+	kill -9 pid(暴力关机)杀死进程;     kill pid  默认关机      
+	
+	ifcfg-eth 关于网络的     onboot=yes
+
+	防火墙: 
+	firewall-cmd /
+	关闭防火墙  systemctl stop firewalld
+	关闭自启动  systemctl disable firewalld
+	开启端口 firewall-cmd --zone=public --add-port=3306/tcp --permanent    注意是什么协议  
+	更新防火墙信息: firewall-cmd --reload	
+
+	linux 软件包管理器 
+		后端 就是手动的加载jar的意思    rpm工具
+		前端 yum工具   自动加载       基于rpm后端软件管理工具的
+	后端: 	
+		rpm -ivh<包名>    强制安装 --nodeps  没有依赖
+		       -ql<软件名>    查看安装到哪了?
+		       -qf<目录>  查看是什么软件创建的
+	 	       -e <软件名> 卸载软件名
+		       -qa |grep  查看
+		     -qc  q是查看的意思    c 配置文件
+		   
+		yum   install  安装
+		        yum search 命令 对应的软件
+	
+		绿色安装 直接解压缩 直接安装  
+
+		源码安装  先编译再安装
+			
+		安装jdk  上传(/opt/soft)    解压缩 tar -zxvf 文件    -C直接到对应的目录下     vi /etc/ profile          export  java_home=/usr/local/jdk1.8
+											     export  PATH=$PATH
+				source   /etc/profile
+		sh .sh  是linux的运行	      netstat -ntlp 查看是否运行         注意呀   防火墙的问题   一定要开放 端口才能访问
+					一般公司安装在/usr/local/ 
+		mysql安装
+	安装全部:::	rpm -ivh *.rpm   
+		
+		mysql -uroot -p  特殊符号 ""引起来         部署到service.xml文件添加 对应的值      
+			中文乱码  连接mysql 使用添加对应的utf8   表名大小写的问题
+			
+		mongodb 需要改要开启对应的 ip
+
+		netstat -tunpl | grep 6379   查看  按着端口号 查询 
+		
+	redis的安装 还是要使用 /usr/local/redis-3.2.9/src/redis-server   /usr/local/redis-3.2.9/redis.conf
+	 		指定对应配置文件	 
+
+	注意 redis 和 zookeeper 是不自动启动的   需要调用对应的方法来实现
+	注意要把reids的 保护去掉  操作 --在小组开发
+
+
+
+
+
+
+
+
+
+
+
+
+
+	

@@ -1,0 +1,62 @@
+bin 工具 启动 关闭
+conf   tomcat配置文件
+lib    核心jar
+logs 日志
+temp 临时文件
+webapps 部署项目路径
+work 工作 装JSP翻译成的java文件的代码
+
+
+JAVA_HOME:配置为JDK的根路径
+Tomcat的默认端口是8080:
+
+
+
+打开浏览器:
+     协议://ip:端口/资源
+     http://服务器所在主机的IP:服务器的端口号/资源名字
+     http://服务器所在主机的名字:服务器的端口号/资源名字
+若服务在本机:http://localhost:8080/index.jsp
+     http://本机的IP:服务器的端口号/资源名字
+     http://127.0.0.1:服务器的端口号/资源名字
+     http://localhost:服务器的端口号/资源名字      四个点  协议  ip  端口  资源  没有的话默认是找index开头的
+
+
+注意
+ 去看日志 在logs 里面
+访问没有的资源  404 
+重复开启 JVM_Bind
+			配置文件修改重启才生效
+编码必须时UTF-8
+提示有一个字符 不识别 那就有可能 编码格式不对
+
+
+
+
+
+
+安装  可以安装就开启 自动开启
+bin/server.bat
+
+安装服务:service install
+  卸载服务:service remove
+
+
+修改端口   根目录/conf/server.xml  71行  可以搜port
+
+
+webapp	          html,js,css
+	          WEB-INF  存放资源
+		           classes                        web程序的字节码输出路径
+		           lib                               三方的jar
+		           web.xml                      web应用配置+
+
+
+sts安装 tomcat 插件   放在 sts-bundle\sts-3.8.4.RELEASE\dropins   配置下  win   然后 Alt + t
+
+
+部署  		
+		docBase 是告诉tomcat去哪找  要写到 项目的根路径 一般到webapp
+             Host里面   <Context docBase="" path="" />
+			path	上下文路径  当配置好后 填写号后  就是 http://localhost:端口/上下文路径/资源
+			多个管理发布 必须path唯一

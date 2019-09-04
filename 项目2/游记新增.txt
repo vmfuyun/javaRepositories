@@ -1,0 +1,35 @@
+1, eleditor 插件  ---富文本插件 
+   	/*eleditor富文本插件*/
+   	         var Edr = new Eleditor({
+   	             el: '#contentEditor',                      ---el 是要绑定选择器   适合 选择器要求
+   	             upload: {                            	    ----当上传图片一类的时候 要 设置的上传的路径 
+               	           server: baseUrl + '/images',		 对应上传的接口  ---
+                      },	
+                   });
+2, 接口的设计  restful风格
+	1,资源路径                
+	2,请求动作                                                 情况比较多的时候  可以使用 多加参数(在queryobject中)来实现
+	3,请求参数   
+	4,返回参数--
+
+
+3, jquery-form表单  -
+	$("表单").ajaxsubmit({
+		beforeSubmit: fn(arr) {  } ------ 这个函数 是提交之前调用的  用来判断要不要提交 (不提交return  false) 			
+		})				     里面的arr数组是表单的提交的数据     
+					可以再添加      arr:push(name:"  " , value : $("   ").attr( " ") )  ---可以这样添加也可以直接点 
+
+ 4, jrender 的 页面跳转 携带参数   
+	使用render-key -----获取对应属性名的值
+	render-fun-----对应要 调用的 函数名   
+	$(".travels").renderValues({list: dataArr},                         --对应的进行渲染
+                            {
+                                'getHref': function (item, value) {     /*页面间传数据*/              多参数进行 添加方法名:    函数  item为对应的标签,,,, value 为render-key的值
+                                    $(item).attr("href","editTravels.html"+"?id="+value);     		添加属性  然后跳转过去
+                                }
+                            }
+                        );
+5, 表单提交 put请求:   需要在 form 添加 input  name=_method    值 为 put   
+
+6, 排序 要实现 动态的用 变量 orderBy---  
+7, 参数条件 尽量直接从 标签上取  data-xx="",

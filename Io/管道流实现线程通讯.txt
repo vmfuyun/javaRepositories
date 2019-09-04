@@ -1,0 +1,3 @@
+piped out put Stream    
+
+两个线程之间的通讯通过传递他们的管道流对象

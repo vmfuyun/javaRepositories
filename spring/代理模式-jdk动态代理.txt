@@ -1,0 +1,28 @@
+public static Object newProxyInstance(ClassLoader loader,                   //要创建类的代理的类加载器---一般是 要创建代理的          类加载器---classloader
+                                       		Class<?>[] interfaces,	//要创建的类的 接口  --class[] 类的数组 一般是接口
+                                    		  InvocationHandler h)	//要处理的 程序---invoke
+                throws IllegalArgumentException返回一个指定接口的代理类实例，该接口可以将方法调用指派到指定的调用处理程序。此方法相当于： 
+   	  Proxy.getProxyClass(loader, interfaces).
+     	    getConstructor(new Class[] { InvocationHandler.class }).
+     	    newInstance(new Object[] { handler });
+
+
+
+调用的要处理的程序---的接口
+InvocationHandler       invoke
+Object invoke(Object proxy,			//代理的对象
+            	        Method method,		//要调用的方法
+                          Object[] args)			//要调用的 方法调用的参数值的对象数组---  相当于method的调用 invoke---object --参数
+              throws Throwable在代理实例上处理方法调用并返回结果。在与方法关联的代理实例上调用方法时，将在调用处理程序上调用此方法。 
+
+参数：
+proxy - 在其上调用方法的代理实例
+method - 对应于在代理实例上调用的接口方法的 Method 实例。Method 对象的声明类将是在其中声明方法的接口，该接口可以是代理类赖以继承方法的代理接口的超接口。
+args - 包含传入代理实例上方法调用的参数值的对象数组，如果接口方法不使用参数，则为 null。基本类型的参数被包装在适当基本包装器类（如 java.lang.Integer 或 java.lang.Boolean）的实例中。 
+返回：
+从代理实例的方法调用返回的值。如果接口方法的声明返回类型是基本类型，则此方法返回的值一定是相应基本包装对象类的实例；
+否则，它一定是可分配到声明返回类型的类型。如果此方法返回的值为 null 并且接口方法的返回类型是基本类型，则代理实例上的方法调用将抛出 NullPointerException。
+否则，如果此方法返回的值与上述接口方法的声明返回类型不兼容，则代理实例上的方法调用将抛出 ClassCastException。
+
+
+

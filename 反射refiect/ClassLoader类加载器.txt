@@ -1,0 +1,29 @@
+这个类是用来加载   类  而来  并  创建 字节码对象
+
+每个 Class 对象都包含一个对定义它的 ClassLoader 的引用。    //     也就是 Class对象都可以调用ClassLoader 类的方法
+
+
+应用程序需要实现 ClassLoader 的子类，以扩展 Java 虚拟机动态加载类的方式。   //
+
+
+通常情况下，Java 虚拟机以与平台有关的方式，从本地文件系统中加载类。例如，在 UNIX 系统中，虚拟机从 CLASSPATH 环境变量定义的目录中加载类。 
+
+//首先寻找 字节码所在的 classpath  路径去加载 文件
+
+
+然而，有些类可能并非源自一个文件；它们可能源自其他来源（如网络），也可能是由应用程序构造的。
+defineClass 方法将一个 byte 数组转换为 Class 类的实例。这种新定义的类的实例可以使用 Class.newInstance 来创建。 
+
+//通过网络的  一般是二进制的 Byte数组   也就是  那个序列化    ObjectinputStream         反序列化   ObjectoutputStream
+
+
+getResourceAsStream
+
+public InputStream   getResourceAsStream(String name)     返回读取指定资源的输入流。                   //通过classpath路径 来加载文件
+
+参数：
+name - 资源名称 
+返回：
+用于读取资源的输入流，如果无法找到资源，则返回 null
+
+

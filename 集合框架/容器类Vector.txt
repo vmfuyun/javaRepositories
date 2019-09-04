@@ -1,0 +1,20 @@
+查api
+Vector类 底层是object[]类     是同步的  synchornized 修饰
+默认是10 容量
+这个类是list接口的实现类
+有一个方法  是判断当前集合中的元素个数是不是0      isEmpty();
+
+扩容用的  直接相加 所以性能比较低  
+
+框架都是覆盖了 ToString
+
+Iterator  迭代器
+
+集合框架的  只能存储对象   存的是 对象的引用
+
+
+add  集合框架要求的 添加          名称
+
+element 是元素的意思              count 是数的意思  个数
+
+grow 增长  也叫扩容

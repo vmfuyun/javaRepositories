@@ -1,0 +1,1 @@
+mybaties有一个 	configuration	存储的所有的参数

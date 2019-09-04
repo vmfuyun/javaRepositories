@@ -1,0 +1,57 @@
+  序列化
+             指把堆内存中的java对象数据,通过某种方式把对象存储在对象存储在磁盘中 或者 
+	传到其他网络节点   (网络传输)     这叫序列化 
+	就是把java对象进行长久保存在文件或者传输
+反序列化  
+	就是把文件或者数据   取出来 存在对象中
+
+
+
+实现     java.io.serializable接口的  就可以 做序列化      
+	这是一个标志接口       底层通过是不是它的实例  来判断    instanceof    这个运算符来判断
+
+
+通过 对象流来做 序列化或者 反序列化      对象流   ...故名思意   Object开头
+
+
+ObjectOutputStream
+writeObject 方法用于将对象写入流中。所有对象（包括 String 和数组）都可以通过 writeObject 写入。
+可将多个对象或基元写入流中。     序列化   
+标准代码
+ FileOutputStream fos = new FileOutputStream("t.tmp");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+        oos.writeInt(12345);
+        oos.writeObject("Today");
+        oos.writeObject(new Date());
+
+        oos.close();
+ 
+
+
+
+
+反序列化
+
+
+对象的默认反序列化机制将每个字段的内容恢复为写入时的值和类型。
+ 声明为瞬态或静态的字段被反序列化过程忽略。
+
+ 对其他对象的引用导致根据需要从流中读取这些对象。 使用参考共享机制正确恢复对象的图形。 反序列化时总是分配新对象，这样可以防止现有对象被覆盖。 
+
+读取对象类似于运行新对象的构造函数。
+ 为对象分配内存，并初始化为零（NULL）。 对非可序列化类调用无索引构造函数，然后从最接近java.lang.object的可序列化类开始，从串中还原可序列化类的字段，并使用对象的最特定类完成。 
+
+例如从ObjectOutputStream中的示例中写入的流中读取： 
+
+
+  FileInputStream fis = new FileInputStream("t.tmp");
+      ObjectInputStream ois = new ObjectInputStream(fis);
+
+      int i = ois.readInt();
+      String today = (String) ois.readObject();
+      Date date = (Date) ois.readObject();
+
+      ois.close(); 类通过实现java.io.Serializable或java.io.Externalizable接口来控制它们是如何序列化的。 
+
+

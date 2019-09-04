@@ -1,0 +1,12 @@
+@EnableAutoConfiguration作用就是从classpath中搜寻所有的META-INF/spring.factories配置文件，
+并将其中org.springframework.boot.autoconfigure.EnableutoConfiguration对应的配置项通过反射（Java Refletion）实例化为对应的标注了
+	@Configuration的JavaConfig形式的IoC容器配置类，
+然后汇总为一个并加载到IoC容器。这些功能配置类要生效的话，会去classpath中找是否有该类的依赖类（也就是pom.xml必须有对应功能的jar包才行）并且配置类里面注入了默认属性值类，
+功能类可以引用并赋默认值。生成功能类的原则是自定义优先，没有自定义时才会使用自动装配类。
+
+
+
+
+所以功能类能生效需要的条件：
+（1）spring.factories里面有这个类的配置类（一个配置类可以创建多个围绕该功能的依赖类）
+（2）pom.xml里面需要有对应的jar包

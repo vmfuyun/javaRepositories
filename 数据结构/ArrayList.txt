@@ -1,0 +1,29 @@
+java 在内存的申请空间的时候, 例如 new int[],  是会申请一个连续的空间,  
+	当你要删除一个 元素的时候,是不能把那个内存进行删除的, 只能进行移位操作,然后把引用修改.  这也是Arraylist的删除操作,,(关键)
+
+	new申请的内存地址是随机的   
+		ensureCapacity 保证内存     扩容 一定要按着实践的数组的长度来实现  代码如下
+	
+	int oldCapacity=elements.length;   --->原先的数组长度
+	if(oldCapacity-capacity>0)  return;     --->说明原先的长度是够用的 所有不用扩容,
+	int newCapacity= oldCapacity+(oldCapacity>>1);   为什么要进行 加 运算?  因为 直接乘的话 会有浮点数,,, 但是用位运算的话 是不会有这个问题的
+		以后的操作能用位运算的就位运算  
+ 
+	泛型  让所有的 对象都能实现 添加 或者通用,怎么办? 只能使用Object  因为所有的类都是默认集成object
+	
+	一般 clear 只是把 数组中的 元素的引用去掉,
+	一般把对象设置成null  就会没有引用,gc运行的运行的时候 就会被回收
+	
+	finalize方法 这个一般不要用,  即gc工作的时候,最后执行的方法
+	
+并发修改异常的原因:                               类似是乐观锁  有一个版本号 :进行判断是否是 同一个 同一个的话 是可以进行操作  不是一个版本的话 是不能修改的
+	在ArrayList中modCount是当前集合的版本号，每次修改(增、删)集合都会加1；expectedModCount是当前迭代器的版本号，在迭代器实例化时初始化为modCount。我们看到在checkForComodification()方法中就是在验证modCount的值和expectedModCount的值是否相等，
+	所以当你在调用了ArrayList.add()或者ArrayList.remove()时，只更新了modCount的状态，而迭代器中的expectedModCount未同步，
+	因此才会导致再次调用Iterator.next()方法时抛出异常。但是为什么使用Iterator.remove()就没有问题呢？通过源码的第32行发现，在Iterator的remove()中同步了expectedModCount的值，
+	所以当你下次再调用next()的时候，检查不会抛出异常。
+
+　　	使用该机制的主要目的是为了实现ArrayList中的快速失败机制（fail-fast），在Java集合中较大一部分集合是存在快速失败机制的。
+　	快速失败机制产生的条件:当多个线程对Collection进行操作时，若其中某一个线程通过Iterator遍历集合时，该集合的内容被其他线程所改变，则会抛出ConcurrentModificationException异常。
+
+
+数组缩容操作;    一般扩容 大小和 缩容大小 相乘等于1  不然是会有问题的  会出现时间复杂度 震荡  (关键)

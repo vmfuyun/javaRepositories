@@ -1,0 +1,30 @@
+
+	1,domain----mapper  ----配置applicationcontext.xml-   解析器 <context---一类的
+						-连接池 * datasource--(四要素) --
+					-要托管mybateis要用一个sqlsesionfacetorybean类(所有的mybateis参数都可以写)  要关联mapperlocation  xml文件     *mapper.xml
+							<bean  class 扫描 mapper   类名是 mapperscannerConfig-----
+	2,测试 mapper   
+	3,service
+										
+	
+	
+	
+	
+
+
+
+
+
+
+
+问题1
+	 怎么加载applicationContext.xml文件  用注解@ContextConfiguration  加 classpath:  ----加载 指定的 xml文件      ..........................如果不加的话 是默认找本地的类名 + context .xml
+问题2
+	对于时期类型的话   可以用 localdate--日期格式         localtime--时间-- 		localdatetime--日期和时间
+	利用注解 
+		@date来指定格式   也必须用@date 指定模式
+问题3
+	使用@Autowired 注解必须使用 接口
+注意  
+	配置 tx    名字叫 tx  manager  必须 要添加 一个  要管理的  连接池 datasoure---
+	

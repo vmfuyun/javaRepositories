@@ -1,0 +1,42 @@
+  注意 导包的时候  导入的是 w3c 的包  
+Document类的方法  要明确  XML里面全是节点Node 父节点 有可能是元素 Element
+
+创建 空的XML 文件		必须有一个根节点
+         1,创建通过建设者 创建 一个newDocument     
+          2,创建一个 根节点 设置 层级关系
+          3,必须同步
+
+操作XML 固定格式 
+	1获取XML  Document对象 (注意是通过DocumentBuilder(建设者)parse解析 或者直接newintance出来的)   DocumentBuilder factory(工厂)   (工厂一般都会有是一个返回自己对象的)
+	2,获取根元素
+	3获取属性的
+	4,获取元素的
+	5,获取text 
+	一层一层
+ Element    getDocumentElement()   返回根元素   也就是 有且只有一个的根标签
+
+ Element    getElementById(String elementId)   通过属性值""  就是那个设置的那个来得到 属性(有约束的xml可用)
+ 	
+NodeList     getElementsByTagName(String tagname)  通过元素的名字来 在全文档所有 得到这个名字的集合 集合就需要用intem();
+ 		           标记名字
+Element       createElement(String tagName) 	根据元素名称 创建元素 对象           文档 才能创建  里面的元素是没有权力创建
+ 
+NodeList的主要方法    int getLength()     列表中的节点数。 
+          
+ 		      Node  item(int index)    返回集合中的第 index 个项。  (注意 要得到这个intem()是第几个)
+
+
+Element 的方法
+	也有getElementsByTagName(String tagname)  但是作用域不一样   主要看这个Element是那一块的   会去当前的子元素去寻找
+ 	setAttribute(String name, String value)    添加一个新属性。 
+	String getAttribute(String name)      通过名称获得属性值。 一个元素是有多个属性的 所以是有String传入
+
+
+Node的主要方法(表示是单一节点)是Element的父类   注意这个类 没有  找父类
+
+ String               getTextContent( )                                 返回此节点(元素)及其后代的文本内容 
+		 文件内容
+void                 setTextContent(String Content)               给这个节点(元素)设置文本内容  {会直接把原先直接删除掉}
+ Node                 removeChild(Node oldChild)                   删除指定的节点   如果是子节点要删除   那就是 Element.get父类node 来删除
+ Node                 appendChild(Node newChild) 		添加  节点 newChild 添加到节点列表内。 
+ 

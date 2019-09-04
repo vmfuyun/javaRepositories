@@ -1,0 +1,27 @@
+while(boolean表达式){
+	循环体	
+	    }
+ 	
+	先判断再循环  为了防止死循环  循环体尽量要进行++  或者 --
+
+注意      求多数递加(递减)之和   是上一个的和加上下一个数
+
+          0
+          0 + 1
+          0 + 1 + 2
+	
+	int i =0;
+	int sta;
+	while(i =< 100)
+	{
+	 sta +=i;
+	i++; 
+	}
+	system.out.println(sta);
+
+\\   sta =sta + sta1   等价于sta +=sta1
+
+
+
+
+

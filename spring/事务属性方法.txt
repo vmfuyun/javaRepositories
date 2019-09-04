@@ -1,0 +1,5 @@
+read-only  是不是只读
+
+rollback-for---默认是 runtimeException    当出现这个会回滚
+	
+	如果一个属性 不够 想去多写 怎么办?  一般是 , 逗号  或者空格

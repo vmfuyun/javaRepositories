@@ -1,0 +1,44 @@
+  DOM Document  Object Model 文档对象模型  主要研究结构
+	使用的是面向对象的方式 把XML文件的结构当 使用对象来表示
+	明确谁有那个能力
+
+意识   一个XML肯定有一个对象 存者他们的信息
+
+在XML中  一切是节点
+
+DOM解析
+ 就是把结构或者这个文件  解析  成 DOM对象    变成树结构 这是DOM的特性     
+      就是把 操作一个文档的操作当 一个对象
+
+构建者模式             就是通过这个 builder  构建出  你需要的
+
+工厂模式              factory    建造出......   肯定有一个方法 会返回  这个类的对象     
+(意识  只要是保护的 大多数方法是对象调用的,肯定有一个方法是返回这个类的对象,或者它的构建者 或者工场)
+
+
+builder 是 有建设  该类对象的 所有的方法  例如 解析   或者      建立一个新的空的文件(注意建立它的根ELEMENT)
+   解析 就是通过一个String类型把所有的信息加载到内存中   并创建这个信息的对象
+也可以  通过 建立流对象(相对路径)(Thread.curr  .get classloder.get 路径 )  解析出document对象
+		Thread.currentThread().getContextClassLoader().getResourceAsStream(name)
+
+不熟悉  那就多去打  只有当你 一看就知道什么的情况 那就行了
+Node是他们的父类 也就是说XML里面 一切为节点
+
+Document  文档节点  (也就是XML的开头)
+Element      元素节点(使用<>表示的标签)                           记住括号里面的
+Attr  	   属性节点  ( 元素上属性名 = "属性值"  )
+Text            文本节点(元素之间的内容)
+
+
+Document  是把XML文件的结构上的所有 节点 都当 对象  也就是 那个标签<   >里面的
+
+创建对象后   是把文件的东西 给了内存  (不同步的)
+	需要修改里面的东西的话  需要把内存里的东西同步到 磁盘文件里去
+
+       寻找到后                  f4 可以查看 继承体系
+
+(核心类)Transformer  --->TransformerFactory(工厂模式 必有返回对象)--->static TransformerFactory newInstance() 
+abstract  void      transform(Source xmlSource, Result outputTarget)  将 XML Source 转换为 Result。 
+	把xml转换到文件里的主要方法  唯一方法 
+	那就找Source ----> DOMSource----->new DOMSource(xml对象也是内存中的那个树 也就是说这个document是一个结构树)
+	Result---->StreamResult---> new  StreamResult(file )    {流向目标}

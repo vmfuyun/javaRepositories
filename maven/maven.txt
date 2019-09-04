@@ -1,0 +1,185 @@
+解决的问题
+	解决导包   架包的问题---
+maven:
+	1,跨平台的项目管理工具.  项目对象模型
+	2,java平台编写的
+	3,用命令,来完成复杂操作
+	4,依赖配置--从中央仓库来管理jar   通过坐标
+	5,提供了标准的项目目录结构(约定优于配置)
+jdk向下兼容
+
+为了要用maven?
+	1,编译,部署
+	2,版本  1.5 jdk, 
+	3,架包  管理架包
+安装  
+	1,配置环境变量
+	2, MAVEN_HOME 一般到安装目录就行           path 一般是到bin
+结构的话看 Hello Maven
+	target  是编译输出的目录 会自动输出的
+	
+	src   ---  main  ----java 
+		             resource
+		             webapp---WEB-INF
+	              test  ---  java
+		            resource
+	pom.xml
+	target--输出  会自动生成文件  和 自动 输出classes文件
+
+maven 是先找bin目录的m2.conf--然后里面是找本目录的--conf--settings.xml 然后找localRepository 本地数据库
+						settings.xml 也要配置 上级仓库  远程仓库  <mirror>镜像  (挂接远程仓库)
+						<mirrors>
+						<mirror>
+						        <id>nexus-aliyun</id>
+      						        <mirrorOf>*</mirrorOf>
+        						         <name>Nexus aliyun</name>
+        						         <url>http://192.168.16.130:8081/repository/maven-public/</url>
+    						</mirror>
+						<mirrors/>
+
+
+	1）执行 mvn compile命令  编译命令
+	2）执行mvn clean命令	清理
+	3）执行mvn compile命令	
+	4）执行mvn test命令    执行test
+	5）执行mvn package命令	打包   会放在 当前项目的terget文件里--把字节码打包
+	6）执行mvn site命令	
+	7）执行mvn install命令	安装  上面会提示安装到哪了
+
+	常见的几个插件文件  和架包	
+	build>                  -------- 插件是 build 开头的
+		<plugins>
+			<!-- 配置编译器插件 -->
+			<plugin> ---------------------------------------插件
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<!-- 配置启动Tomcat7的插件 -->
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<path>/</path>           -----路径  
+					<port>80</port>	      -----80端口
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.10</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+操作 maven 是 红色的 那个方法    
+  
+部署concat 是 两种方式    一种是 贴标签   (web.xml 的版本 必须是3.0 以上)
+		        二种 是 在web.xml文件中 部署 
+
+ 没事 就更新一下   maven   --->更新
+有问题就百度
+
+
+
+POM的全称是Project Object Model  项目建模思想
+在maven中一个项目都是用一个唯一的坐标（coordinate）来表示，
+坐标由groupId(包名), artifactId(工程名), version(版本号), classifier(遥感定位), type这五部分组成。
+
+
+compile：对源代码进行编译
+
+
+pom.xml----groupId  项目机构 包名
+	    artifactId--项目名称
+	    varsion     版本号
+	     
+jar打包  
+m2.conf 是默认打包的位置   
+settings.xml  放在默认的位置  然后 localRepository  --本地仓库
+
+添加插件         war  webapp 的架包  必须要有 WEB-INF- web.xml
+
+坐标
+
+打包 规则   项目名-version .paging(打包类型)
+seope:
+compile: 编译 全阶段都会有用
+test:测试范围   不会随项目发布, junit
+provided:编译会用到 就是插入到编译中 ,不会打包进去
+runtime:运行时有效    jdbc的驱动报
+
+
+servlet-----必须
+<scope>provided</scope>
+
+
+UML图
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

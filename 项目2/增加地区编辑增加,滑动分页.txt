@@ -1,0 +1,37 @@
+
+js 解决方案 没有思路的 直接去看  然后 背下来  每一个知识点  都是背下 没什么好办法  多去看 多背
+
+1, 获取treeView中选中的参数....  使用 onNodeSelected  事件  ..具体去看下文档    
+2, 克隆的情况,,,    $(要克隆的docmenet).clone(true)  ---true 也是把事件也复制过来了       
+3,   相同的访问资源路径 可以使用 不同的参数的形式     就是在@controller  添加   params = "myParam=myValue"
+		                             效果就是 没有 ? myParam=myValue指定的 参数的话 是不能访问的
+4, 新增地区的 上一级地区的 获取,,使用 $("#treeview").treeview("getSelected")---一般 后面的括号 里面是要执行的函数...
+    
+5, $.ajax({
+	method:            ,                 这个{} 里面 也可以指定 请求头,,,请求的内容格式  
+	url:                    ,
+	data:     可以有{} 也可以没有  关键要看 是要干什么 一定要有目的性..    .   data是请求参数
+		})
+
+	上面是比较简单的  
+	$.ajax({
+                    type: "post",
+                    dataType: "json",                                          标准的json 的 ajax请求
+                    contentType: "application/json",
+                    url: "/region/saveOrUpdate.do",
+                    data: JSON.stringify(data),                          ---这个data是没有用{ }  -- 利用的JSON.stringify()...
+                    success: function (data) {
+                        hanlerMessager(data)
+                    }
+
+                }
+            );                              
+	
+ 6,   前端的滚动事件  ---  $(window).scroll(function () {   })  ----标准的 
+	
+7, 在前端的 jrender 渲染数据  渲染集合性 和 数组性的    通过的是 一个   render-loop="对应的属性"   ////    
+		 $(".travels").renderValues({list: dataArr});   
+	   注意:   1. 如果是render-loop 形式的话  需要通过   要遍历的 属性名 .  属性 来获取    
+	              2. 选取  渲染的选择器    必须要 是在 render-loop的 上一级
+8,  可以利用一个变量来 杜绝 重复的问题
+			

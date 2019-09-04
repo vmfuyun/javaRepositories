@@ -1,0 +1,23 @@
+配置文件  : 资源文件(以.properties作为扩展名的文件)/属性文件:
+
+
+做项目开发,为何使用配置文件?
+
+把所有的数据存储在代码中,写死,"硬编码",   但是连接数据库就不方便了  
+实施人员操作代码不太安全 所以用资源文件比较好
+
+
+为了方便  我们专门为数据库提供了一个配置文件  专门存储数据库连接相关信息
+
+db.properties
+#key = value
+username=root
+password=admin
+
+
+properties 加载     properties是Hashtable的子类 是map接口的实现类
+
+
+classpath路径是到哪个平台都能 运行 找到的   
+ 所以所有的 配置文件 都要 放到 Source Folder 里面
+才能编译运行到classpath 路径去

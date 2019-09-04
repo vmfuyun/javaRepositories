@@ -1,0 +1,106 @@
+分布式 是一般不能使用 抛异常的 , 
+	因为 dubbo 会拦截  所以一般使用 声明 自定义异常的方式来  让异常 传输过去
+
+
+细节
+1, 游记评论  回复功能 :  引入回复的 需要添加一个字段  comment  refcomment (关联字段)  (无限层 嵌套  解析到底是null)  
+	1层:  和原先的一样
+	2层:    引用 原先的  
+
+字段的多了一个 tpye 评论级别  
+
+	domain  ,query ,repository, service  ,impl    一系列操作  删除点赞     
+	 controller 对应在游记 travel  对应的 明细 评论解封     让回复出来  
+	前端 commentAdd                   通过dubbo  通过 一个 序列化 然后 再回来 就不是一个对象了   
+	有一个 楼层     参数 评论 userinfo   ,楼层 , model      对应一个 模板   共享 c 和楼层
+		对应的把userinfo  set到参数对象          
+		实现类 : 	判断 有没有关联对象 和 id  来查询 关联对象
+			查询对应的refcomment  查询单个  关联的评论     并把评论保存 dao.save  返回 保存后的对象
+	
+	评论列表 : 
+	1,在 刚进入的 哪个controller      不分页--> 给最大值      page .getcontent 是 类似于获取 list    
+	
+	爬虫: 类似于短信		
+
+	数据统计:  阅读 回复 一类的, 不需要 实时  , 使用 redis    
+		多个数据的话  是使用  一个vo 封装对应的数据  更好的操作   
+		排行的要写上去     
+	vo -value object     
+		在 缓存建立vo   然后对相应的   前缀  -->过期时间不需要  因为 要定期 要和 数据库 update
+				service   impl   
+		统计阅读:  1,进入到攻略的detail  就要加一   注入redisservice   
+
+			判断 是否存在   拿出来+1 然后 回去
+			                   不存在   new vo ; 获取攻略明细   通过 id  
+				然后 给了 vo       
+			然后 set    get    
+	抽离 对应方法 使用switch  
+
+收藏: 
+	思路  站在用户中心    把 所有的 攻略明细id  保存在 用户上  如果有收藏   就删除  没有就不删除
+
+	思路 :  单独建立一个 list 来判断 是否有 uid   并存在库里   vo 只是面对数据库   
+
+		一般 先把 比较用的多 数据 缓存到 redies	  
+		  也就是说 一般情况 会有一个 list 或者什么的 保存在redis当临时的 数据用  ... 一般 比较敏感的 会用这个 关系到收藏一类 需要有uid 的一类
+	不管哪种 先去确定 key value
+
+	1, 在 对应的前缀  加上 收藏前缀
+	2,   看图片   
+	前端的 对应的状态码来  实现(取消原先的异常)  ,, 可以通过常量 更直观     后面使用 对应的方式    
+	
+	一般 在分布式  使用  字符串 最好   
+	
+	redis 无非就是 key value    !!! 
+	顶   在 key    存对应的前缀和sid 和 uid,,, value 存 时间     \\\ 每次操作都要进行时间判断    顶后把value改成当前的时间
+	
+	一开启 就把mysql 的数据 同步到 redis    监听器   在Spring 也有一个监听
+	
+	一般选用 压力比较少的  部署Spring监听
+
+Spring 事件监听
+	listener      application<容器刷新事件>	  --->当容器启动就会执行的(关键)
+	
+	redisDataInitListener   实现 上面的接口  贴上component  
+	onApplicationEvent方法
+
+	把 对应的detail 的点赞 一类的 数据 存到redis   查 判断是否存在  (跳过)  塞字段  插入
+  
+
+redis 数据落地
+	 redis自动 处理数据过多 :: 会把 最近 最少 使用 的数据 删除掉...
+	Spring定时器 
+		四种: jdk 自带的 Timer,   	
+			TimerTask
+			quartz  定时 任务调用器
+			   一般在管理 建立job  
+			 1,注解 @component   2 方法 @Scheduled(cron="") 指定方法的运行规则  有专门的cron表达式
+			3, 在主方法上开启 @enabkeScheduling  开启定时器
+	
+	一般会在对应 转存的 目标项目 添加一个 对应的vo 类
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+  
+
+
+	

@@ -1,0 +1,53 @@
+DQL   运行过程
+先运行 from   然后where 然后是select     按着运行过程 来写   然后 是order by 
+
+select 语句     挑选     主要是列     可以为* 就是说所有列 也可以通过表名.列名
+	
+  from  表名    从哪个表 开始查询   
+
+  where  条件    
+   LIKE 操作符用于在 WHERE 子句中搜索列中的指定模式。				//包含 肯定是什么包含
+		 %  通配符  大体上的意思 省略 后面的   无限制的 可以查包含的%  %
+		_省略一个
+   IN 操作符允许我们在 WHERE 子句中规定多个值。   IN (value1,value2  ....)  集合查询  在这个括号里面的  有没有 这里面的  值是或者的意思
+
+   between   从这个   and  到这 的范围查找
+
+   is null 判断是不是null              不能用= 因为  等号肯定是true 或者fasle 
+   多条件查询 可以用  or  
+  逻辑运算符     and  or not 
+
+分页查询      limit (currentPage-1)*PageSize,pageSize                   要想查询 第几页 只需要知道  要查的页数 和 条数    只示用于SQL    查询的超了 会是一个空集
+select * where 条件   limit    (页数-1)*一页的条数,一页的条数      它是从 按着索引来的  limit 第一个是索引的初,页数    
+
+   多表查询 from 多个表 , 隔开  逗号隔开          where    访问 表里的列名 用表名 . 列名
+
+
+
+ORDER BY  列名   语句   这是自然排序         默认按照升序对记录进行排序。
+order by 列名    desc 倒序      多列排序 是先按着第一个order by 进行排序然后再第一个的基础上进行排序
+	用别名的话  那就是 order by 是最后运行         别名 用在order by ,不能用    '    '  不能用这个 表示  就是不能用引号
+	多个列排列   用  ,  隔开
+    SELECT DISTINCT 列名称 FROM 表名称  列出不能有相同字段内容的 一个列     (去重)
+ 关键字 distinct   列名  as 起列名  '   '        
+
+INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....)  插入语句
+insert into 
+
+UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值(后面这个其实是行名 )
+	如果没有条件 就要注意了
+
+	
+
+
+
+
+   count(*) (所有列)(操作单独列的话 是会忽略null)是个聚合函数 作用是求表的所有记录数   统计 记录数据     
+      // 操作上一页和下一页 ,条页 用两个 count   一个查结果集  一个查结果总数 ?
+	在jdbc中查询结果总数用long 接受  也就是bigint            就是那个 java 方法是一个 long
+	先排序后 limit 分页
+   AVG 函数  求数值列的平均值。NULL 值不包括在计算中	SELECT AVG(要计算的列)
+   sum函数    sum(列名)     求和
+   MAX 函数   MAX(列名)         求最大   
+   MIN  									函数尽量不要和 单独的查询 放一起
+   concat 函数  中间加字的 那种  拼接

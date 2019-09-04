@@ -1,0 +1,58 @@
+ 同步 的  
+ 
+key  -- value  
+
+映射关系
+
+查询和插入快
+
+size  元素个数
+put (key,value)
+remove (key)
+
+
+为了成功地在哈希表中存储和获取对象，
+用作键的对象必须实现 hashCode 方法和 equals 方法。
+
+通常，默认加载因子(.75)在时间和空间成本上寻求一种折衷。
+加载因子过高虽然减少了空间开销，
+但同时也增加了查找某个条目的时间
+（在大多数 Hashtable 操作中，包括 get 和 put 操作，都反映了这一点）。
+	
+	
+下面这个示例创建了一个数字的哈希表。它将数字的名称用作键： 
+
+   Hashtable<String, Integer> numbers
+     = new Hashtable<String, Integer>();
+   numbers.put("one", 1);
+   numbers.put("two", 2);
+   numbers.put("three", 3);要获取一个数字，可以使用以下代码： 
+
+   Integer n = numbers.get("two");
+     if (n != null) {
+         System.out.println("two = " + n);
+     }
+   }
+
+
+初始容量 (11) 和加载因子 (0.75) 构造一个新的空哈希表。 
+
+
+
+entrySet
+public Set<Map.Entry<K,V>> entrySet()返回此映射中包含的键的 Set 集合。
+此 set 受映射支持，因此对映射的更改可在 set 中反映出来，
+
+values
+public Collection<V> values()
+返回此映射中包含的键的 Collection 视图。
+
+
+keySet
+public Set<K> keySet()返回此映射中包含的键的 Set 视图
+
+
+
+
+
+

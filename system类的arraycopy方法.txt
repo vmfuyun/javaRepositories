@@ -1,0 +1,12 @@
+ystem类中的数组拷贝方法,源文件中代码如下:
+public static native void arraycopy(Object src,int srcPos,Object dest,int destPos,int length);
+
+
+	Object:可以表示任意数据类型;
+	native:为本地方法
+
+Object:Java中的根类,可以表示任意的数据类型.
+该方法没有方法体,该方法使用native修饰符(本地方法),底层使用了C/C++语言实现,Java直接调用其他语言编写好的功能.
+
+
+	直接调用 system.arraycopy();  就是在system类   要学API文档

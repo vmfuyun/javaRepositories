@@ -1,0 +1,83 @@
+environments
+
+MyBatis 可以配置多种环境。这会帮助你将 SQL 映射应用于多种数据库之中。例如, 你也许为开发要设置不同的配置, 测试和生产环境。或者你可能有多种生产级数据库却共享 相同的模式,所以你会想对不同数据库使用相同的 SQL 映射。这种用例是很多的。 
+
+一个很重要的问题要记得:你可以配置多种环境,但你只能为每个 SqlSessionFactory 实例选择一个。 
+
+所以,如果你想连接两个数据库,你需要创建两个 SqlSessionFactory 实例,每个数据库对应一个。而如果是三个数据库,你就需要三个实例,以此类推。记忆起来很简单: 
+?每个数据库对应一个 SqlSessionFactory  
+
+为了明确创建哪种环境,你可以将它作为可选的参数传递给 SqlSessionFactoryBuilder。 可以接受环境配置的两个方法签名是: 
+
+SqlSessionFactory factory = sqlSessionFactoryBuilder.build(reader, environment);
+SqlSessionFactory factory = sqlSessionFactoryBuilder.build(reader, environment,properties);
+
+如果环境被忽略,那么默认环境将会被加载,如下进行: 
+
+SqlSessionFactory factory = sqlSessionFactoryBuilder.build(reader);
+SqlSessionFactory factory = sqlSessionFactoryBuilder.build(reader,properties);
+
+环境元素定义了如何配置环境。 
+//开发
+<environments default="development">
+  <environment id="development">
+    <transactionManager type="JDBC">
+      <property name="..." value="..."/>
+    </transactionManager>
+    <dataSource type="POOLED">
+      <property name="driver" value="${driver}"/>
+      <property name="url" value="${url}"/>
+      <property name="username" value="${username}"/>
+      <property name="password" value="${password}"/>
+    </dataSource>
+  </environment>
+</environments>
+
+注意这里的键: 
+?默认的环境 ID(比如:default=”development”)。 
+? 每个 environment 元素定义的环境 ID(比如:id=”development”)。 
+? 事务管理器的配置(比如:type=”JDBC”)。 
+? 数据源的配置(比如:type=”POOLED”)。 
+
+默认的环境和环境 ID 是自我解释的。你可以使用你喜欢的名称来命名,只要确定默认 的要匹配其中之一。 
+
+
+transactionManager 
+
+在 MyBatis 中有两种事务管理器类型(也就是 type=”[JDBC|MANAGED]”): 
+JDBC – 这个配置直接简单使用了 JDBC 的提交和回滚设置。 它依赖于从数据源得 到的连接来管理事务范围。
+
+
+
+mappers
+
+既然 MyBatis 的行为已经由上述元素配置完了,我们现在就要定义 SQL 映射语句了。 
+但是, 首先我们需要告诉 MyBatis 到哪里去找到这些语句。 Java 在这方面没有提供一个很好 的方法, 所以最佳的方式是告诉 MyBatis 到哪里去找映射文件。
+ 你可以使用相对于类路径的资源引用,或者字符表示,或 url 引用的完全限定名(包括 file:///URLs) 
+
+相对于类的路径
+<!-- Using classpath relative resources -->
+
+<mappers>
+  <mapper resource="org/mybatis/builder/AuthorMapper.xml"/>
+  <mapper resource="org/mybatis/builder/BlogMapper.xml"/>
+  <mapper resource="org/mybatis/builder/PostMapper.xml"/>
+</mappers>
+
+
+
+MyBatis 的 XML 配置文件包含了影响 MyBatis 行为甚深的设置和属性信息。 XML 文档 的高层级结构如下: 
+?configuration 资源配置 
+?properties 属性
+?settings 设置
+?typeAliases 类型命名
+?typeHandlers 类型处理器
+?objectFactory 对象工厂
+?plugins 插件
+?environments 环境 ?environment 环境变量 ?transactionManager 事务管理器
+?dataSource 数据源
+
+
+?databaseIdProviderchinese?
+?mappers 映射器
+

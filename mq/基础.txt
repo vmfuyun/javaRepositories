@@ -1,0 +1,81 @@
+长时间的业务处理  
+	中间建立一个中间件(消息队列)来  接受对应的请求来实现 后端的操作  
+耦合性的业务 
+	例如:短信和发送邮件的 耦合 太高了   使用 中间件    为了分离请求和响应的感觉 就是 只要把请求的消息放在消息中间件就可以了
+	
+对于 返回值 不管的 可以异步的话  使用消息中间件   
+dubbo是必须要有结果的话   就是依赖后面的结果
+	
+中间件
+	cmq , 日志查看elk 通过 kibana来显示,kafka ,rocketMq,rabbitMQ .amqp
+
+AMQP协议
+	生产者 直接和 Exchange 交换机     ,,  交换机 直接和消息queue      然后 去消费者
+
+holle 
+	对应的消息队列的名字---> 生产者和消费者 的要一致
+	消费者 会使用 事件监听 会直接调用对应的方法 来操作
+	对于队列的 定义 在生产者和消费者的参数必须一致  
+		参数一 队列名   参数二 持久化-是否长久保存到rabbit (false重启会消失)  参数三  排他性 ture 只有这个连接能用 就保护了
+		参数四  autodelete 队列的 最后的消费者 断开连接 就自动删除 消息
+		
+	参数2 durable
+		RabbitMQ默认将消息存储在内存中，若RabbitMQ宕机，那么整个队列会丢失.
+		可以把这个属性设置成true,表示这个队列需要做持久化.
+
+		这个属性只是声明队列是持久化的,RabbitMQ宕机或者重启之后,队列依然存在，但是里面的消息没有持久化，也会丢失.所以需要针对消息也做持久化.
+		channel.basicPublish("",QUEUE_NAME, MessageProperties.PERSISTENT_TEXT_PLAIN,msg.getBytes());
+		
+	能者多劳
+	生产者 生产的比较多 使用的是 Worker模式   默认是平均分配模式  预读取机制  预读取250个   
+		设置预读取,也叫做预处理 channel.basicqos(1);
+	手动签收
+	chanel.basicConsume( ) 第二个参数AutoAck  要不要手动签收  false
+		使用 channel.basicAck(消息的id 名字是tag结尾,是否批量处理 false)   为了实现业务处理成功后 再签收 
+
+	生产者 basicpPublish 中的持久化 使用的是 常量
+
+	订阅,发布模式    			注意要有一个绑定
+		type模式fanout        使用的是Exchange,对应绑定几个队列,就会对应发送, 消费者要写上对应的Exchange  绑定路由的规则 
+	日志
+		rounting模式有区别的操作   Type   设置成direct模式     一般就在消费者 声明要订阅哪个路由的广播  
+		
+		通过路由routingKey 来实现  也就是生产者 会声明 routingKey来  指定这个信道使用该key的 是可以获取对应的信息
+	Top
+	
+springBoot 整合rabbitMQ
+		rabbitMQ 默认的模式是simple   注意
+	一 jar包    二  生产者使用 RabbitTemplate 使用 convertAndsend(routingKey,obj)  生产者是需要是controller      
+		消费者 : 需要使用的  @RabbitListener(queuesToDeclare = @Queue("boot_worker"))   也就是添加 rabbit 监听 事件   但是 这个类必须要让spring管理 使用Component
+			@Header(AmqpHeaders.DELIVERY_TAG) Long tagId,  Channel channel    手动签发    channel.basicAck(tagId, false); 需要的是 消息的id 和信道 
+		
+	广播模式   pubsub   --->可以手动绑定 在监控中心
+		生产者 需要指定 Exchange 和 key
+		消费者 需要设置绑定bindings 对应的exchange  注意type =fanout和Exchange的名字     注意对应的 应该绑定在哪
+	topic 模式 
+		key是通配符模式  	
+
+
+
+
+
+模式一  简单queue模式 使用的是默认的exchange , 所以是不需要设置exchange ; 直接使用 routingKey 来实现 ,消费者需要声明队列queuesToDeclare
+模式二  worker模式   也是按着routingKey来实现  特点:多个消费者使用一个 routingKey   和上面的一样消费者使用的是 队列声明 , 也只能用一次
+模式三   pubsub 模式 使用的是exchange形式, 也就是 使用的交换机 ,交换机的type使用的是fanout , 只要定了交换机就会收到消息
+模式四   Routing模式 也就是exchange+routingKey + 完全匹配模式  当消费者定的 routingKey是对应上的话,就会收到消息
+模式五   Topic模式  也就是模糊匹配模式 使用的exchange+routingKey + type=Topic   这种模式是模糊匹配 , * 统配一个  #匹配多个
+
+	技巧: 模式是通过ExchangeTypes来指定的; rountingkey是在rabbitlistener的参数
+
+
+
+
+
+
+
+
+
+
+
+
+

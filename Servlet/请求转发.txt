@@ -1,0 +1,34 @@
+web组件之间的跳转方式:
+1.请求转发    :forward.                                    //自己处理不了了   让别人做     
+2.重定向:redirect.
+3.请求包含:include.
+-------------------------------------------------------------------------------------
+请求转发:
+	AServlet完成一些功能,Bservlet完成剩下的功能.
+常用API: 在HttpServletRequest对象中.          调度器
+	RequestDispatcher get Request Dispatcher (String path):获取请求分发器.
+		String path: 请求转发到的目标资源
+
+	void forward(ServletRequest request, ServletResponse response) :请求转发的动作.
+		不要忘记forward!!!
+
+
+                转发的过程         req.get request Dispatcher ( 路径) . forward(req,resp)
+	注意  是分发了 a的请求  其余的不管                   在哪 就用谁的响应
+请求转发的特点:
+	1.地址栏不会发生变化.还是s1.
+	2.只会有目标资源s2的响应,s1的响应不生效.
+	3.请求转发只会发出一次请求.可以在请求转发中,在多个组件中进行共享数据.
+	                   对象就是数据
+	当请求 分发               前   响应对象 就不会有执行    
+	//但是控制台的 会执行
+
+	4.请求转发可以访问WEB-INF中的资源,访问WEB-INF也只能使用请求转发.    
+		
+	只能在本项目中获取数据
+	
+	访问WEB-INF中的资源  就直接把getrequestDir....() 中的路径 填写WEB-INF 中要访问的路径
+	
+
+	5.请求转发不可以访问别人(域外)的资源.
+ 

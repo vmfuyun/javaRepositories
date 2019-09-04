@@ -1,0 +1,11 @@
+set集   
+  集合中的对象不按特定方式排序,不允许元素重复
+
+
+实现类  都多是  线程不安全的  解决方案
+
+	
+ Set  s  = Collections  . synchranizedSet(Set对象);
+
+
+底层基本用的是map  

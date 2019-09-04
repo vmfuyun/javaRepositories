@@ -1,0 +1,45 @@
+正向代理     代理的是客户端     翻墙
+
+反向代理     代理的是服务端   
+
+为什么要用Nginx   --->软件层次
+访问路径 地址   通过访问Naginx然后负载均衡策略 去让它访问别的服务器   
+		用Nginx 处理 静态资源    让tomcat更好的处理动态资源    -->动静分离
+		通过访问一个地址 来实现访问 其它的服务器的 技术    反向代理 代理服务端
+
+虚拟主机配置  -->配置在cd   conf>Nginx.
+	server{
+  		loation/{
+			虚拟主机
+			}
+	}
+		
+
+ 反向代理: 
+	vim Nginx.conf           修改location / {  }   括号里面是 proxy_pass http://xxx.xxx.xxx.xxx:xxxx ;  关键的 proxy_pass   url ; 以;结尾
+负载均衡: 
+	原理: 反向代理多个地址;  location / {proxy_pass http://myapp}  
+			   http{   upstream myapp和上面的对应{
+				ip_hash ; 策略
+				server 192.168.10.133:8080 weight=1 max_fails=2 fail_timeout=30s; 	
+				server 192.168.10.169:8080 weight=1 max_fails=2 fail_timeout=30s	
+				}
+			}  类似于这样          设置成功后 使用nginx -s reload 重新加载配置文件
+	注意策略: 
+	
+		负载均衡的策略:
+  		 轮询
+		 ip_hash 
+ 		 url_hash
+ 		 权重
+动静分离: 
+	  配置过滤的静态资源
+        location ~* \.(gif|jpg|jpeg|png|css|js|ico)$ {
+           root html/crm;
+        }
+
+ 把静态资源拷贝到nginx服务器的指定目录 html/crm
+
+ 删除原来应用的js和css  
+
+对应就是匹配规则的改变

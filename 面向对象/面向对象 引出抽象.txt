@@ -1,0 +1,89 @@
+//引出抽象方法设计
+
+/*
+1):每一个图形都有面积,
+	所在在Graph类中定义求面积的方法getArea没问题. 
+	但是, 不同的具体图形求面积的算法是不一样的,
+	也就是说,每一个图形的子类都必须去覆盖getArea方法,
+	如果不覆盖,应该语法报错,必须覆盖.
+2):在图形类中定义了getArea方法,
+	该方法不应该存在方法体,
+	因为不同图形子类求面积算法不一样,
+	父类真不知道该怎么写,所以应该提供无方法体.
+*/
+
+//图形类
+class Graph
+{
+	//求面积
+	public Double getArea()
+	{
+		return 0.0;//或者 0D
+	}
+}
+
+//圆
+class Circle
+{
+	private Integer r;//半径
+
+	Circle(Integer r)
+	{
+		this.r = r;
+	}
+
+	//求圆面积
+	public Double getArea()
+	{
+		return 3.14*r*r;
+	}
+}
+
+//矩形
+class Rectangle 
+{
+	private Integer width;//长
+	private Integer height;//高
+
+	Rectangle(Integer width,Integer height)
+	{
+		this.width = width;
+		this.height = height;
+	}
+	//求矩形面积
+	public Double getArea()
+	{
+		return width.doubleValue()*height.doubleValue();
+	}
+}
+
+//三角形
+class Triangle extends Graph
+{
+	private Integer a;
+	private Integer b;
+	private Integer c;
+
+	Triangle(Integer a,Integer b,Integer c)
+	{
+		this.a=a;
+		this.b=b;
+		this.c=c;
+	}
+}
+
+//圆(Circle)、矩形(Rectangle)、三角形(Triangle)的面积
+class GraphDemo 
+{
+	public static void main(String[] args) 
+	{
+		//输入半径,求圆面积
+		System.out.println(new Circle(10).getArea());
+
+		//输入长高,求矩形面积
+		System.out.println(new Rectangle(10,5).getArea());
+		
+		//输入三边,求三角形面积
+		System.out.println(new Triangle(10,8,5).getArea());
+	}
+}

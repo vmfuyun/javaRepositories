@@ -1,0 +1,113 @@
+静态资源: 
+	1, 一般情况会把 静态资源 放在resource 的 static 下  (例如)js.css, 一般当webapp用
+	2, 指定静态路径  - Spring.resources.static-locations (可以看到对应的默认路径) ---会把原先的路径覆盖掉
+	3, 对于 文件的上传的SpringBoot项目 是不能放在项目的内的 ,,, 一般会放在云端 或者外面
+freeMarker
+	1,原理	默认是在classpath:/templates/ 读取  
+		自动配置 spring.factories -----在spring-boot-autoconfigure  --- 自动配置的库
+		 conditionalOnClass(xxx)  条件注解    conditionalOnxxx 有这个条件后 就启用
+
+统一异常处理
+	统配符,  4xx.html ...4开头的错误都会 进入这个文件     会找 static的error   html结尾的文件
+	异常 增强器   
+		和原先的一样  增加一个增强器来 处理对应的 异常 --也需要指定模式
+mvc 配置的规范:
+	WebmvcConfigurer接口是Springmvc配置的标准 (实现)   addInterceptors  --注册拦截器  ==参数的拦截器注册器 直接可以添加 addinterceptores    
+	需要让配置对象实现该接口					addPathpatterns 添加拦截路径
+								excludePathPatterns 排除那些资源不拦截
+
+spring boot 大量的使用了 @configproperties 来设置配置
+	
+	 基本上   spring.factories      所有的类 都设置成了配置类 来实现 统一调用 调配
+
+spring 的 测试
+	 @RunWith(SpringRunner.class)
+	@SpringBootTest(classes = DataSourceTestOne.class)
+
+
+spring boot 分为两种配置 方式  一种是自定义   一种 是 自动配置  ---自动配置使用 内置的配置      这两种 不能同时用
+
+
+mysql 驱动 8.x  使用的 是cj的    
+	连接池 配置 1, boot已经把 对应的连接池 列成了 类似于一个列表 所以需要配置 对应的spring.datasource.type
+		   2, 剩下的就是 四要素   注意 8.x配置               
+		使用config properties 属性绑定来注入
+	例子:#application.properties                                                 
+	       spring.datasource.type=com.alibaba.druid.pool.DruidDataSource 
+	       spring.datasource.driver-class-name=com.mysql.jdbc.Driver 
+	       spring.datasource.url=jdbc:mysql:///rbac?
+	       useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8 
+	       spring.datasource.username=root 
+	       spring.datasource.password=admin 
+
+boot 大量的使用了 config properties来属性注入    
+		@ConfigurationProperties(prefix = "spring.datasource")    获取参数中 这个开头的   
+	 以后找的方式 就是通过 spring.factories  boot配置库来实现
+
+
+mybatis 集成
+	Mapper接口扫描器只要在   
+	 配置类      上贴个注解@MapperScan(...)即可  就是在 配置上开启 扫描接口的   (替代原先的mxl文件中的MapperScannerConfigurer)
+
+
+	#application.properties 
+	#之前在XML配置了哪些属性在这里就配置哪些属性,属性前缀mybatis 
+	mybatis.configuration.lazy-loading-enabled=true 
+	mybatis.configuration.lazy-load-trigger-methods=clone 
+	mybatis.mapper-locations=classpath:cn/wolfcode/xxx/mapper/*Mapper.xml 
+	mybatis.type-aliases-package=cn.wolfcode.xxx.domain 
+	#连接池对象不用配置,会自动注入 
+ 	
+	#打印SQL日志 
+	logging.level.包名=trace 
+	Mapper接口扫描器只要在配置类上贴个注解@MapperScan(...)即可
+
+
+事务管理
+	xml形式 使用 @importResource("classpath:spring-tx.xml")
+	
+	@Transaction---贴在service  
+	@EnableTransactionManagement---在1.x版本 需要配置开启这个
+日志:
+	appender  ---专们日志输出   叫日志输出器
+	layout  ---
+	pattern--模板输出    
+	
+	自定义  日志类: 
+	  public static final logger log = LoggerFactory.getLogger(xxx.class)     
+	
+	或者@Log4j----lombok的  代表 上面的代码-
+
+
+
+
+
+
+	
+	 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

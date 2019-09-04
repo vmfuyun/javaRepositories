@@ -1,0 +1,24 @@
+switch(整形表达式){
+	case a:  执行语句或者进入这个情况的要求  ;
+      break;
+	case b:  执行语句或者进入这个情况的要求  ;
+      break;
+	case c:  执行语句或者进入这个情况的要求  ;
+      break;
+	case d:  执行语句或者进入这个情况的要求  ;
+      break;
+	case e:  执行语句或者进入这个情况的要求  ;
+      break;
+	case f:  执行语句或者进入这个情况的要求  ;
+      break;
+
+	default:其余情况
+    	
+		}
+
+
+
+switch语句只对整数(除long)   只支持int char  进行操作
+
+
+有穿透功能  把break 去掉的话 就可以穿透到后面的   

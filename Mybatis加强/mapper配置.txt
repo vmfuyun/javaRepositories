@@ -1,0 +1,12 @@
+maven  项目的建立   
+要实现 mapper接口  必须要 mapper.xml 和 mapper.java 编译后在一起 
+怎么实现呢?   要把src/main/java放java文件  
+	           src/main/resources放 xml文件      并且 他们的路径 就是后面的是一致的
+
+
+mapper接口的 实现和原理  
+  
+只需要 java和mxl文件编译在一起   就是上面的 第一条    
+
+并且  mapper接口的全限定名称  必须是 xml的命名空间   
+方法名 必须是 xml  的 id名称   

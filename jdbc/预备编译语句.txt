@@ -1,0 +1,16 @@
+为了解决 拼接      参数不同   sql语句不同   拼接 容易出错
+
+Statement对象   又叫 静态语句对象      解决 字段的经常修改
+
+
+preparedStatement对象也就是 预编译语句对象   有模板    ?是要填写的
+
+获取   preparedStatement对象  API  有一个       conn.preparedStatement(String 的模板 加?的)  
+		SQL 语句被预编译并存储在 PreparedStatement 对象中
+	
+	给占位符设置值 
+		setObject( 第几个占位符,  设置的值 )   占位符是从1开始
+	不要调父类带参数的方法 来传sql语句
+	要调用自己的方法来传sql语句     executeUpdate DML 
+	
+	注意 DQL 的时候   那个结果集也是一个资源需要  关闭

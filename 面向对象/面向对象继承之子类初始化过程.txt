@@ -1,0 +1,103 @@
+//super子类初始化过程-创建子类对象的过程
+
+/*
+子类初始化过程:
+	创建子类对象的过程.
+
+	在创建子类对象之前,会先创建父类对象.
+	调用子类构造器之前,在子类构造器中会先调用父类的构造器,
+		默认调用的是父类无参数构造器..
+
+	1):如果父类不存在可以被子类访问的构造器,则不能存在子类.
+		(全是private权限)
+	2):如果父类没有提供无参数构造器,
+		此时子类必须显示通过super语句去调用父类带参数的构造器.
+		(或者手动写一个无参数构造器)
+
+	必须现有父类对象,而后才能有子类对象.
+	必须先调用父类构造器,而后再调用子类构造器.
+
+*/
+
+//动物
+class  Animal
+{
+	private String name;
+	private int age;
+
+	//在有了有参构造器的情况下,手动写个无参数构造器,用于被子类调用
+	Animal()
+	{
+		System.out.println("小动物午餐构造器");	
+	}
+
+	Animal(String name,int age)
+	{
+		System.out.println("小动物有参构造器");	
+		this.name = name;
+		this.age = age;
+	}
+
+	//name的setter/getter
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	public String getName()
+	{
+		return name;
+	}
+	
+	//age的setter/getter
+	public void setAge(int age)
+	{
+		this.age = age;
+	}
+	public int getAge()
+	{
+		return age;
+	}
+}
+
+//鱼
+class Fish extends Animal
+{
+	private String color;
+
+	Fish()//构造器
+	{
+		super();//调用父类的无参数构造器(本句默认调用,不写也存在)
+		System.out.println("鱼鱼午餐构造器");	
+	}
+
+	Fish(String name,int age,String color)
+	{
+		//调用父类构造这句话,必须作为子类构造器的第一句话
+		super(name , age);//调用父类构造器
+		System.out.println("鱼鱼有参构造器");
+		this.color = color;
+		//this.name = name; 无法直接初始化,需要再父类里进行初始化
+
+	}
+
+	public void say()
+	{
+		System.out.println("一条" + getAge() + "岁,名叫" + getName() + "的鱼,颜色是" + color + "的");
+	}
+}
+
+class SubclassInitDemo 
+{
+	public static void main(String[] args) 
+	{
+		Fish f1 = new Fish();
+
+		System.out.println("==============");
+
+		Fish f2 = new Fish("尼玛",5,"屎黄");
+
+		System.out.println("==============");
+
+		f2.say();
+	}
+}

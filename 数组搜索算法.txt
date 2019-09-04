@@ -1,0 +1,53 @@
+ 二分制寻找法  
+	前提 数组是顺序的 排序  例如是从小到大
+	就是拿中间值来比较 三个情况 大于  在以上索引搜索		
+				    等于   正好是这个
+				    小于   在一下的索引搜索
+              接着一半一半来找
+         >> 1 右移位相当于除以2
+
+
+	当知道循环几次 用for   不知道的用while
+
+
+
+
+	//二分查找法(二分搜索法,折半查找法)
+public class BinarySearchDemo 
+{
+	public static void main(String[] args) 
+	{
+		int[] arr = new int[] {1,2,3,4,5,6,7,8,9,10};//新建一个新的数组arr并初始化
+		int index = binarySearch(arr,8);//调用binarySearch方法,把结果赋给index
+		System.out.println(index);//输出index
+	}
+	static int binarySearch(int[] arr,int key)//新建一个方法名为binarySearch,定义目标为key
+	{
+		int low = 0;//定义数组最小索引值为low		
+		int high = arr.length - 1;//定义数组最大索引值为high
+		while (low <= high)//当数组为正常数组时,执行条件体
+		{
+			int mid = (low + high) >> 1;//定义数组中间索引值为mid
+			int midVal = arr[mid];//定义midVal来接收arr[mid]
+			if(midVal > key)//判断,如果midVal大于目标,则为true
+			{
+				high  = mid - 1;//中间索引值 -1 赋给最大索引值
+			}
+			else if(midVal < key)//判断,如果midVal小于目标,则为true
+			{
+				low = mid + 1;//中间索引值 +1 赋给最小索引值
+			}
+			else
+			{
+				return mid;//如果midVal不大于也不小于目标,返回中间索引值
+			}
+		}
+		return - 1;//如果是非正常数组,返回 -1
+	}
+}
+
+
+性能远高于线性搜索,但前提是数组必须是有顺序的,才能使用二分查找法.
+如果无序数组,也可先排序再使用二分查找法.
+该方法适宜数据量很大的情况
+     

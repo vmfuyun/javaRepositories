@@ -1,0 +1,15 @@
+列表的开头及结尾 get、remove 和 insert(插入)元素提供了统一的命名方法。
+这些操作允许将链接列表用作堆栈、队列或双端队列。 
+  强项   头尾  
+
+有一个   transient Node<E> first;   自己的第一个     字段    
+有一个    transient Node<E> last;   最后的      
+	
+	transient 是一个专属实例的  变量
+	Node<E>  作为一个节点
+
+
+线程不安全的 
+ 可以通过List list = Collections.synchronizedList(new LinkedList(...));
+变安全
+

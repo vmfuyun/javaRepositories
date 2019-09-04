@@ -1,0 +1,3 @@
+在java中String类可以定义字符串变量和字符串数组，
+length()用于求String字符串对象的长度，
+而length用  于求String字符串数组的长度。

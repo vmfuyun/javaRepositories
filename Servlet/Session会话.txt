@@ -1,0 +1,76 @@
+session 是一个服务端技术     
+
+	服务端会把 数据 存在一个位置 给浏览器返回  一个地址
+Session其本质就是一个会话Cookie(浏览器关闭之后,Session就失效了).
+
+工作原理是: 当浏览器再次访问,服务器的时候, 会携带对应的一个 cookie,这个cookie 的key 是sessionId, value是一个 token 其实是一个令牌
+	服务器会自动的按着 sessionId 来获取对应的value,  然后在服务器 的 session 类似于一个散列的表格文件  去找 以token为key的 数据
+	上面是工作原理  也就是说  这个服务端的session 可以永久有的,也可以删除      是有时效的!   
+	  那么 问题来了 就是如何在分布式中 保证session  是共享的??? 原理是和上面的一致  就是把redis当session的散列表
+	  一般使用的是cookie + session + redis + interceptor   
+	当登陆的时候 1,检查sql中登陆信息是否是一致的 ?  一致的话: 把数据存在redis中并设置30分钟的时效!  
+		key一般是userinfo 一类的前缀+uuid 这个前缀是为了区别用的, value是对应的用户信息  上面的session使用的 只是一个uuid 
+		然后创建一个cookies  key为一个固定的前缀(区别于上面的前缀) 类似于 sessionid    响应到浏览器 value为uuid ,
+		然后创建一个session 把userinfo共享过去   ---目的为了页面能直接拿到对应userinfo 也就是 session只要一创建就可以使用,
+		当浏览器 访问的时候; 使用interceptor 进行拦截 然后获取cookies  是一个数组 然后获取对应的对的cookies 
+				再获取redis中的userinfo  ---这里获取的时候 需要把数据重新设置成30分钟 因为session的时间 就是30分钟
+			判断是否是需要登陆(利用注解 handle) 需要的话 , 如果需要的话, 就要看看userinfo是不是null, 是的话 需要跳转到登陆页面; 
+			  不需要的话;就放行 并且把userinfo 共享到request 中  ----重点   这就是 不同的服务器   共享session  其实是做的类似于把session实现了一下
+								注意要共享到request中 不然浏览器是获取不到userinfo信息
+		如果浏览器再次访问 来到这个服务器的时候 就会直接获取到session中的值;
+
+		     
+		        
+
+
+
+Session的操作   
+
+创建和获取对象 
+HttpSession session = request.getSession(true);如果当前请求中存在一个Session对象,就直接返回,如果不存在Session对象,就先创建一个再返回.
+  HttpSession session = request.getSession(false);如果当前请求中存在一个Session对象,就直接返回,如果不存在Session对象,就返回null.
+  HttpSession session = request.getSession();等价于HttpSession session = request.getSession(true);
+2:往Session中存储数据.
+  session对象.setAttribute(String name,Object value);			//设置数据后  共享数据是一直再本次会话  一直存在的
+	       属性
+
+3:从Session中取出数据.
+  Object value = session对象.getAttribute(String key);
+
+4:删除Session(用户注销登陆).
+     1):删除Session中指定属性名的值.
+        session对象.removeAttrbute("currentName");
+     2):销毁Session对象(Session中所有的属性都不存在).
+        session对象.invalidate();
+
+5.Session的超时管理
+  在超时时间之内,如果客户端和服务端没有交互(用户的两次操作之间不能超过该时间),则自动的销毁Session.
+  session对象.setMaxInactiveInterval(60 * 10);//超过10分钟,销毁Session.
+  Tomcat服务器的默认超时时间为:30分钟,Tomcat一般在20多分钟就销毁了.
+
+6.URL重写.
+   Session是一种特殊的Cookie,而浏览器可以禁用Cookie.
+   此时,需要在每一个资源之后,手动的携带session的ID.
+   /session/list;jsessionid=872870F9466CE7B3A11FD3B768FDD684
+   	String url = response.encodeURL("/session/list");自动的在资源之后拼接;jsessionid=22:28 2019/4/220872870F9466CE7B3A11FD3B768FDD684
+   注意:开发中都不会取消接受Cookie的.
+
+Session的细节:
+   1:一般的,我们存储到Session中的属性名称,要唯一,我们习惯XXX_IN_SESSION:
+     session对象.setAttribute("USER_IN_SESSION","will");
+   2:若需要把多个数据存放到Session中,就得调用setAttribute方法N次,可以的.
+     一般的,我们把需要存储的数据,封装成一个对象,然后在存储到Session中.
+     把用户的信息,封装到user对象.
+     session对象.setAttribute("USER_IN_SESSION",user对象);
+   3:如果多台服务器之间需要共享Session,此时Session中的对象,必须实现java.io.Serializable(才能在网络上传输).
+      序 列 化: 把对象信息存储为二进制.
+      反序列化: 把二进制信息恢复成对象.
+   public class User implements java.io.Serializable{....}
+
+
+
+Cookie的使用:
+   1:记录登陆时间.
+   2:网页设置选项.
+   3:购物车= Cookie + 数据库
+   4:单点登陆.

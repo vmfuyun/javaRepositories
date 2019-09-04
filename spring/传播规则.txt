@@ -1,0 +1,6 @@
+业务 方法 之间调用  比较多
+required   --必须有事务  如果当前有  就用  ,,,没有的话  就建一个
+
+requires_new  必须创建一个新的
+
+nested 寄生事务 会回滚到 savepoint 保存点 

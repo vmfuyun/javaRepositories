@@ -1,0 +1,84 @@
+day01
+	freeMarker语法     模板 + 数据 = 输出   不局限于html格式 所以要指定输出格式
+		为什么用freeMarker?   1,jsp是通过servlet 然后编译到html效率 性能不如freeMarker
+				    2,静态化  减轻数据库访问的压力
+				 
+		<#include  "url"> 注意引入的时候  路径需要用..
+		<#assigin   key=value>  注意可以用""
+		<#if      >  if 条件语句 注意判断条件不用 ${}
+		<#list 集合  as 变量>  遍历
+			${变量_index}获取变量的索引
+		<#变量?string(a:b)> 类似于三元运算符  前面是空的话 执行string类型的b
+		(xxx)! 去空   
+		(xxx)??  判空
+	注意配置  
+		FreeMarkerConfigurer --配freeMarker的配置文件  主要有什么呢? 主要有编码 encoding  模板位置 templateLoaderPath  
+					如果要使用shiro的标签 或者别的框架的 需要继承这个类
+		视图解析器 必须是 FreeMarkerViewResolver    需要指定后缀,是否把session共享到界面, 输出格式
+			
+	异步请求和json格式的数据响应 $.get(url,{}json格式数据,fn),,,,$.post(url,{}json格式数据,fn)   
+			使用jquery-form插件  1,form表单中无submit  使用  $("#表单").ajaxsubmit(function(data){})
+					   2,form表单有submit  使用submit的点击事件 并异步提交$("#表单").ajaxform(function..)
+	jquery-bootstrap
+			消息提示插件   $.messager.alert("温馨提示","执行成功,两秒后自动刷新");----里面是两个参数	提示框
+				      $.messager.confirm("温馨提示","真的要删除吗?",fu) ---确认框 第一个是提示语,第二个提示语,第三个是确定后的函数 一般是调用异步提交
+	@ReaponseBody   
+			自动将方法的返回值() 自动转换成 json格式的字符串
+			自定添加 请求头   response.setContectType("application/json;charset=UTF-8")
+			jquery对象 .data("json");会自动将json格式的字符串转成js对象
+
+		什么使用ajax异步请求?    需要响应json数据的时候    效率高     局部刷新       缺点 跨域访问
+		什么时候响应json格式的数据? 页面中需要获取后台响应回来的多个数据时  
+		
+		前后台交互的时候  一般使用 接口的   
+
+shiro:	四大组件 : SecurityManager;Authenticator;Authorizer;Session Manager
+ 	将安全认证相关的功能抽取出来组成一个框架
+	解决的 登陆验证 权限管理  加密  缓存  以非常快速的完成认证、授权等功能的开发
+	在shiro.xml  配置安全管理器DefaultWebSecurityManager 参数自定义的realm, 
+		  配置shiroFilter过滤器-参数安全管理器,登陆界面,过滤规则,
+		  自定义过滤器 对验证结果进行处理返回--  继承FormAuthenticationFilter 复写onLoginSuccess方法 登陆成功,, 
+						复写onLogiinFailure 登陆失败 要指定返回类型response.setContentType("text/json;charset=UTF-8");
+	认证:::   什么是认证? 就是客户登陆客户端的会把客户的信息 输入到页面 页面 通过ajax异步提交技术,servlet请求技术等技术 把信息传输到后端, 后端再效验这些信息
+			进行判断是否可以通过
+		步骤:1,访问登陆页面  使用的是get请求   
+		       2,登陆的验证    使用 post方式  
+		       3,shiro发起的登陆验证
+		       4,验证账号--自定义realm--
+		       5,验证密码--shiro在账号正常的时候 验证密码  密码错误 抛出异常
+   		       6,处理验证的结果
+				 错误onLofinFailure() 有异常
+				成功onLoginSuccess()无异常
+	              	       7,响应页面中需要的结果数据
+			自定义过滤器,来继承FormAuthenticationFilter  --处理form表单认证的过滤器==对结果集的处理
+
+
+
+		通过对servlet添加拦截器(web.xml)名字要和Spring的baen的id一致,类名为DelegatingFilterProxy   拦截路径为/*
+		自定义realm 供查询的资源 继承 AuthorizingRealm,该类是realm 接口的实现类   复写doGetAuthenticationInfo方法  自定义认证规则
+			
+	授权	四种权限控制方法
+		1,url 级别权限控制   通过访问的路径       url 是粗颗粒的  可以做架构的    其余是细颗粒的 通过业务层实现
+		2,方法注解权限管理	通过在执行的Java方法上放置相应的注解完成
+		3,代码级别权限控制  通过写if/else授权代码块完成
+		4,页面标签权限控制  通过相应的shiro标签完成
+		每次登陆要检查对应的员工权限;
+		实现: shiro注解 注意logical为or 是否具有该权限表达式的全部才能访问这个方法的意思
+			重新加载方法 需要换取@requiresPermissions的内容
+			配置注解扫描器(注意Spring会使用cglib来代理controller)-需要参数安全管理器
+			自定义的realm...doGenAuthorizationInfo方法  进行判断 如果是超管 给最高权限,其余对应数据进行安排角色和权限的分配
+			shiro标签 需要添加到freeMarker--效果是没有权限的 不显示
+		验证失败的进行报错 可以自定义错误来 进行显示 
+	加密	
+		解决了 密码信息不安全,容易被操作人员看到,会造成 不必要的损失的问题
+		在哪加密? 注册的时候  也就是保存之前
+		登陆的时候  把登陆的密码进行加密 并去比较    增加凭证匹配器 并注入到父类中 使用@Autowired贴到setter方法上
+		
+	缓存	
+		解决 每次遇见shrio的标签都会 执行查询权限的浪费   
+		在修改了权限的地方 进行清理缓存 再加载
+导出导入功能
+	poi工具  解决ms文档的读写问题    
+	导入注意上传文件的几个注意事项:
+	 1post 2 上传格式 3,上传控件type="file"; 4,后台使用MultiPartFile  接受 , 5 参数名要和表单的name一致 6上传解析器 (mvc)名字必须是Multipartresolver	
+	导出的 需要注意的 项目是 sethander 设置 响应头 

@@ -1,0 +1,54 @@
+1 去百度   由一个 中文网    用的 理由就是为了实现  把 添加页面 放到 模态框    实现效果 感觉像弹框一样   ------目的
+		
+	模态框调用    $('#myModal').modal('show');
+
+	1 需要注意的是   要把对应的模块   放在 <baby>标签下    默认做法 不是最上面    或者  最下面  必须满足在 <baay标签下>
+	2 如何 让超链接 <a>标签   不跳转 执行 js代码       <a herf= "javascript: ;"/>----- 最经典的做法 (重  记)
+	
+
+效果  把所有的跳转 转成 弹框 ----------重点是 异步请求   json <-->js交互
+	
+	编辑的回显     实现方式  把数据绑定在编辑按钮上-----优点 优化了查询的等待时间
+	
+	实现流程 
+		1,在 编辑标签 处  添加data-xxx='{   json语句}'  标签    细节  尽量把等号 右边变成 单引号    原因: 把数据变成json后会多加""双引号
+		为了什么变成 json   为了让js用     并且 $().data(xxx) 会把内容解析成 json对象(------重--------)
+		2,在 domian层 增加 getjson方法 (属性方法   共享的是json形式的)   一般在domain层 封装 数据to json  使用map  或者 一个封装对象   
+				 注意用到依赖 fastJson 阿里的     因为在非 web conterllor层   使用fast 比较方法
+				json原始自带的   在conterllor 用比较方便 因为 可以贴注解 @ResponseBaby  --作用就是把数据转成json  (关键)
+			如何去区别 添加还是编辑 ---可以利用 传的值  有没有
+		3, 清空 input的内容---使用筛选出对应的 标签 对val 进行清零
+
+jQuery-From表单的异步提交
+		效果 会把提交的是否成功的消息发送到前端 来告知客户;;;
+		过程
+			1,发送请求
+			2,接受响应数据  (Json形式)---对应一个结果集对象
+			3,根据信息来判断   成功  刷新   失败 什么也不做  ----这个看需求
+			4,刷新    win....  location.reload----重加载----一般用 一个定时器效果比较好  setTimeout(fn,时间)
+	选择方法  
+		form表单有没有 submit按钮   有的话  用ajaxfrom    ---一般是 按钮当点击事件源   ---对应的内部异步提交  用的是 form表单
+					没有    用ajaxsubmit  
+	
+	   用jsonresult来封装结果  主要由success    和  errormsg  可以定义一个方法来 快速的 生成 代表错误情况
+
+
+
+	 $(".btn-primary").click(function () {
+        $("#editForm").ajaxSubmit(function (data) {
+                if (data.success){
+                    $.messager.alert("This?is?message!")?
+                    $.setTimeout(function () {
+                        window.location.reload();
+                    },2000)
+                }else{
+                    alert(data.errormsg);}
+            })
+        })
+
+
+
+      请求类型是 xhr类的是 异步请求---
+confrim 是确定框
+	
+

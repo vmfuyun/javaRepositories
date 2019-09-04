@@ -1,0 +1,10 @@
+< 单选框  check   单选框         >   
+
+Boolean.valueof(    )  -------
+
+
+注意 jsp 中有一个 内置 cookie   是表示 所有的Cookie    然后 点 其中一个  得到的是 单个 cookie 对象 然后再点 就可以的得到值
+
+
+注销   
+        要销毁 session .in

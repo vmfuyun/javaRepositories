@@ -1,0 +1,17 @@
+执行流程:
+1. 启动框架.
+     加载主配置文件,并且返回一个SqlSessionFactory对象.
+     解析主配置文件,会生成一个Configuration对象.该对象中就包含了主配置文件以及映射文件中的所有信息.
+     会创建连接池对象/ 会将mapper文件中的所有的数据都加载到内存.
+2. 获取SqlSesion对象: 通过连接池对象来获取session对象.
+3. 使用session对象去执行sql.使用命名空间.sqlid去找到sql.
+4. 执行/提交事务/关闭资源
+     
+
+
+
+核心的类:
+SqlSessionFactoryBuilder: 构建工厂对象的.
+SqlSessionFactory: 类似于连接池对象.
+SqlSession: 类似于数据库连接对象.
+启动框架的目的:得到SqlSession去操作sql命令.

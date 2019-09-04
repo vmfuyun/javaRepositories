@@ -1,0 +1,138 @@
+//引用类型转换和instanceof运算符
+
+/*
+基本数据类型转换:
+  自动类型转换:  
+	把小类型的数据 赋给 大类型的变量. 
+	(此时的大和小表示的容量范围)
+	byte b = 12; byte是1个字节
+	int i = b; int是4个字节
+  强制类型转换: 把大类型的数据赋给  小类型的变量.
+	short s = (short) i ;short是2个字节
+
+--------------------------------------
+
+引用类型的转换:
+  引用类型的大和小,指的是 父类 和子类的关系.
+	自动类型转换: 把子类对象赋给父类变量(多态).
+		Animal a = new Dog();
+		Object 是所有类的根类:
+		Object obj = new Dog();
+  强制类型转换:  
+	把父类类型对象赋给子类类型变量
+	(当时该父类类型变量的真实类型应该是子类类型).
+		Animal a = new Dog();
+		Dog d = (Dog)a;
+*/
+
+/*
+instanceof  运算符: 
+	判断该对象是否是某一个类的实例.
+语法格式：
+		boolean b = 对象A instanceof 类B;
+	判断 A对象是否是 B类的实例,如果是,返回true.
+
+	若对象是类的实例返回true,
+	若对象是类的父类的实例也返回true.
+
+--------------------------------------
+
+在开发中,有时候,我们只想判断是真实类型的实例,而不想判断为编译类型的实例.
+	System.out.println(obj instanceof Object);//true
+	System.out.println(obj instanceof String);//true
+
+
+*/
+
+//普通动物
+class Animal
+{
+	public void eat()
+	{
+		System.out.println("普通的吃货");
+	}
+}
+
+//狗狗
+class Dog extends Animal
+{
+	public void eat()
+	{
+		System.out.println("吃肉肉了");
+	}
+
+	public void watch()
+	{
+		System.out.println("一夫当关,万夫莫开");
+	}
+}
+
+//猫咪
+class Cat extends Animal
+{
+	public void eat()
+	{
+		System.out.println("吃鱼鱼了");
+	}
+	
+	public void catchMouse()
+	{
+		System.out.println("黑猫白猫,抓到老鼠就是好猫");
+	}
+}
+
+//饲养员
+class Person
+{
+	//喂动物(多态写法)
+	public void feed(Animal a)
+	{
+		System.out.println("去喂猫猫狗狗了~");
+		a.eat();
+		if (a instanceof Dog)
+		{
+			//引入的是Animal对象,而不是Dog,而watch在Dog中
+			//需要把Animal对象强制转换成Dog对象才能调用watch
+			Dog d = (Dog)a;//强制转换
+			d.watch();
+			
+			//把Animal对象强制转换为Cat对象
+		}else if (a instanceof Cat)
+		{
+			Cat c = (Cat)a;//强制转换
+			c.catchMouse();
+		}
+	}
+}
+
+
+class  AnimalDemo2
+{
+	public static void main(String[] args) 
+	{
+		//来个饲养员
+		Person p1 = new Person();
+
+		Dog d1 = new Dog();
+		Cat c1 = new Cat();
+
+		p1.feed(d1);//喂狗
+
+		System.out.println("~=~=~=~=~=~=~");
+
+		p1.feed(c1);//喂猫
+
+		System.out.println("~=~=~=~=~=~=~");
+
+		Object obj = "ABC";//把String对象赋给Object类型
+		System.out.println(obj instanceof Object);//true
+		System.out.println(obj instanceof String);//true
+		System.out.println(obj instanceof System);//false
+
+		System.out.println("~=~=~=~=~=~=~");
+
+		System.out.println(obj.getClass());//获取对象的真实类型
+		System.out.println(obj.getClass() == Object.class);//false
+		System.out.println(obj.getClass() == String.class);//true
+	}
+}

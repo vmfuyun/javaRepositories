@@ -1,0 +1,33 @@
+ 通过超链接 <a herf ="" >   <a/>  
+	给下载 提个名字  resp.setHeader
+	通知 浏览器 提示要下载
+	req.setContentType("")
+	//判断是不是IE 通过 请求头的User-Agent--Trident
+	gethea er-----  需要改变编码
+	获取文件所在文件   req.getServletcontext().getRealpath("//"); 然后就可以把源拷贝过去了
+	为了转回到下载  //需要拿到路径 然后写出 
+	设置  返回的是什么类型  resp.setHeader("Content-Disposition","attachment;file="+dir);   
+					处理的内容  	    附件  也就是文件
+	
+	注意有一个 Files 工具类      有一个copy   里面有一个 paths 可以直接get   和一个 output
+
+	
+		
+
+安全文件  
+	--放在WEB-INF
+
+
+写出简单做法   
+	files 工具类 顾名思义 是文件的工具类    也有把文件写到输入流的方法
+	       copy
+		public static long copy(Path source,  OutputStream out)  throws IOException
+	将文件中的所有字节复制到输出流。   
+		源代码 是先判断了 out是不是空 然后 调用的 方法 实现 把输入流 写到 输出流   是安全的 
+		 就可以通过 响应的输出流  直接输出,出去
+
+	paths  路径的工具类		此类仅由静态方法组成，通过转换路径字符串返回Path或URI 。
+	         static Path get(URI uri) 
+			将给定的URI转换为Path对象。  
+	
+	

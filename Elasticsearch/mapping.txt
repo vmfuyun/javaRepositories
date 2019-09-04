@@ -1,0 +1,12 @@
+在 sql 中  schema（发音 “skee-muh” 或者“skee-mah”，中文叫模式）是数据库的组织和结构，
+
+schemas andschemata都可以作为复数形式。
+
+模式中包含了schema对象，可以是表(table)、列(column)、数据类型(data type)、视图(view)、存储过程(stored procedures)、
+
+关系(relationships)、主键(primary key)、外键(foreign key)等。
+
+数据库模式可以用一个可视化的图来表示，它显示了数据库对象及其相互之间的关系
+
+
+在Elasticsearch 中 是 mapping 来表示 结构性的 东西,,,   当这个数据库的 一个 结构性的 东西来表示   

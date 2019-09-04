@@ -1,0 +1,130 @@
+ spring入门 
+	1,配置文件是 applictioncontext.xml  一般sts是直接有的  spring的xml    .....(开闭原则--拓展开源-修改是要关闭的  就是不要经常修改源代码)
+	2,spring是基于 javabean的基础      就是说 xml文件 上面写的是 bean   ---
+	3,loc容器 用来 管理 对象的 ---创建--销毁---   所以类必须 要有无参构造器   不用关心访问权限  因为spring底层用的是 class.setaccessible 
+								注意 内省 bean 是beaninfo 获取 pro---属性描述器 然后遍历 获取 getwriter method方法 然后 invoke 直接调用
+		DI 是在上面的基础上 进行设置 -也叫属性注入-在xml文件 ---    
+	主要有一个 beanfactory.getbean()----获取对象 三种获取方式   ()主要用name和class对象 
+约束----schemalocation  --位置加载 也就是说加载什么 
+	
+	约束是xsd结尾格式的       mybatis是tdt的
+	bean    元素 id  name  3.1后是一样的   name是支持 空格 来起别名    一般 用 id  .....
+	<import   resource="">---多个xml 拓展性 开发  --注意是从classpath 根目录去寻找 
+		---一般 找路径的话  要加上前缀(classpath:) 有利于查找 因为只有实现了resource 接口 的才能找到
+注解
+@runwith---运行环境 Springjunit4classRunner.class---  测试 交给Spring管理
+@Contextconfiguration--获取上下文配置文件  加载配置文件的   默认找		对应测试类-context.xml   --必须在一起
+@Autowired---按着类型去loc容器 去找bean对象 并设置到该字段--可以直接拿到application或beanfactory     ----用这个必须该类已经被管理
+@springJUnitconfig---运行在junit环境下--集成了 Contextconfig--应用于junit5 默认是去找	测试类-context.xml
+
+获取loc容器对象方式
+classpathresource-----resource-----Xmlbeanfactory--- beansfactory---
+beanfacetory----延迟初始化(lazy) 当在loc容器再创建对象
+
+ApplicationContext---- calsspathXmlApplicationContext
+ApplicationContext--直接初始化--常用                                ----bean有一个lazy
+
+bean实例化
+	1,构造实例化 最标准---以上
+	2,静态工厂--spring遗留问题---通过bean(xml文件) 的facetory-method方法来添实现(静态方法)
+	3,实例工厂---实例建立然后调用方法--factory-bean就是工厂对象
+	4实现FactoryBean接口实例化----集成mybatis的时候---应该是把sqlsessionfacetory当一个 bean来使用-----
+		--要实现facetorybean--成为一个工厂(固定了实现方式类似于实例工厂)----默认是单例 ---
+		--一般是判断是不是继承了factorybean(工厂模式创建  去看下这个接口) 如果继承了 就直接得到对象 get object
+  不要忘了 loc 就是一个制造bean的容器
+
+bean作用域-----spring-Core有一个操作文档
+	<bean id="" scope=""/> 默认是单例singleton
+			prototype多例 每次都是新的
+销毁和初始化
+	<bean>标签是有init-method.......destroy-method-----用在连接池
+	scope是prototype的话  也是创建一个
+bean的生命周期
+	beanFacetory 延时初始化
+	ApplicationContext--启动spring 的时候  就初始化
+
+
+DI注入依赖
+	对 对象设置值 两种 setter 构造器
+	设置的值的类型
+		1,常量	value
+		2,对象类型  ref
+自动装配  
+	就是一个类包含一个类对象(包含关系) 怎么装配?
+	setter方法
+	property  name   value  --简单类型  是调用的setter方法
+	对象类型的话 是 porperty  ref=        一个bean的id  --对象类型
+	集合类型的话  也差不多  通过property  <array><list><property>直接用value
+	在init之前
+	
+	构造器方法
+	<constructor-arg    value> ---默认和构造器的顺序一址--  
+	有type 和index 很少用
+	通过参数名来注入  name  value  --简单类型
+	对象类型 name  bean
+	集合类型  <collcetion>
+		<set>标签
+	内部类  
+		直接 在里面加bean
+
+bean元素继承
+	把共同的数据或者共同的属性 抽离出来--bean id="" abstract="true"
+	子bean 设置parent=上面的父bean
+	和java的没有什么关系      bean元素的继承 就是一个复制粘贴
+	
+ 
+配置连接池
+	也就是把要获取的 连接池对象  交给spring 来创建 对象
+	注意架包
+	dataSource连接池     注意建立init-method () 和destroy-method 方法  也就是连接池的初始化和销毁
+	用db.properties 来存四要素  
+	加载 .properties 需要context命名空间 ------  加约束   就可以得到 标签了 bean 的命名空间
+	schema设置模式
+	<context:property-placeholder location="classpath:">  ---加载properties----就可以用 ${}
+	本地有一个username  所以尽量 去弄一个前缀
+	手动加载 约束一定玩一遍  ------------1,把上面的感觉是项目名的改成 context  然后模仿 已有的
+spring和mybatis集成
+	目的  是直接拿到 mapper接口,,,mybatis的连接池 不用  其余的factory sqlsession 不用  
+	war 报错是因为 web.xml
+	pom.xml--编译级别1.8---依赖-- 主要有桥梁  mybatis和spring的桥梁    ---连接池--  ---jdbc
+					mybatis-spring
+	----注意版本问题
+	数据库---utf8--4 支持表情
+	
+	加载properties......location:calsspath  ----system--不适用系统名字
+	连接连接池对象(datarouce)     init     close   注意要有元素      ---四个
+	配置sqlsessionfactoryBean 里面实现了 sqlsessionfactory
+		关联连接池    ----datasoutce
+		属性配置	mybatis-config.xml------config
+		起别名     -----   
+		关联mapper配置  ---  
+	一切都在 sqlsessionFactoryBean.class
+	一般都是要用 classpath:mappers/*Mapper.xml-----加载所有的mapper.xml文件
+
+	创建 代理对象   mapperfactory  
+
+
+factoryBean 是一个动作类 就是可以制作 对应 工厂的  ................这里面有一个get object方法  当被配置后  一般就返回了对应的工厂
+
+Beanfactory 是一个 工厂 可以制作bean
+
+一般 是什么接口 就是名字的附近 一般错不聊
+
+
+一般分以下 步骤  例如首先干什么  
+	 然后 spring  给干什么
+
+<bean id="" class="">-----class 只能是真正的实现类 ---就是 普通的类  
+
+
+
+
+
+
+
+
+
+
+
+
+

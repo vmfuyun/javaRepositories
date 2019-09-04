@@ -1,0 +1,22 @@
+invoke
+public Object invoke(Object obj,
+                     Object... args)
+                                           得到这个对象method 的对象后   启动这个方法的方法  ( 填写 调用者 )
+			必须先有对象
+参数：
+obj - 从中调用底层方法的对象
+args - 用于方法调用的参数 
+
+
+
+当 调用     
+(非public修饰的)  方法 或者 字段  
+要用    方法对象  或者 字段对象   或者  构造方法对象  setAccessible(true);
+
+
+getMethod( methodname ,      参数类型   .class )   
+
+注意权限 和那个 继承      不继承的
+
+
+

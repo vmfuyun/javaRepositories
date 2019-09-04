@@ -1,0 +1,109 @@
+//演示Object类中的方法
+
+/*
+Object类是Java语言的根类,
+	要么是一个类的直接父类,要么就是一个类的间接父类.
+		class  ABC{}   其实等价于:  
+		class  ABC extends Object{}
+
+-----------------------------------
+
+所有对象（包括数组）都实现这个类的方法,这句话如何理解?
+
+-----------------------------------
+
+为什么Object是所有类的根类,到底什么是Object.
+	Object本身指对象的意思,  
+	我们发现所有的对象都具有某一些共同的行为,
+	所以,我们抽象出一个类:Object,
+	表示对象类,其他都会继承于Object类,
+	也就拥有Object类中的方法.
+
+引用数据类型:
+	类/接口/数组,引用类型又称之为对象类,
+	所谓的数组变量名称,应该指数组对象.
+*/
+
+/*
+Object类的常见方法:
+
+1): protected  void finalize() :
+	当垃圾回收器确定不存在对该对象的更多引用时，
+	由对象的垃圾回收器调用此方法。 
+	垃圾回收器在回收某一个对象之前,
+	会先调用该方法,做扫尾操作. 
+	该方法我们不要去调用.
+2): Class  getClass() :
+	返回当前对象的真实类型。 
+3): int hashCode(): 
+	返回该对象的哈希码值,
+	hashCode决定了对象再哈希表中的存储位置,
+		不同对象的hashCode是不一样的.
+4): boolean equals(Object obj) :
+	拿当前对象(this)和参数obj做比较.
+		在Object类中的equals方法,
+		本身和 “ == ”符号相同,都是比较对象的内存地址.
+	官方建议:
+		每个类都应该覆盖equals方法,不要比较内存地址,
+		而去比较我们关心的数据.,
+		因为我们关系的是内容数据,而不是内存地址.
+		比如:两个学生对象,我们不管是如何new出来的,
+		只要学号相同我就应该认为是同一个对象.
+		两个字符串,只要内容相同,我们就认为是同一个字符串.
+5):String toString():
+	表示把一个对象转换为字符串. 
+	打印对象时,其实打印的就是对象的toString方法.
+	System.out.println(obj对象);等价于  
+	System.out.println(obj对象.toString());
+	默认情况下打印对象,打印的是对象的十六进制的hashCode值,
+	但是我们更关系对象中存储的数据.
+	官方建议:
+		我们应该每个类都应该覆盖toString,返回我们关心的数据.
+
+*/
+
+class ObjectDemo 
+{
+	public static void main(String[] args) 
+	{
+		String str1 = new String ("AA");
+		String str2 = new String ("AA"); 
+
+		Object o1 = new Object();
+		Object o2 = new Object();
+		
+		//返回该对象的哈希码值
+		System.out.println(str1.hashCode());
+		System.out.println(str2.hashCode());
+		
+		//== 和 equals 比较
+		//在Object类中的equals方法,和 == 相同,是比较对象的内存地址.
+		System.out.println(o1 == o2);
+		System.out.println(o1.equals(o2));
+
+		//子类中的equals,覆盖了父类equals方法,比较的是内容
+		System.out.println(str1 == str2);
+		System.out.println(str1.equals(str2));
+
+		User u1 = new User("欣任",19);
+		System.out.println(u1);//在类中加了toString,效果同下
+		System.out.println(u1.toString());//效果同上
+	}
+}
+
+class User
+{
+	private String name;
+	private int age;
+
+	User(String name,int age)
+	{
+		this.name = name;
+		this.age = age;
+	}
+	//若不加toString代码,则打印的是hashCode
+	public String toString()
+	{
+		return this.name + ", " + this.age;
+	}
+}

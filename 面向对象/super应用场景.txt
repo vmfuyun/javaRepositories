@@ -1,0 +1,60 @@
+//super应用场景和各种隐藏现象
+
+/*
+super关键字的使用场景:
+	1):可以使用super解决子类隐藏了父类的字段情况.
+		该情况,我们一般不讨论,因为破坏封装.
+	2):在子类方法中,调用父类被覆盖的方法,
+		引出super的例子,此时必须使用super.
+	3):在子类构造器中,调用父类构造器,
+		此时必须使用super语句:super([实参]).
+*/
+
+/*
+所谓隐藏就是“遮蔽”的意思。
+
+	1)满足继承的访问权限下，隐藏父类静态方法：
+		若子类定义的静态方法的签名和超类中的静态方法签名相同，
+		那么此时就是隐藏父类方法。
+		注意：仅仅是静态方法,子类存在和父类一模一样的静态方法.
+	2)满足继承的访问权限下，隐藏父类字段：
+		若子类中定义的字段和超类中的字段名相同(不管类型)，
+		此时就是隐藏父类字段，
+		此时只能通过super访问被隐藏的字段。
+	3)隐藏本类字段：
+		若本类中某局部变量名和字段名相同，
+		此时就是隐藏本类字段，
+		此时只能通过this访问被隐藏的字段。
+-----------------------------------
+	static不能和super以及this共存.
+	super与this可以共存.
+
+*/
+
+class SuperClass{
+	public   String name = "superClass.name";
+
+	public  static void ooxx(){}
+}
+
+class SubClass extends SuperClass
+{
+     public   int name = 18; //隐藏了父类的name字段
+
+     public void doWork()
+     {
+		boolean   name = false;//隐藏了本类中的字段
+		System.out.println(name);//false 就近原则
+		System.out.println(this.name);//18	调用本类
+		System.out.println(super.name);//superClass.name 调用父类
+     }
+      public  static void ooxx(){}//隐藏,不叫覆盖,隐藏了父类的ooxx
+}
+
+class HideDemo
+{
+	public static void main(String[] arga)
+	{
+		new SubClass().doWork();
+	}
+}

@@ -1,0 +1,49 @@
+
+一般资源关闭 就不能使用流对象
+
+system类    有一个get  properties 方法  获取系统的所有属性         是个map  可以通过 entryset来获取所有的
+
+	有一个 get property( ''  User.dir ''  )     获取当前项目路径
+		                     file.encoding 编码
+
+四个类 都是fileinputStream     fileoutputstream       fileread      filewrite
+
+字节流不能用中文
+
+按着步骤 1 源  2 创建流   3 操作 4 关闭  close
+
+writer
+
+文件流 构造器 有一个布尔类型的 是可以表示是否追加数据
+
+out.writer() 有传一个字节     byte[] 数组  这个可以通过String .getByte来体现       一般直接通过getByte来实现
+			有一个参数 是从哪开始多少个
+
+
+
+
+读取                                       API
+	read   读不到的时候返回 -1      有一个一个的读   一个一个的时候 是把读到的返回到 int  
+	有直接读 一个数组   这个长度 可以通过                                                                  1024是一般正常的长度
+		对象.read(接受数组)         返回   读到的有效长度  如果读完了 就返回-1
+	
+	可以通过新建一个String类的对象传一个byte数组     可以指定长度 得到str
+	int len =-1;              通过是不是-1 来判断 是不是读取完毕           
+						 就像哪个指针 必须把读到的指针给确定下来
+	可以通过 while((len = in.read(数组名))!= -1){
+		String str = new String(数组名,0,长度len)              //  从0 -len   有效长度
+		system.out.println(str);
+	}
+							每个流都有 读的长度  和指定读取的长度和 从哪开始 哪结束
+			
+							输出的话  有一个追加  是创建对象的时候 构造器   文件名   ture
+
+
+
+字符流  也是 一样 
+
+
+
+但是有一个   flush 刷新功能           
+读取磁盘的数据 或者 写出数据  一直存  会伤CPU  
+所以就把这个存在一种缓冲的内存中   当close的时候  会刷新    或者手动刷新写入

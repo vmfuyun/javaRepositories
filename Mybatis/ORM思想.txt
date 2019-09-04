@@ -1,0 +1,7 @@
+映射对象关系
+
+目前流行的ORM框架：
+1.JPA:本身是一种ORM规范,不是ORM框架.由各大ORM框架提供实现.
+2.Hibernate:之前最流行的ORM框架.设计灵巧,性能优秀,文档丰富.
+3.MyBatis:本是apache的一个开源项目iBatis,提供的持久层框架包括SQL Maps和DAO,允许开发人员直接编写SQL.
+等

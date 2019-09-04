@@ -1,0 +1,19 @@
+注意 访问的是支付宝的网关  并把参数封装到一个html文件上 注意返回的时候 添加上类型 response.setContentType("text/html; charset=utf-8");   不然会执行不到访问
+	-->支付登陆-->登陆-->付钱-->异步发消息-->同步重定向到自己的应用上然后把数据带在地址栏 get形式
+	
+	一般我们需要把 所需要的参数 设置到码云上 单独一个配置文件  参数最好去看演示文件  
+	return_url 路径是同步通知的情况::
+	notify_url 路径是异步通知的情况 是会发送异步请求的
+
+	他们的请求参数:   应用向支付宝发送的是 订单号,订单金额,商品名,商品描述,appID,sign,  并把这些参数进行加密(使用应用的私钥加密)
+	
+	支付宝 向应用发的参数是  订单号,交易流水号,交易金额,sign      并把这些参数按着支付宝私钥 加密
+	
+	处理的方式是    发起方 进行私钥加密  对方使用公钥 解密
+
+
+异常: Tunnel 38vwwp.natappfree.cc not found   
+	一般是内网穿透的 域名改变了  需要修改对应的域名
+
+        Error updating database.  Cause: java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '13088889999-2' for key 'user_id'
+	一般我们会在mysql设置对应的唯一索引 如果是有重复的 就会出现  xxx-2有重复条目的错误

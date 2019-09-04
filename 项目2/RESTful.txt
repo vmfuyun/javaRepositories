@@ -1,0 +1,110 @@
+  在 contorller 使用了 @RequrstMapping 标签后  可以使用类似 {参数名} 占位符的方式来传参 ..
+		此时需要使用 @PathVariable  把 占位符的 数据   绑定在 处理的方法上   
+	目前 基本约定 如果是要返回json 就要指定请求头	
+            REST从字面上讲叫做Representational State Transfer，翻译成表现层状态转移，但是一般在翻译的时候，
+             前面会加一个Resource资源，即Resource Representational State Transfer，即为资源表现层状态转移。
+	
+	例子: @RequestMapping("/xx/{id}")
+	       参数处使用 @PathVariable("id")   ----注意注解的名称   
+			获取路径上的数据     叫路径占位符    如果参数是对象 自动 注入到对象的属性上
+注意: .do 路径的是不能使用 RESTful风格      
+	处理方法  再添加一个 前端控制器   url-patten 为 / 
+		mvc.xml文件添加    <mvc:resources mapping="" location=""></mvc:resources>
+				 匹配对应的访问路径 把静态的 访问排除在外
+
+什么是RESTful?
+	综合上面的解释，我们总结一下什么是RESTful架构：
+	（1）每一个URI代表一种资源；
+	（2）客户端和服务器之间，传递这种资源的某种表现层；
+	（3）客户端通过HTTP提供的统一接口，对服务器端资源进行操作，实现"表现层（使用HTTP动词去促使服务器端资源的）状态转化"。
+	resource 资源     在网络上万物皆资源
+	 表现层   -----  表现的形式  一般用 头信息   Content-type: appliction/json
+	状态转移:  就是 资源的 或者数据的变化 转化  
+	统一接口 --      get/post/put/ delete 
+
+	uri 指向资源 ----不要把动作 写上去---就是不能写增删改查   通过方法来实现 是什么
+
+系统接口: 就是把功能 作为服务 暴露给外部:    分 公共接口 和公司内部接口   
+	一般接口 就是 原先上班的 资源路径    它是一个 连接的接口  ---  
+	  一般在 云平台上有 这一类的接口
+
+
+
+设计  (重要)           1,资源路径  2 请求动作  3 请求参数  4返回数据   重要的四步骤
+	api   uri   必须是名词或者复数    访问的直接是数据库的表名  
+         动作 :  get     post     put(整个对象)     delete (删除需要返回204 状态码 也叫无数据返回)    
+		        patch  更新 对象的个别属性  
+
+	   head 获取资源的个别数据
+	   options  获取某个资源的 api
+	
+          返回: get 集合/数组
+	  get 1个 返回单个
+	 post   返回新生成的资源对象
+	delete 返回空   204状态
+         状态码: 
+	
+ accept和Content-Type的区别      
+	 accept属于请求头  想要让服务器返回什么格式的数据---==-=
+	 Content-Type是实体头  说的是携带的是 什么格式的数据   
+	
+	浏览器 发送请求的时候  可以带这两个  一个 是期望的类型accept   一个是我现在发的数据是什么格式的   Content-Type
+	
+
+
+接口设计:
+	资源地址 : 表名  
+	请求动作: get,post,put,delete
+   	亲求参数:
+	返回结果:    
+
+	规定请求方式:  通过 注解: requestMapping(value={},method={})  可以设计成多个 路径 和方法
+	
+	一般用@restController              如果后面有对应的数据 会变成默认的bean的名字
+传入限制:	@DeleteMapping("/{id:\\d+}")     限制 不让填入 负数
+	如果有y 结尾的复数 用ies 结尾
+
+	如果返回状态码是  204  也叫 没有提交  没有内容
+	
+xml文件 映射实体类  
+	@XmlRootElement(name = "xml")
+	@XmlAccessorType(XmlAccessType.FIELD)  --- 抑制字段
+
+	400 是参数问题 看是到哪了  然后 去哪贴注解   datatimeformat 是前端 到后端 用来 封装
+		    @jsonformat  是 后端到前端发数据的时候  进行格式化显示的  注意加 GMT+8  
+	    注意看前后端 是谁传给谁的   
+
+	参数  有如果有重复 注意改名字     如果是 对象属性  怎么注入  通过 对象属性.属性  就是把对应的输入
+
+-------难点
+	requestMapping中的  param参数  必须带有指定参数名和参数值 才能访问 
+			// 只有指定参数的(也叫在地址栏的带着这个参数的 ? xxx=xxx) 才能进来
+		      headers()     必须带有指定的content-type=text/xml 请求实体头才能进来   不然会报415
+		两个 requestMapping 请求的设置不能相同
+	不会多去看源代码
+	
+	前端到后端   是消费  consumes    是请求头的 缩写(把content-type去掉)   也是指定格式的才能访问  (就是消费前端的头信息对应的 数据  也就是消化它)
+	
+produces  生产 生成 对应 accept 的请求期望的类型    //如果指定了accept 就会检查 不指定 不检查
+	方法仅处理request请求中Accept头中包含了"application/json"的请求，同时暗示了返回的内容类型为application/json;
+	
+	form-data 头是二进制 只有有 上传 的解析器 才能用 
+	
+ 	raw  ---测试 发过来的 json  
+
+
+页面ajax发送 delete /put请求 	 $.ajax({method: "delete",
+				url:""	 
+			     })
+		mvc默认是不支持put请求(获取不到数据)  解决  加 过滤器    
+	FormContentFilter  
+form表单
+	实现put请求(无put请求方法) 处理方法  加过滤器 HiddenhttpMethodFilter 
+		  要求必须是post 并且必须有隐藏域 name=_method ,value=put
+
+跨域访问问题:
+	协议+域名+端口 三者相同才是 同源    ajax才能访问     
+
+	上述有一个 不同 就是跨域  会报错   
+
+	图片的问题   1 自建服务器  或  第三方(阿里云oss///) CDN内容分发  

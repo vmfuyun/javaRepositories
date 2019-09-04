@@ -1,0 +1,31 @@
+ 请求接口     封装了请求的数据和获取请求数据的方法,       是servletRequest
+
+注意 get请求        注册信息在请求行       
+getmethod 获取是什么请求          
+getRequestURI        只拿到资源的名称	返回请求行中的资源名字部分
+.................URL全部协议
+getcontextpath 得到上下路径...的path
+
+
+getHeader(名称)...获取指定的名称请求头   
+	key            一般是查user-agent
+getremoteAddr 获取IP  ....一类
+
+获取表单的参数(重要)                       可以通过地址栏   ?  ...=..   & ...=...   来模拟表单
+getParameter----通过指定参数获取参数值
+getParameterValues()------获取多个指定name的 值  多选值   (一般是多选)
+
+getParameterNames  获取所有参数名字
+getParameterMap 把所有的表单数据 保存在Map  (map的遍历要通过key value 或者entry)   一般是用entry
+
+
+
+注意 有init 是通过Servletconfig来调用的
+
+
+
+注册实例      action 输入 url-pr 地址                      
+	get  是不会乱码   -------
+	post 必须要去setcharatorencoding为utf-8
+	修改界面 尽量去刷新
+	

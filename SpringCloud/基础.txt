@@ -1,0 +1,198 @@
+集群
+
+spring cloud  是基于http协议
+dubbo是基于 tcp -rpc  协议
+
+dubbox 是基于dubbo的加强 增加了 restful 和序列化  
+
+spring cloud 是提供的是一站式解决方案  
+
+Spring cloud基于boot    
+boot专注于个体的个体微服务开发
+
+需要在主程序配置类 添加@enableEurekaservice 开启注册中心服务        需要两个位置都要用客户端    使用的是rest服务(对请求方法有要求)
+
+服务注册和发现  Eureka  -->为了解决 服务的调用如果再添加服务器 其余的服务(在不改变配置的情况中)不知道添加了服务的问题  解决频繁修改配置文件
+    注册中心的作用:	动态的 添加服务  增加节点和 删除节点  作用
+    Netflix 开发的   
+	配置文件一般都在官方网站的开发文档  -->可以是多个节点 集群
+	为了更好的操作 需要添加 公共的 api 当一个单独的项目来 操作 需要序列化  生产者和消费者 都需要这个api
+	为了消费者 让客户调用  所以需要 web 和 注册中心的客户端
+	<optional> 依赖是否传递
+注册中心的自动保护机制
+	满足心跳失败比例在 15 分钟之内低于 85%,就会触发eureka的服务保护机制  
+注册中心的客户端会 30秒发送心跳包   三次周期(90s)会删除掉  当存活率低于85% 是按着总数的比例来计算的  就会认为是网络波动 会把服务保护起来
+可以通过 设置 自我保护去掉 (不推荐)  
+
+Ribbon  客户端负载均衡
+order-server
+restTemplate   是springCloud 的Ribbon客户的http客户端 的工具类    spring内置的http请求封装   因为是一个rest服务 所以封装名
+
+注意 static 是在程序中是一个独立的 公共的 
+为了区别 尽量自己的new 一个 区别出来
+
+restTemlate 实现负载均衡 
+	getForObject(http://service名字:)
+	@LoadBalanced 加载平衡
+不单单的是轮询的负载均衡
+	如果有保护机制的话: 会每次检查是否访问成功, 如果哪个节点失败的次数比较多 就不会去选择这个节点   是有记录的
+负载均衡 策略
+	写在消费者 然后名字是你要对谁做轮询,
+	一般找Irule的实现类是策略  写在 ribbon: NFLoadBalancerRuleClassName: 实现Irule的全限定类名      指定的负载均衡策略会强制执行会覆盖掉原先的策略
+feign -->实现接口调用      
+
+Feign是一个声明式的伪Http客户端，它使得写Http客户端变得更简单。
+使用Feign，只需要创建一个接口并注解。它具有可插拔的注解特性，
+Feign默认集成了Ribbon，并和Eureka结合，默认实现了负载均衡的效果
+
+使用@FeignClient注解来声明Feign Client接口    也就是他们都可以调用的 客户端接口   必须提供一个完整的url
+在api创建feign                                                            ---一般在他们公共需要使用的地方
+	@FeinClient() 要实现的服务的名字
+	get方法 @requestMapping(/) 对应的url
+	参数添加@requestParam("id") 对应的注入 必须有不然就实现不了接口
+	
+service的项目
+	controller实现上面的接口
+	注意要把扫描的启动类 放在比较高的地方
+消费者
+	启动类@enableFeinClient  
+	controller 直接注入
+超时问题
+	默认是1s,在消费者
+	connect连接时间
+	read 读物时间
+	feifn:client:config:
+超时重试
+	默认是2次 	默认是一个超时会去下一个server
+	任务容易执行两次,幂等性实现: 只有insert方法 要进行实现,其他的操作都是幂等性的
+	在消费者 修改MaxAutoRetries:0
+		    MaxAutoRetriesNextServer:0
+
+hystrix 熔断器,服务降级     -->一般是调用者有配置的权限
+	熔断 出现错误 断开与下游的连接 被动触发
+	降级 把不核心的业务关闭 让核心的业务更好的运行
+
+	服务器的雪崩
+		因为其中的一个服务不可用 超时,异常等,很多请求去访问 导致tomcat的访问达到最大连接数 导致整个服务直接挂掉
+		超时机制,限流限制线程个数,服务熔断 出现大量的访问超时 就直接报错,服务降级 某个服务熔断之后，服务将不再被调用
+	步骤: 依赖-->启动类开启-->在消费者的方法上贴上@HystrixCommand(fallbackMethod="xxFallback") 要和源方法签名一致(会有熔断,降级功能  走兜底)
+			也会间接的去访问 看是不是通的   
+	我们想如果放在生产者(被调用者) 如果出现错误  给调用者一个错误或者null  
+	解决: 在api的feign的 feignClient注解 添加fallback  按着要求来实现 实现贴有FeignClient的接口,并交给spring管理, 并在调用者中开启feign的hystrix支持
+问题通知-->运维人员:
+	在调用者添加依赖,配置host ,port
+	redis 设置时间 然后判断是不是空的  空发短信然后 设置redis 否则不用  
+hystrix限流:分配线程数
+	熔断隔离策略:如果很快的返回(处理) 就用信号量
+		其于用线程池 (线程之前的信息交换)
+hystrix超时:
+	一般Hystrix的超时间要大于ribbon的超时时间      它会覆盖掉ribbon的超时时间 
+ 	一般只会启用Hystrix的超时时间
+	
+	hystrix:
+	  command:
+	    default:
+	      execution:
+	        isolation:
+	          thread:
+	            timeoutInMilliseconds: 4000
+	
+
+
+
+
+
+zuul网关:	--->底层是servlet
+	对外的暴露的唯一个网段,统一做非业务的逻辑(拦截限流,白名单,黑名单) ,负载均衡,效验,路由,请求过滤                    com.netflix.zuul.exception.ZuulException:  
+	--->连注册中心							Zuul中默认就已经集成了Ribbon负载均衡和Hystix熔断机制。
+	--->网络隔离                                                                                                          但是所有的超时策略都是走的默认值，比如熔断超时时间只有1S，很容易就触发了
+	访问的时候 使用的 xxx:9000/配置文件的应用名/url
+	定义路由规则
+		在zuul设置 
+		zuul:
+		   ignoredPatterns:   /*-server/** 排除这个类型的路由规则
+		   routes:
+		      order-server-route:
+		      path: /order/**
+		      serviceId: order-server
+	
+
+	网关默认是把"Cookie", "Set-Cookie", "Authorization"会拦截   在Zuulproperties类中查看到
+	直接在zuul添加sensiticeHeaders : 
+
+	zuul运行流程
+	 底层是一个servlet
+	Zuul过滤器
+		类型：通常在应用过滤器时在路由流程中定义阶段（尽管它可以是任何自定义字符串）
+		执行顺序：在类型中应用，定义跨多个过滤器的执行顺序
+		标准：执行过滤器所需的条件
+		操作：满足条件时要执行的操作
+	
+	
+	拦截鉴权
+	继承ZuulFilter 
+	方法
+	filterType  说的是这个过滤器是什么类型的 是前置的还是路由的 
+	filterOrder  在上面的类型的过滤器连中, 定义   执行顺序,, 数值越小 越先执行,
+	shoudFilter 什么样的需要拦截 ture 拦截, false 不拦截 ,,拦截规则
+	run  满足上述条件时  要进行的操作
+
+Sleuth&Zipkin 链路追踪   日志 添加标识  更好的定位问题
+	埋点:  在应用中特定的流程收集一些信息，用来跟踪应用使用的状况，后续用来进一步优化产品或是提供运营的数据支撑，
+		包括访问数（Visits），访客数（Visitor），停留时长（Time On Site），页面浏览数（Page Views）和跳出率（Bounce Rate）。
+		这样的信息收集可以大致分为两种：页面统计（track this virtual page view），统计操作行为（track this button by an event）。
+	日志 @slf4j
+	
+	sleuth 第一个值是服务的名字  第二 对应的请求的id码  第三 同一个服务是一样的 第四 是否存到zipkin
+	只会存到zipkin 0.1默认
+
+分布式配置中心Config
+	真实开发:
+	开发环境:
+	测试环境:
+	准生产环境:
+	生产环境:  
+		数据库是不一样的,环境的切换, 配置也要修改
+	修改了配置 自动加载:
+	工作原理:
+		把config上传到 github,gitlab,码云  
+		然后springcould 会进行 拉取
+		集成 bus总线 rabbitmq  mq用广播模式 告诉服务要去拉取   开关是post请求发送
+	1,使用分支区分不同环境的配置文
+	master,dev,test  切换分支 直接修改前面的分支名字
+	2,使用profile来区分 后缀的不一样读出也是不一样的
+	
+	各个服务都要有config中心的依赖  bootstrap.yml启动的配置  添加上配置中心的信息和注册中心
+	
+	启动的时候还是8080 原因 1 没有添加依赖  2 你的配置文件没有修改成bootstrap.yml  3 你的配置文件有问题 使用localhost:9100:/xxx.yml 来检查 信息是不是有问题   
+	
+	bus 添加   集成rabbitMQ 
+		注意添加@refreshScope 刷新参数   
+		port是修改不管用的
+		只适合在开发环境用  生产环境不能用
+	05.访问验证 post方式: http://localhost:8090/actuator/bus-refresh     这个actuator 是springboot 的 对应用的自身监控,包括配置查看等功能。
+								后面的就是对应的一个 bus-refresh 命令
+		bus总线流程	当git文件更改的时候，通过pc端用post 向端口为8090的config-client发送请求/bus/refresh／；此时8090端口会发送一个消息，
+			由消息总线向其他服务传递，从而使整个微服务集群都达到更新配置文件。
+
+
+
+
+
+
+
+
+
+注意
+@bean 的名字是方法的名字
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,14 @@
+
+断言失败  红色      断言成功 是绿色
+
+
+Assert.assert Equals(message,expected,actual)     比较的值    注意这个equals
+
+message  :  断言失败的提示信息,断言成功不会提示
+
+expected 是期望值  
+actual  是真实值
+
+
+
+注意这个 Assert  是junti 包里面的

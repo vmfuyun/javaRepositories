@@ -1,0 +1,9 @@
+ 解决 列名和属性名 对应不上
+		
+resultMap type (要与哪个类型映射  其实是列转成的什么)   id 是就是一个标志
+里面的元素的 id    result  ...column  --property  
+
+然后查询完毕后  标签上调用一下   resultMap =""id标记  
+
+
+这也是 mybatis 最强大的东西

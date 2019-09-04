@@ -1,0 +1,92 @@
+1,员工的页面改造
+	list界面--->freeMarker---<#include   ""/>  <#assingn key=value>    <#list  集合 as 变量/>
+
+	注意 分页 ---sql删除limit一行        开始pagehepler.start(去的页,数据数)    service层 开启分页的下一行是要做的分页sql    查询出来的list 再封装到pageinfo
+	
+	删除操作    --在删除绑定data属性   公共的抽离--js--system commonAll.js     304 状态是缓存状态 status   可以禁用缓存 在上面的按钮    
+		                异步请求-->发sjax-->响应json-->  conterllor--@reqsBaby-->
+	
+	
+	freeMarkar  --<#if(变量??)>     判断两个 <#if  变量??  &&  变量2??>      $(e?? && e.admin) ? string(true,false)
+			??：判断变量是否存在     ??运算符返回布尔值，如：variable??，如果变量存在，返回true，否则返回false
+	
+	数据的校验---js有可能被禁用--- java代码校验 ---数据库校验  三层防护 为了数据的合理性  
+	   	插件jquery-validation  资料   看源码-  调用的是一个获取一个表单调用validate - 用的class来校验  
+		
+		先写规则  $("#form表单").validate({
+				rules:{参数:值 , 参数:值}这个规则,messages:{参数:{参数:参数值,参数:参数值}} 错误信息
+					注意格式
+				})  规则和后面的验证 参数要一致
+
+    //表单提交验证
+        $(function () {
+            $("#editForm").validate({
+                //验证逻辑
+                rules: {
+                    //单个验证
+                    //name:"required"
+                    //多个验证
+                    name: {
+                        required: true,
+                        minlength: 5/*,
+                        remote:{
+                            url:"/employee/checkname.do",
+                            type:"post",
+                            data:{ //发起请求参数
+                                name:function(){
+                                    return $("#name").val();
+                                },
+                                id:function () {
+                                    //需要id：原因：编辑时，用户已经存在了
+                                    //需要使用id来区分编辑还是添加操作
+                                    return $("#id").val();
+                                }
+                            }
+                        }*/
+                    },
+                    password: {
+                        required: true,
+                        rangelength: [4, 6]
+                    },
+                    repassword: {
+                        equalTo: "#password"
+                    },
+                    age: {
+                        digits: true,
+                        range: [18, 65]
+                    }
+                },
+                //验证失败后提示
+                messages: {
+                    //可以不写，使用默认的
+                    name: {
+                        required: "用户必填",
+                        minlength: "用户名长度必须大于5个"
+                    }
+                }
+            })
+        })
+
+
+   mapper文件不能加上任何和数据库名称有关系的 字段
+
+批量删除 
+	需求1如果用户没有选择 单选框 要有提示
+	       2 如果有选择 就提示 确认框    
+		确定 发ajax异步请求 删除
+		响应json格式分字符串到页面
+		显示提示
+	步骤1复选框 添加   全选/全不选     
+			  $(".cb").prop("checked",this.checked);  通过添加 属性 来 全选  关键---
+	<td><input type="checkbox" class="cb" data-id="${entity.id}"></td>    必须是id
+	        添加批量删除 按钮  添加事件--  点击事件clike 没有选择 就提示然后结束return
+		  获取选中的id  data-id=变量.id   然后用$.each来遍历获取id--->数组
+		确定后 执行异步请求  注意确认框--$.messager.confirm(  ,   , fn)----确认框
+
+		后台 mapper的sql语句 用 in 多个id删  用foreach 遍历拼接    collection--是一个你要遍历的东西的类型
+		<foreach collection="array" open="(" separator="," close=")" item="id">
+        		    #{id}
+      		  </foreach>
+
+
+

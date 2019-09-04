@@ -1,0 +1,25 @@
+  Refactoring 就是通过调整程序的代码,改善软件的质量,性能,使其程序的设计模式和框架更加合理,提高软件的扩展性和维护性
+
+连接数据  4 要素      驱动  url  用户   密码       
+不管是哪个数据库 我们要的是  数据库连接对象 connection对象
+//连接不成功     throw new RuntimeException("连接数据库失败");//  这样比较合理   
+ (如果是提示用的话  必须是runtimeException   不然会是编译异常   会一直有提示              切记)
+
+
+//static 代码块  只执行一次   会把需要的留在 方法区                             
+
+当要用的东西要重复使用的时候   要把那个东西放到 外面  用private static 修饰  例如加载的properties
+
+
+//连接池  properties中的key不要随便写    (约定优于配置)
+//加载配置文件注意 是properties类  调取自己的方法getproperties
+
+
+
+//让调用者 传 sql语句  和要操作的那几个 ? 问号,
+//通过内省重构     可以调取方法存数据    DQL
+//通过for循环来 DML
+
+
+
+//注意 ORM思想  想想对应关系

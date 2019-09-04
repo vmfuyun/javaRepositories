@@ -1,0 +1,37 @@
+
+	1,打包方式  packaging----标签
+	2,tomcat7-- port端口   path 路径
+	3, 如果 服务器有的架包       依赖 就用 provided
+	
+
+一定要先去写思路  (流程)
+		1,托管 mapper代理对象(mapperscannerconfig)---然后想它需要啥 - 这样连贯起来  --和原先写的时候 一样去想下  ---init-method 和 destroy-method注意这个
+			
+			懒加载 
+				1当用到的时候 才加载  (用到的时候  就是 get关联对象的时候)   ---  2积极加载   3调用Object的方法的时候 不加载(tostring)
+
+		逆向工程
+			overwrite --false
+		            targetRuntime--MyBatis3 是生成最全的       
+					Mybaties3simple--基本的crud
+				table 可以复制粘贴 生成多个表的
+		运行 maven 指令 mybatis-generator:generate
+						
+	当用的时候 再去 弄   看少什么
+	updates---受影响行数
+
+	事务 ;;; 声明式事务(xml),,,,编程式事务(注解)---- 
+
+		xml  --事务管理器 <bean 
+			配置方法增强---tx
+			aop 把位置确定
+			会被代理----所以打印名称 就知道有没有加上 事务
+
+	mvc-- 入口  前端控制器         url---如果是/  就会全部到mvc 框架去
+					*.do  只有这个结尾的会 才会去 mvc    更好的 控制了 静态资源的访问   (直接通过原先的servlet自己就解决了)
+				1,引入 dao ,service 层spring文件
+				2,mvc解析器(主要是requestMapping)
+				3,视图分解器 VierResolver ---视图分解---专门处理视图一类  
+			mvc controller ---默认是请求转发
+				如果想 转到页面  直接 return就行       
+					想转到另一个mvc方法 就要用 重定向或者 请求转发  -----最好的方法是下一步要转到哪

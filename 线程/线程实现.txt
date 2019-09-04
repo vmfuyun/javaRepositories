@@ -1,0 +1,72 @@
+创建和启动线程  
+方式1,继承Thread类
+方式2,实现Runnable接口
+方式3,实现Callable接口   ---复写call方法
+方式4,线程池  线程复用
+	concurrent.Executor线程的根接口
+	比较好的一个实现;ThreadPoolExecutor
+	线程池的工具类  Executors  可以获取到对应的线程池 (四种线程池:定长,定时间,可缓存)   submit 返回一个用于执行的线程
+	创建线程是有核心线程的 也就是基本的线程数(可以设置时间)
+	
+明确 每个类 是干什么的 ,,  主线程  要干什么  步骤      副 线程  干什么  几个步骤
+
+一个对象只能开启一次start方法
+
+start是在Thread类里面
+
+Thread 及其子类才是线程类    
+方式1  步骤
+继承 实现run方法
+创建对象    A 类  a = new A类();
+启动          a.start();     //就会把run方法加载到想成线程中 
+
+
+
+方式2  步骤
+
+实现Runnable     实现类不是线程类
+覆盖 run方法
+创建对象             Thread  t = new thread( new  实现类);
+启动方法       t.start();
+
+
+
+方式2 有一个匿名内部类创建启动线程  记住匿名内部类格式
+
+	new Thread(  new Runnable(){
+		public void run(){
+			//TODO
+			}
+	}       ).start();
+
+
+方式1 也有 就是在new Thread(){覆盖run方法}.start();
+
+
+方式3 使用 new FutureTask<>()  可以接受一个callable和一个Runnable
+	运行使用的是 new Thread(futureTask类型).start();
+	FutureTask有一个get方法  可以获取到 对应的在线程中运行的值  
+
+方式4 线程池
+	 Executors.newFixedThreadPool()  它是有四种第一个 是定长的线程池,可以控制线程最大并发数,超出的线程会在队列中等待
+	ExecutorsService newCachedThreadPool(), 创建一个缓存的线程池,可灵活回收空闲线程,也可以创建多个线程, 这个线程会有 偷任务的功能
+	
+	下面是对应的ThreadPool 构造器
+	
+	ThreadPoolExecutor
+public ThreadPoolExecutor(int corePoolSize,
+                          int maximumPoolSize,
+                          long keepAliveTime,
+                          TimeUnit unit,
+                          BlockingQueue<Runnable> workQueue,
+                          ThreadFactory threadFactory,
+                          RejectedExecutionHandler handler)用给定的初始参数创建新的 ThreadPoolExecutor。 
+
+参数：
+corePoolSize - 池中所保存的线程数，包括空闲线程。
+maximumPoolSize - 池中允许的最大线程数。
+keepAliveTime - 当线程数大于核心时，此为终止前多余的空闲线程等待新任务的最长时间。
+unit - keepAliveTime 参数的时间单位。
+workQueue - 执行前用于保持任务的队列。此队列仅保持由 execute 方法提交的 Runnable 任务。
+threadFactory - 执行程序创建新线程时使用的工厂。
+handler - 由于超出线程范围和队列容量而使执行被阻塞时所使用的处理程序。 

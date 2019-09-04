@@ -1,0 +1,118 @@
+总结是从前端 请求开始  到响应到页面结束
+	
+部门管理功能----分析需求 显示部门页面,页面要有数据并能分页,并能删除,添加,编辑 查询小项
+	1, 请求的数据传到conterllor--
+		1,传的路径 是需要和controller的路径对应  并且看web.xml的前端控制器,路径 不然404
+		 2,传的数据  分析 实现分页是要有两个参数  参数的确定是 需要后端的需求
+		3,接受数据 并封装  首先 简单类型  形参名称和 前端的属性名name的值 要一致(如果是基本类型,必须要有值,不然不会被封装进去)
+				     复杂类型  属性名要和前端的属性名称name的值要一致
+	2,conterllor的职责就是 接受数据参数 调用service方法, 共享数据到前端,
+		1,需要共享数据,在mvc中 需要把形参数据放在model  供共享数据用
+		2,controller中 需要service的方法--通过Spring容器来注入service
+		3,跳转的界面  需要注意 forward  redirect--是直接使用该路径
+				直接return 如果添加了视图解析器InternalResourceViewResolver 会加上前后缀
+	3,业务层	一般是需要把判断 一类的 业务性的操作放在service 
+		1,高级查询和分页 需要提前查询一下数据来 提高性能
+		2,调用dao层的方法 来完成复杂的逻辑需求
+	4,domain 
+		1,当字段的类型是基本类型,尽量 进行赋初始值. 按前台的实际情况,来赋值 前台的默认值.
+		2,dao层的查询的 拼接的sql语句条件 一般在domain(或者查询条件) 进行判断输出,减少 sql语句的错误几率.
+			例如:
+			public class EmployeeQueryObject extends QueryObject {
+			    private String keyword;  //查询的关键字
+			    private long deptId = -1; //默认的部门id
+			    public String getKeyword(){   //提前判断 查询的关键字   sql语句的时候就只判断是不是null
+			        return StringUtils.isEmpty(keyword)?null:keyword;
+			    }
+	5,mapper.xml文件
+		1,resultMap  查询映射 关系 当需要把查询出的数据 封装到多个对象当中 查询语句的结果 属性必须用resultMap
+		2,resultType  查询的结果集是单个对象的 并且字段够多 就用 resultType
+		3, 当使用  单属性   多表left join 联合查询的时候 使用标签<association 进行 内部封装
+		    集合属性	额外sql的话 要用collection   column  ofType  select
+	6,web.xml文件
+		1,Springmvc 的入口 需要配置前端控制器 springDispatcherServlet   注意前端控制器需要配置 mvc入口的url入口地址
+				配置需要加载的文件,例如:classpath:mvc.xml, 可以通过 启动的服务器的时候 来判断 是不是加载的文件对不对
+		2,过滤器  filter  主要为了接受 共享到页面的数据 进行编码节码作用,characterEncodingFilter   注意需要设置encoding 值
+		3,监听器 listener 监听 servlet对象 创建 消亡  ,,,,可以用来创建管理员账户.....
+	7,mvc.xml文件
+		1,故名思意 这是给 Springmvc框架使用的, 因为前端控制器 加载的是这个 所以 它必须关联applicationcontext.xml,来启动的时候启动整个框架
+				<import  resource="classpath:..."/>
+		2,扫描 mvc 的注解 ``````````````注意上面的命名空间 的手动添加
+			<mvc:annotation-driven/>    
+		3, 当 web.xml文件里的 url路径 为 / ..            mvc.xml文件就需要用<mvc:default-servlet-handler />
+		4,视图解析器   InternalResourceViewResolver  
+			前缀        后缀
+		5,拦截器      
+			拦截路径
+			放行路径----必须是mvc的路径 
+			拦截器类  实现了handlerinterceptor  或 继承了它的子类    其中三个方法  preHandle处理前拦截方法,,,  postHandle 处理后拦截方法,,,,afterCompletion渲染后方法
+			处理顺序 从上往下   顺序执行
+	8,applicationContext文件
+		1,loc注解扫描   (也可以说是组件扫描)   <context:component-scan base-package="cn.wolfcode"/>
+		2,DI注解扫描 一般是 注入的变量  <context:annotation-config/>
+		3,aop切面注解扫描<aop:aspectj-autoproxy/>
+		4,tx事务管理 三点 when,what,where
+			托管事务管理器--->事务增强<tx:advice 加强的方法  参数--->aop嫁接把管理器和管理的参数 连接到一起  注意expression表达式
+		5,扫描mapper接口  MapperScannerConfigurer---注意需要配置扫描的基本包   
+		6,sqlsessionfactorybean ---类似于mybatis-cfg.xml文件  需要配置mapper.xml文件的位置  ,,,
+				如果有集合属性查询的  就需要用 延时加载	
+							lazyLoadingEnabled 是否开启演示加载
+							aggressiveLazyLoading是否开启积极加载
+							lazyLoadTriggerMethods除去(除clone以外的方法 都使用懒加载)
+				对应数据库配置-----
+		7,数据库连接池配置---引入properties文件 注意别key名--注意开始初始化init---关闭destroy
+			四要素--
+								
+		
+上述模块的开发流程 从前端到后面  当进入list界面的时候 不会发送数据 到后端 --所以后端需要把数据赋初始化 值
+				第一次访问 我们需要把分页数据共享过去  contoroler--调用service方法 
+							
+					---------------------------------------------------------
+员工模块-----
+	和上面差不多但是 需要注意的 是关系的维护 
+		关系的维护      步骤1,首先确定主体,,,并明确关联对象是 单属性 还是 集合属性 
+				2,根据上述 来确定怎么维护 
+				3,一般只需要单方面维护 
+		开发分析: 添加员工 
+				添加员工角色 到中间表  
+				删除的 删除中间表信息
+				修改员工信息  删除中间表 重新添加-----重点
+				查看 用额外sql
+权限模块
+	难点
+		分析 模型是 一个门牌号  每个方法上都有对应的标记注解  用来标记这个方法 所需要的权限
+			1,自定义注解    
+			2,获取注解信息-->利用applicationContext-->获取conterllor的类--->获取有贴对应注解的方法-->获取方法的注解信息 -->获取注解的值,判断数据有没有 (没有进行sql语句存)
+登陆的实现
+	2,接受到 账号密码  进行调用 service中的登陆逻辑方法 ,, 
+	service层
+		不为null-成功: 共享当前用户--->共享权限--	
+		为null--失败:抛出 错误 异常包含信息 ---告诉conterllor
+				可以自定义异常 继承 runtimeExecption  写构造器 
+							必须覆盖其 父类的 构造器---  主要有两个方法 msg和类型
+	完成service层
+	3,权限信息       
+	为了解耦  --不能直接 调用session  需要间接  通过 工具   得到session也不能定义变量接受 (不能导入包)
+	查询本登陆人员信息的 权限表达式  存到session 中  注意 存session的格式     XXX_IN_SESSION
+			查询出表达式(三个表查询)一般是有重复的数据  如何去重?!
+					用sql语句方法 distinct  去重
+					用set集合 来去重
+	4,注销操作 
+		销毁session对象 用invalidate方法
+	5,拦截器  两个 --实现 或者 继承的方式   intercept 变成拦截器     (注意拦截放行是要  放行mvc 的 路径>>> 关键<<<)
+		1,检查登陆信息   session.attr 是不是null --->是null 就 让重定向去 登陆界面
+		2,权限检查拦截器  安全检查  看最后的流程图    
+			一般的是一个顺向流程  关键
+			拦截拦截到的 信息 存放在一个 obj里了 也就是handler里面
+	6,优化
+		一般业务层 是 不能用mvc 的对象 ---解耦
+		一般会把有字符串的变成常量---能被编译检查 
+		优化的 模式
+			 一般是把业务层 需要共享到session(格式)(mvc层的数据)---变成一个 get 方法 或者set方法    
+				以后只要是把业务层的数据 共享到 mvc层必须 构建成方法 形式如get set
+			形式是把 session的共享数据的名称 (XXX_IN_SESSION) 定义成常量:
+				其余的变成 对应的get set方法---  更容易操作
+		             
+				
+	
+

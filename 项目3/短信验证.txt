@@ -1,0 +1,100 @@
+验证码 发送与效验
+	前端验证码的发送
+	后端的效验和 缓存
+	
+
+ 1 单独一个验证码 controller  返回 ajaxresult
+ 2 service进行发送验证码      uuid	    stringBuilder的拼接字符串
+ 3 
+
+
+缓存:(redis) 
+	   配置类
+	1, 一般在key 加前缀来区分 是干什么的 例如: verifycode:13700000     ..会加一个类prefix.basekeyprefix来辅助 key的前缀实现--- 有一个时间(失效时间)和string
+	      短信验证码 的key 的前缀类 来继承基类  //
+	2, service  一个基本的 一个 单独的 为了拓展  
+		      基本操作	业务操作	
+一般的设计思想 是把基本的操作 放在 一个 公共的类 ,,分解操作的 设计
+	为了 让 方法 能够通用 使用 ;; 使用的是  父类形式 来 实现 调用子类的方式   类似原先的重构
+	
+	所以一类的 操作的 尽量 用一个 类 当基类,,, 操作一类的操作  ,, 更方便  
+	
+	spring data 的op  
+	
+	添加 防刷 操作  判断 redis有没有   
+	
+	企业 发短信  注册短信网关  然后会返回一个 身份凭证appkey
+
+	获取 json 中的信息  使用  JSON.parseObject(resp, HashMap.class)    转换成一个 map 
+
+	
+	京东万象     要带有 appkey  url   phone  content
+	中国网铁
+在member的配置文件添加自定义的配置 : 上面的需要的参数 
+	在application.properties 获取使用 @value("${key}")获取对应的值
+	
+	在注册的地方  来检查  通过perfix 和 phone 获取    	//
+
+登陆:		
+
+	
+	1,登陆判断与登陆信息缓存
+		注意把passwork 不要查不出来,  key 为token:uuid    value: userinfo对象
+		注意把uuid的-替换掉   	
+			<T>     T 声明T泛型  也就是表示 任何类型     
+		循环调用的时候  问题   直接    
+	2,响应给 浏览器     在web创建一个 cooktis 工具类   
+			把前缀的工具哪 添加 常量   要设置path 和maxage 和 响应	
+	3,校验 跳转       需要把查出来的数据 传到 session  不然 前端就收不到 信息了  
+			需要用 前缀 token  从redis 来获取
+
+	使用	
+
+	httpClient 第三方专门来发送请求的框架 --爬虫
+
+	redis 存储 只能是一个 指定的类型  例如 String   list       ..  一旦指定后是不能 改变的  
+		   redis 是不能存储 object 类型的     所以是 需要去  转成指定的类型
+ 	
+页面请求检查
+	适配器模式(Adapter)  :  就是 为了  不需要全部实现 接口的方法,,  在 1.8 之前  
+	  
+	1.8 之后  接口使用的是 default   (默认实现)   就可以选择性 实现
+	在interceptor 实现获取 cooktie 然后     
+	
+	动态校验  //handlerMethod请求映射方法 在springMVC的封装 
+	if(handler instanceof handlerMethod)   判断 是不是请求的 是动态的controller  如果是 进行 进行 检验
+	检查的本质还是检查  redis 的 userinfo 是不是null   也就是说 要检查   对象或者 存储的 是不是空
+	如果是要检查的 就让他 重定向去 登陆 使用的是全名字 
+
+webapp 注册 拦截器
+	实现一个 webMVCconfigurer 
+	复写 addInter拦截器   注册  然后 添加 拦截器 然后 添加 拦截路径  和  排除 路径
+自定义注解 为了 更好的 检验登陆才能访问
+	requireLogin
+	然后去拦截器 去 判断 有没有贴注解
+	 
+登陆 获取对象  (SpringMVC 参数 自定义注入)
+	在mvc 的 映射 方法 参数的封装  进行 封装  ,,   
+	请求方法 参数 自定义    
+	userParan 自定义 注解 表示 让mvc 使用我们 的自定义注入
+	    注解 使用的说明  当使用 原始的 springmvc  就不用贴  
+		 使用自己 参数注入    就贴上注解 在形参上
+	在website 注册 addArgunmentResolver     
+
+建立 trip-article-api
+	trip-article-service
+	trip-mgrsite                对应把 依赖一类的 处理    在公共的 也看下+
+
+列表 : 	
+	在mgrsite 建立  regionController    分析 列表 需要共享 pageinfo 进去
+	需要建立 queryObject 在common  实现序列化      
+	然后实现 列表的 操作
+
+	设计: 分 前面 应该显示什么     后台  需要什么  这样分析
+	
+	关联目的地  通过点击 下拉框来实现    通过 deep的值来确定要 查询 哪个开始    destination
+		deep<3   查询 国家 省份 城市
+	
+	通过 区域 id 查询 ref 来查   1 查当前的区域对象的   2 获取ref  3查询 目的地  in
+分页    	pagehelp 注意要把 值传过去
+	

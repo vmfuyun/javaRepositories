@@ -1,0 +1,23 @@
+if(boolean表达式){
+	执行语句
+
+}else{
+}
+
+
+
+即 条件 选择型   true   false
+注意当判断是否相等 要用 == 双等号判断
+
+
+if (){
+  	}  
+else if(){
+	}
+else{
+	}
+
+
+两个boolean类型 必须满足的话 要&& 双与
+else if会直接否定上一个条件
+

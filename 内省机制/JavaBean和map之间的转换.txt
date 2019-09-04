@@ -1,0 +1,27 @@
+
+	操作 java Bean  要想操作  Map 一样的
+		
+	对应关系是  属性名   =  key
+		   值           = value
+		
+把javaBaen对象 (其实就是 包含 javabean 的类的对象)转换成 Map对象
+
+通过内省机制        introspector.getbeanInfo(你要操作的类的Class对象,Object..class)   
+     得到 一个 Beaninfo对象       然后 Beaninfo           IntrospertyDescriptors            得到   属性的数组
+	
+遍历数组  
+    
+得到  name     和 get方法     并存在  map里
+
+把map转 javabean(那个类)对象   
+  1 首先 要取出来map中的值  先得到 属性名    ---->  只能先通过 introspector 得到描述信息 -->得到beaninfo  --->得到property属性描述器 然后遍历得到名字
+  2 得到值 后 启用 set方法 写入到对象中 
+	
+
+class clz 是那个类的字节码对象
+
+
+
+
+	
+      

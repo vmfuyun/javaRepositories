@@ -1,0 +1,109 @@
+//final变量
+
+/*
+final修饰的变量:
+	表示常量,只能赋值一次,不能在赋值.
+
+-----------------------------------------
+
+1):final变量必须显示地指定初始值，
+	系统不会为final字段初始化。
+2):final变量一旦赋予初始值，
+	就不能被重新赋值。
+3):常量名规范：
+	常量名符合标识符，单词全部使用大写字母，
+	如果是多个单词组成,单词间使用下划线隔开。
+		如: int类型的最大值:  
+			final int MAX_VALUE = ....;
+	补充概念:
+		全局静态常量: 
+		public  static  final 修饰的变量,
+		直接使用类名调用即可.
+
+-----------------------------------------
+
+面试题: 
+
+final修饰的引用类型变量到底表示引用的地址不能改变,还是引用空间中的数据不能改变.
+	final修饰基本类型变量：
+		表示该变量的值不能改变，
+		即不能用“=”号重新赋值。
+	final修饰引用类型变量：
+		表示该变量的引用的地址不能变，
+		而不是引用地址里的内容不能变。
+
+-----------------------------------------
+
+final是唯一可以修饰局部变量的修饰符,目的何在?
+	期待局部内部类.局部内部类只能访问final修饰的局部变量
+
+什么时候使用常量:
+	当在程序中,多个地方使用到共同的数据,
+	且该数据不会改变,此时我们专门定义全局的常量,
+
+一般的,我们在开发中会专门定义一个常量类,专门用来存储常量数据.
+
+常量分类:
+	1):字面值常量(直接给出的数据值/直接量):
+		比如：	整数常量1，2，3，
+				小数常量3.14，
+				布尔常量false，true等。
+	2):定义的final变量:   .
+
+*/
+
+
+class SuperClass
+{
+	public void doWork(){}
+}
+
+class SubClass extends SuperClass
+{
+	public void doWork(){}
+}
+
+//常量类
+class Consts
+{
+	public static final int SIZE_X = 100;//全局静态常量
+	public static final int SIZE_Y = 100;//全局静态常量
+}
+
+class FinalDemo1 
+{
+	//final static String name; 报错 用final必须直接赋值
+	final static String name = "AAA";
+
+	public static void xxx()
+	{
+		System.out.println("棋盘格子" + Consts.SIZE_X);
+		System.out.println("棋盘格子" + Consts.SIZE_X);
+	}
+
+	public static void main(String[] args) 
+	{
+		//final基本类型变量：值不能改变，即不能用“=”重新赋值。
+		//name = "BBB"; //报错 final变量赋值后不可重新赋值
+		System.out.println(name);
+
+		System.out.println("=~=~=~=~=~=~=");
+		
+		//final引用类型变量：内容能变,引用的地址不能变。
+		final Person p1 = new Person();
+		System.out.println(p1.info);
+		p1.info = "XXXX";
+		System.out.println(p1.info);
+		//p1 = new Person();//错误: 无法为最终变量p1分配值
+
+		System.out.println("=~=~=~=~=~=~=");
+
+		System.out.println("棋盘格子" + Consts.SIZE_Y);
+		System.out.println("棋盘格子" + Consts.SIZE_Y);
+	}
+}
+
+class Person
+{
+	public String info = "最初的值";
+}

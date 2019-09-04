@@ -1,0 +1,10 @@
+class X { 
+	private final ReentrantLock lock = new ReentrantLock();
+ // ... 
+	public void m() {
+		 lock.lock(); // block until condition holds 
+		try { // ... method body } 	
+			finally { lock.unlock() }
+					 }
+						 }
+ 除了实现Lock接口，这个类定义了许多public种protected方法用于检查锁的状态。 

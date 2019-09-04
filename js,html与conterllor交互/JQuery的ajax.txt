@@ -1,0 +1,24 @@
+  1,  ajax  是发送异步请求, 作用是 减少对服务器访问,         局部刷新 -->就用ajax   只要有些比较小的  就用局部刷新   就用 ajax   
+	提高效率                   
+	query中的ajax 是  是对原先的封装    --   
+	格式是$. get(url,json格式的请求内容,收到响应之后的函数调用, 响应的 格式是什么样的)            
+		$.post(url,json格式的请求内容,收到响应之后的函数调用, 响应的 格式是什么样的)      
+		注意 json的格式是 集合 形式[ { } ,{ } ,{ } ] ---这种形式         
+				普通的json 是 { } 这种形式   并且是 key:value  看是字符串还是什么 对应就好       
+	
+	通过jquery获取 一个标签的 方式  可以通过 id 也就是$('#xx')   
+					页可以通过 $('标签名[属性名=属性值]')   
+	通过jquery           获取 对应的 doc 的value 值     可以通过 jquery.val()----也可以在括号里放需要设置的值   不放的话  返回的就是获取的value值
+	通过jquery     按class属性来获取一个表单  $('.class')-----通过 点 来测试
+	
+2,controller 中用jackjson
+	外用 fastjson   
+3,当不知道响应的是什么 东西的哈    就用arguments  来打印测试看看 有什么东西      argument里面包括的 是 第一个参数 是什么  第二个参数是什么
+	change 是一个 jquery的 值改变事件  
+	
+	解决的问题:  把一个后端传的 集合(list)  显示到前端html ---可以通过 遍历(forEach) 	
+	遍历一个 集合   可以用 forEach  比较简单    模式 是  jquery.forEach( 三个参数  记得去查下) 一般的第一个函数 就可以当回调函数  
+					当用forEach 的时候   jQuery 对象就会遍历成DOM对象  
+	            就可以 操作 属性 和 值了  注意 jQuery和 DOM的区别 和使用技巧    要能分离出来 并操作顺畅 不行就用arguments 看下
+		Jquery 是一个 init 的 ,,,,,,,,,,,,  dom 是一个标签
+	jquery创建一个标签  $("<option>")  创建出来的是一个 jqury对象               要给 jquery对象设置 属性值  需要 通过   jquery. att

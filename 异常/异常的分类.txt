@@ -1,0 +1,38 @@
+ 
+异常类的超类      Throwable  
+	Error                Exception 
+
+Error是无法修复的错误  主要有StakOverFlowError   内存溢出     基本都是Error  结尾的
+
+Exception  一般是可以修复的 
+分  编译异常(checked编译异常)     
+运行异常     RuntimeException
+
+
+
+一个catch语句 只能捕获一个类型的异常  
+多个catch  可以捕获多个   但是代码在一瞬间只能抛出一个 异常
+
+	try{
+     }catch(   异常类型  异常对象(变量) ){
+	try出现异常后 跳到这   
+	异常对象.printStackTrace();打印错误的所有信息 这个不需要system.out.println
+	getMessage();获得异常描述的信息和原因(给客户的 )   by zero  原因是0
+	}finally{
+	    最后要做的 一般是关闭资源   close
+	}
+
+
+finally 不能单独使用  
+可有catch 可以没有
+finally 一般都会执行 除非  System.exit(0);   关闭jvm
+finally  中有Return  永远返回  finally中的
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,5 @@
+﻿1,
+	spring JDBC
+		jdbcTemplate.update(语句要写占位符 ? ?  ,第一个占位符,第二个)
+		jdbcTemplate.select()---有可能sql语句 后面的参数 是结果集
+

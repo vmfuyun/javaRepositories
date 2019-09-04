@@ -1,0 +1,71 @@
+从page.request,session,App..索引 指定属性名的 值               ${}                    ${这里不能填写上引号}
+
+要想 使用EL就 把 该 东西  setAttribute   设置到一个作用域的 属性    因为 EL表达式 是通过属性 来寻找
+EL:表达式语言.
+目的:从作用域中获取指定属性名的共享数据.
+语法:  ${属性名},注意属性名没有引号.
+
+EL中的内置对象(隐式对象):
+
+
+${内置对象.}        有pageContext 隐式对象  可以访问 所有  ------所以可以获取
+	
+		内置对象 是 和jsp  ---Servlet 不一致的          
+		在EL不能用jsp ---Servlet的对象
+
+
+
+可以通过 ${内置 对象的作用域 .属性名 }  --->是通过get方法来取   
+EL 是通过属性名来寻找         
+
+
+${共享数据的属性名.属性名.属性名}.从page作用域开始,一直找到application为止,如果找到,直接返回,如果没找到,返回的是空字符串.              
+	        找指定作用域的话  就前面加作用域
+
+	<br> 
+	<br>
+	${p.name }                                            //普通
+	<br>
+	${p.hobby[1]}                         //数组
+	<br>		
+	${p.list[1] }			//集合
+	<br>
+	${p.map["coffee"] }   		//map
+
+获取对象中的属性:
+req.setAttribute("p", person对象);
+方式一:使用.:${p.username}
+方式二:使用[]:${p["username"]}
+--------------------------------------
+
+我们建议使用方式1,此时就得属性名起一个有意义的英文单词或单词短语.
+因为JavaBean和Map很类似.
+  ${p.username},中的username也可以使用Map中key的名字.
+
+EL的其他:
+   获取上下文路径:
+  
+
+	      获取上下文路径:${pageContext.getRequest().getContextPath()}    注意这是一个java表达式
+
+	      获取上下文路径:${pageContext.request.servletContext.contextPath}   这是一个纯EL表达式                   
+							记这个  ContextPath是上下文路径
+
+
+
+数组   集合的话 可以直接通过 索引 [    ]来取      一般  点 是get方法 
+如果这个命名不规范的话  或者多个点的  就用   {p["   "]  }  这样比较准确
+
+
+List<String> list= Arrays.aslist( "", "" );可以这样赋值
+
+
+Map<String,String>  map = new HashMap<String,Striing>()   {    } ;匿名内部类 来初始化
+
+四个内置对象都加了Scope   直接 通过内置对象 搜索   指的是要搜索的范围
+要想拿数据    就要 放到作用域   setAtt
+
+通过获取 context.getRequest().getServletcontext().getcontextPath 来获取上下文 来动态获取
+	<!-- 获取上下文路径 -->
+	${pageContext.request.contextPath}
+empty 来判断集合的元素个数  是不是0

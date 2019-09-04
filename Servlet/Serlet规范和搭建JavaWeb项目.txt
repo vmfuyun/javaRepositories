@@ -1,0 +1,46 @@
+什么是serlet    
+	主要 三个作业  1   接受请求  封装成对象    2   调用 业务方法来处理      3页面跳转
+	一个javaEE的规范       基本有三个东西合成的   代码程序   项目结构  服务器    合起来就是Servlet规范
+
+	服务器是对Servlet规范的实现
+
+	规范 要求类必须实现 javax.servlet.Servlet接口
+	
+	javaweb结构 
+		webapp     静态网页组件----
+			  WEB-INF    
+				  classes----字节码   classpath的路径    <!--注意改字节码输出路径  default output folder(默认输出的地方)
+				  lib    --------第三方jar
+				  web.xml------从Tomcat根路径--->conf---->拷贝然后去掉内容  留在下根元素(想下Docment 解析的时候 必须要有根)
+
+//第一个Servlet程序
+	(jdk没有 javax.servlet.Servlet包  所以要加包)       javaee
+	1,需要添加servlet-api.jar到lib 并作buid path   .... 从 Tomcat/lib/  去拷
+	2,编写Servlet程序并实现  javax.servlet.Servlet接口 并覆盖方法(去看看方法的意思  API) 
+	3,方法参数出现  arg0,arg1   的情况 没有关联 Servlet源代码, 源代码 --tomcat--*-src.zip
+	4,在service方法打印一句话
+我们需要告诉Tomcat来管理我们的类(tomcat是Servlet的容器,负责Servlet对象的生命周期,和方法的盗用)	
+	5,Servlet配置      web.xml
+	Servlet配置主要是告诉 叫啥程序  字节码全限定名称 来创建对象         然后暴露一个资源名称  用/开头			
+				
+	<servlet>
+		<servlet-name>HelloServlet</servlet-name>              -----起一个项目名
+		<servlet-class>pss.cn.woIfcode._01servalet.HelloServlet</servlet-class>----全限定名称  (要创建对象    反射技术)
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>HelloServlet</servlet-name>    -------要和上面的项目名对应
+		<url-pattern>/Hello</url-pattern>	-------------url把当前项目做一个映射必须 / 开头
+	</servlet-mapping>
+
+注意部署 都在 tomcat容器里     访问 部分在tomcat  的server.xml    还有 一个就是在项目的web.xml
+
+	访问的时候 是通过 path 然后通过 自己定义的url 来访问
+
+
+servlet对象的生命周期   tomcat决定            (不写的话 默认是有一个公共的无参构造器)
+			  先创建 实现servlet 类的对象    然后再调用的 init(初始化)方法  然后servlet方法
+		Servlet对象也只有一个 (单例)   
+		总结    构造器  ----->init方法(初始化)---->[service方法] 循环------->destory方法(关闭的代码不能写扫尾代码)
+注意	1,Servlet类的构造器必须是public 修饰
+	2,Servlet类必须是无参数构造器                                                             看错误 看root cause
+	原因是 底层创造对象是通过Class.newinstance()   所以必须是公共无参构造器         

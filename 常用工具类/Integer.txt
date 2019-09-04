@@ -1,0 +1,7 @@
+  String 类中valueof方法  String String.valueof( 类型     value )        integer转String
+
+
+
+
+  int              integer.parseInt( String类型的 )                 String转int   int转integer      valueof()
+   

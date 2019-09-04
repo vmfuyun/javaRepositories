@@ -1,0 +1,81 @@
+ SQL 结构化查询语言(Structured   Query  Language)
+
+主要包括6个部分 
+
+1,数据查询语言(DQL): 数据索引语句
+2,数据操作语句(DML):
+3数据定义语言(DDL):
+
+
+表的概念  
+
+什么是表(table)
+
+ 表中的列:           列/字段Field 
+ 表中的行:	          一条数据/一条记录
+
+面向对象的思想  
+
+表                       类               定义存储的结构  
+列	          字段            定义存储那些属性
+行 	           对象           表示一条数据/一个对象
+
+
+
+
+
+数据库的操作和存储引擎
+主要有 表 , 视图,存储过程,函数,触发器,事件,等      
+数据库: 存储 数据库对象的容器  
+
+常用的命令  
+查看 有哪些数据库    
+SHOW   DATA BASES;
+
+使用指定的数据库;
+USE database_name;
+
+查看有哪些数据表
+SHOW TABLES;
+
+创建指定名称的数据库 
+create database  database_name;
+
+删除数据库
+drop database   database_name;
+
+
+MySQL列常用类型
+整数
+MySQL列类型				Java数据类型
+INT 					int/Integer
+BIGINT 					long/Long
+
+int(6)   这个6一般是位数 就大概说 这个是要存6位的  只是一个标志  超范围也没事
+
+小数类型 
+FLOAT[(s,p)]:
+DOUBLE[(s,p)]        可以存储整型        范围(s)和精度(p)
+		money double(5,2)   总位数  5  小数  2位
+
+
+定点数据类型    decimal      高精度       金币首选  
+
+MySQL                                      java
+float                                         float / Float
+double                                     double/Double
+decimal                                    BigDecimal                                   对应关系	
+
+decimal(2,2)  这样必须是小数
+
+
+字符类型:
+char(size)         定长字符         size 指占用多少个字节,不管你存不存
+varchar(size)     变长字符        size 指存储多少个字节,就占多少个字节
+  在MySQL 存储都是用''  单引号 存储
+一般存储大量的字符串,比如纯文本 可以用text 
+ 
+日期类型
+日期和时间类型 主要有 datetime       date  也是用的单引号
+
+BIT  布尔类型

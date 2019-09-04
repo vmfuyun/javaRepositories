@@ -1,0 +1,12 @@
+map (映射)
+          集合中每一个元素都含有一对key和value对象,不允许key对象重复 ,值对象是可以重复的
+
+
+
+map 是一个个的键值对  
+
+
+put  加入  一般是  String  , 对象类型(object)  
+
+
+remove 删除  

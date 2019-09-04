@@ -1,0 +1,190 @@
+什么是数据库?
+	按数据结构来存储数据和管理的计算机的软件系统
+dbms  专门用于操作管理数据库的计算机系统软件
+	ddl  建立
+	dml 增删改
+	dql 查询
+dbas 数据库应用系统
+dba 数据管理员
+
+范式1,
+	是关系型数据库的基本要求   要求  列 是基本数据项,                      也是就是属性不能分割
+范式2,
+	要求数据库表中的每一个实例或者行必须可以被唯一区分,被唯一表示  ,  每个非主属性(列)     完全函数依赖于键码(主键)。 
+范式3,
+	表中不包含已在其它表中 	已包含的非主关键字信息   -------这个表不能有其他表的信息(对于经常查的数据,加冗余字段,会打破这种情况)
+							非主属性  不传递函数   全部  依赖于键码, 互相之间  没有传递函数依赖。
+
+NOSQL  泛指非关系型数据库
+	Redis:缓存型数据库,key-value型----
+
+
+数据库的目录文件夹结构
+	bin:一些工具
+	data:基本的数据显示
+	include:链接数据库的配置
+	share:语言和错误日志
+	
+	Mysql.ini----初始化的东西	mysqld 编码和端口 - datadir数据存放的位置   -默认引擎 innodb   --默认链接数
+数据文件的简介:
+	是通过一个单独的文件来存储 ,     inodb存储的位置是不一样的 是一个单独的位置   索引是通过一个文件来存储的-inodb才有索引
+
+
+练习 
+	1,当数据为null时,运算的结果也是null,  用ifnull(,)当第一个参数是个null,用后面来运算
+	2,运算顺序  not and or
+笛卡儿积 :
+	多表查询 注意前面是可以用表名点列名    起别名需要注意的东西(运行顺序)
+非等值链接  
+	主要是有一个 条件范围 来约束  ---注意 工资范围    ------------一般使用的是 BETWEEN            AND     一般使用的是范围   
+
+显式链接
+	 表1   inner  join (内链接) 表2    on 条件(一般是两表关系)
+	左外连接 	left join       on                 主要是两个表之间的关系     也就是消除笛卡儿积的条件
+
+	左外连接查询(LEFT JOIN)   . 左连接查询:  查询出JOIN左边表中所有数据,右边表如果不匹配使用NULL填充.  
+	类似于 就是把笛卡儿积消除的  加上 原先左边的条目       如果要显示右边的话 也是显示的是 中间他们的部分    不会显示他们不匹配的
+	
+
+	join 算法  通过 等值关系进行  匹配 如果相等 说明  交集  就存储那 一条
+	
+	看需求  并且 看清楚  他们的对应关系    想下 为了什么错误       原因是什么
+	
+	join其实  是一个匹配关系 ----  如果对应的话  会存储下来   重要    left  join 就是  匹配后的  加上  左边匹配失败    
+	
+
+
+全外链接
+	FULL OUTER JOIN中会返回所有右边表中的行和所有左边表中的行，
+	即使在左边的表中没有可对应的列值或者右边的表中没有可对应的列
+
+	SELECT	table1.column, table2.column
+	FROM	table1 FULL [OUTER] JOIN table2 ON (table1.column_name = table2.column_name);
+
+	MYSQL中暂时不支持全连接
+	可以通过union +左右连接来完成；     
+	两种形式      用两个等值的  就是 全部的数据  全连接
+	select * from emp e  left join dept d on e.DEPTNO = d.DEPTNO  union 
+	select * from emp e  right join dept d on e.DEPTNO = d.DEPTNO 
+	相反:
+	这是一个去掉中间 笛卡儿积的数据     注意条件正好的  是要的 是null
+	select * from emp e  left join dept d on e.DEPTNO = d.DEPTNO where e.DEPTNO is null  union 
+	select * from emp e  right join dept d on e.DEPTNO = d.DEPTNO where e.DEPTNO is null
+UNION/UNION ALL   纵向连接方式   
+	保证列名 和 属性 相对应 一致
+	注意，
+	1，UNION 内部的 SELECT 语句必须拥有相同数量的列。
+	2，列也必须拥有兼容的数据类型。(否则查询的结果是不合理的,而且后期在mybatis中对于结果集的处理也有问题)
+	3，每条 SELECT 语句中的列的顺序必须相同。
+	4，UNION 结果集中的列名总是等于 UNION 中第一个 SELECT 语句中的列名
+	5，UNION 操作符选取不同的值。如果允许重复的值，请使用 UNION ALL(性能高).
+自连接
+	一张表中有 需要查询的东西  没办法一次性 查出来          类似  两个相同的 两个列 编号有对应关系   ---   注意 对应关系  是怎么样的
+						   一般用内链接   当两个表 然后 用对应关系是 连接条件
+	
+单行函数
+	date函数     DATE_FORMAT() 格式化的 操作   year()  	有需求的话看api
+聚合/分组函数
+	sun 计算和  
+	avg  平均
+	count人数  ---计算的是非null的 
+	max最大值
+	min最小值
+分组查询
+
+	
+	分组查询的语法:
+	SELECT   [DISTINCT] *|分组字段1 [别名] [,分组字段2 [别名] ,…] | 统计函数/分组函数/聚合函数
+	FROM 表名称 [别名], [表名称 [别名] ,…]
+	[WHERE 条件(s)]
+	[GROUP BY 分组字段1 [,分组字段2 ,…]]
+	[ORDER BY 排序字段 ASC | DESC [,排序字段 ASC | DESC]];
+	------------------------------------------------------
+	使用GROUP BY子句将表分成N个小组,
+	分组函数忽略空值,可以使用ifnull.
+	结果集默认按升序排列,如果需要改变排序方式可以使用order by 子句
+
+
+
+	按一个方式来分组    group by 通过什么来分组  可以是列     分组一般都和聚合函数连用
+		分完组之后 才去进行计算的 函数  例如 min ,max
+	原则:  1,分组之后 包含的字段,可以出现 或者 函数 是可以出现的 --不然不符合要求  因为 当操作orcale的时候 会出错
+	          2,两个 字段(列)分组  直接 group by 两个字段就可以了
+	          3,聚合函数 不能出现在 where      使用 having    是分组之后的过滤条件	
+	
+
+	GROUP BY子句必须放到WHERE语句的之后 ,Group By与Order By都是对筛选后的数据进行处理，而Where是用来筛选数据的。
+
+
+	 having是对分组之后的组数据进行筛选，where是对分组之前的每一行数据进行筛选
+
+	3. select语句的处理顺序
+
+	FROM---ON--JOIN--WHERE--GROUP BY--WITH CUBE 或 WITH ROLLUP--HAVING--SELECT--DISTINCT--ORDER BY--TOP
+	from -- on--join--where--group by--with cube 或 with rollup --having --select--distinct--order by--top
+	其实在 where 之后是没有顺序的  主要看 select
+
+
+遇到题不要着急  一个个分析
+
+
+/* 连接查询(join) */ ------------------
+    将多个表的字段进行连接，可以指定连接条件。
+-- 内连接(inner join)
+    - 默认就是内连接，可省略inner。
+    - 只有数据存在时才能发送连接。即连接结果不能出现空行。
+    on 表示连接条件。其条件表达式与where类似。也可以省略条件（表示条件永远为真）
+    也可用where表示连接条件。
+    还有 using, 但需字段名相同。 using(字段名)
+    -- 交叉连接 cross join
+        即，没有条件的内连接。
+        select * from tb1 cross join tb2;
+-- 外连接(outer join)
+    - 如果数据不存在，也会出现在连接结果中。
+    -- 左外连接 left join
+        如果数据不存在，左表记录会出现，而右表为null填充
+    -- 右外连接 right join
+        如果数据不存在，右表记录会出现，而左表为null填充
+-- 自然连接(natural join)
+    自动判断连接条件完成连接。
+    相当于省略了using，会自动查找相同字段名。
+    natural join
+    natural left join
+    natural right join
+select info.id, info.name, info.stu_num, extra_info.hobby, extra_info.sex from info, extra_info where info.stu_num = extra_info.stu_id;
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

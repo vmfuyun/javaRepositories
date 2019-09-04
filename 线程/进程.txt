@@ -1,0 +1,10 @@
+方式一  runtime类
+//打开一个记事本
+gruntime.getRuntime()//单例 得到一个runtime实例
+对象调用.exec("命令");  打开进程
+
+
+
+方式二 ProcessBuilder   类
+
+直接new创建对象填入命令   调取start方法

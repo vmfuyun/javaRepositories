@@ -1,0 +1,18 @@
+httpservlet
+(它有doGet/doPost方法来处理请求 ,,,,
+继承了server方法    并强转     调取自己的http参数的server方法 
+ 继承 利用方法的重载的  init 初始化 方法   
+也是实现了servletConfig的方法.......get一类
+)   所以我们只要   继承http的server参数是http 的  就行       
+		
+		可以只继承dopost/doget   /server   /init     这几个 自由组合
+       
+		 注意重载的利用  以后可以这样写 调取这个方法 中调取自己的重载方法(参数不一样)  
+	
+	(模板方法)  抽取相同的  只让子类继承      实现个别方法来实现
+  
+继承了 GenericServlet类                    
+  (实现了Servlet (基本的几个方法) ,ServletConfig, (初始化web.xml的方法)   Serializable(序列化))  
+
+
+一定要记住 根本的  servlet的两个方法     init( config)     server(  请求,响应)

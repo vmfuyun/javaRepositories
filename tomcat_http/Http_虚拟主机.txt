@@ -1,0 +1,34 @@
+虚拟主机
+修改Windows的域名   C-->windows -->system32-->deivers-->etc-->hosts
+
+在server.xml添加<Host name="" appbase="webapps" unpackWARs = "true" autoDeploy="true" >
+ 		<Contest docBase = "" path = ""/>
+
+
+http协议   特点:    无状态:不记录内容
+	来约束服务器和客户端之间内容交互格式         
+	超文本传输协议   规范了 浏览器和web服务器之间的传输
+	
+	F12 -->Name-->headers ...一类  里面是加载一个网页的请求   和响应  可以这样看
+
+请求消息 包括三部分    1请求行 格式      请求方式  资源路径   http版本号          
+				请求方式 默认get  格式? 多个参数&分割 不能超1k
+					post 借助 表单 form  input  method="post"
+		    2 请求若干          作用向服务器传一点基本信息   
+					Accept接受 可以接受MIME类型    text/html 格式   是文本并且是html(Tomcat/conf/webxml  内容类型) 
+					User-Agent 通知服务器是浏览器类型   通过不同类型 进行响应
+					Connection 连接类型  
+					Contenet-Type  默认是编码格式提交
+  
+			         2-3中间空一个    
+		    3 请求实体      只有POST请求才有请求实体(给它发送的东西)
+		看key对不对
+	get 请求没有实体       
+			500   代码有问题
+get 和post的区别
+	1,get的请求会在地址栏不安全  post比get更安全                会在form data 里面
+	2,post请求的参数会保存在请求实体上
+	3,get方式请求的数据不能超过2k,而post没有上限,          上传文件必须用psot
+	4,get可以缓存,而post没有缓存     (浏览器的缓存   ,,相当于刷新)
+-----------------------------------------------------------------
+只有table用   post

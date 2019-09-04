@@ -1,0 +1,108 @@
+短信验证码: 
+	思路:  后台随机生成一个验证码,为了验证的  把数据存到redis(缓存)需要时间限制 ,验证的时候 再拿出来 
+	1,结构性分解  
+		内容-->自己写  
+		验证码-->uuid-->并存到redis-->存的时候判断是否存在 存在报已发送
+		第三方接口-->需要参数 就给什么参数  
+
+	实现流程细节: 
+		String verifyCode = UUID.randomUUID().toString().substring(0, 4);  uuid的截取
+		内容的添加   content
+		第三方信息-->为了方便以后的操作 需要把第三方接口配置到配置文件
+				   @Value("${msg.url}")
+   				       private String msgUrl;
+				   @Value("${msg.appkey}")                   注意只有在有主方法的项目才能获取application的数据并使用注解@value
+				       private String msgAppkey;     		如果是配置类的形式 使用 @properties 引入 并获取
+		第三方实现方式
+		  //方式1：HttpClient 这个开源框架， 完全可以模拟出浏览器所有操作
+
+      		  //方式2：jdk自带的
+
+		下面是jdk的方式
+		      //指定访问地址
+		        URL url = new URL(msgUrl);
+		        //建立连接
+	 	       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+ 		       //设置请求方法
+	 	       connection.setRequestMethod("GET");
+ 		       //设置请求参数
+		        StringBuilder sb = new StringBuilder(100);
+ 		       sb.append("mobile=").append(phone).append("&content=").append(content)
+		                .append("&appkey=").append(msgAppkey);
+		        //默认是false， 设置true表示输出参数
+	 	       connection.setDoOutput(true);
+	 	       connection.getOutputStream().write(sb.toString().getBytes("UTF-8"));
+ 		       //请求连接
+	 	       connection.connect();
+		        //获取响应数据
+ 		       String resp = StreamUtils.copyToString(connection.getInputStream(), Charset.forName("UTF-8"));
+ 		       System.out.println(resp);
+ 		       HashMap map = JSON.parseObject(resp, HashMap.class);
+ 		       HashMap hashMap = JSON.parseObject(map.get("result").toString(), HashMap.class);
+ 		       String returnStatus = hashMap.get("returnStatus").toString();
+  		      if (!"Success".equals(returnStatus)) {
+  		     	     throw new DisableException("发送失败");
+ 		       }
+ 		   }
+
+	分布式异常处理: 
+		1,自定义异常 继承runtime  复写构造器
+		2,  服务的异常传递会经过dubbo dubbo会进行拦截  并且摒弃掉自定义的异常!!!  那么  怎样把真正的异常给消费者(controller)
+		        一般在对应的方法 就是在service的方法上 声明 自定义的异常 也就是在生产者上面声明异常  （3）服务提供者的api方法上直接throws自定义异常
+	redis设计模式
+		一般会把 存储时间和存储类型的前缀   放在基本的类上 baseKeyprefix ; 后面的类型 需要继承基类
+		一般会把基本的操作放在增删改 放在一个基本的service接口上,其余的 可以 直接调用基本接口(接口即操作方法)的方法,来完成自己的复杂的业务处理
+		一般我们会先确定要存储什么类型; string类型,list类型,hash类型,set类型,zset类型
+			一般使用string类型;会出现一个问题;对象怎么存储? 一般使用 json进行tostring把对象处理成string;  变成通用做法 通过判断value的class(类型是什么来进行tostring还是直接加""类型)
+						    对象怎么从redis取出来? 一般使用泛型 通过把想解析成什么类型的class对象传过来,来实现变成什么类型!!! 因为在Spring-data- redis也有很多方法需要把转成的类型传过来
+		一般我们会先确定key  是什么样的;  value 是什么 :  来操作  重点  重重点!!!    一般的模式 复杂的业务操作 使用的是 xx固定用来区分是存储的是什么的 前缀 : id: uid 一类做法!!   可以存储时间 把时间转成string 使用smidataformaker
+		1,一般会建立一个基本的类 ,字段为一定要有的字段 前缀,时间:
+		一般使用Spring-Data操作数据库 都会使用一个 模板类  xxxtemplate       (适用于每一个数据库)   该模板类封装了 所有的操作方法  模式为  template.opsforValue()  opsforxxx 模式来获取对应的操作方法
+		2,多个阅读量 一类的操作  一般会在对应的真正的实体类的项目建立 vo(value object),用来 保存从redis来缓存的数据 (对于经常修改的数据 例如收藏,点赞.. 都会先存在redis) 
+			收藏,点赞 xxx 逻辑的实现 看在哪个角度看, 如果是对应的参数比较多 单独列出一个 对应上
+
+		//TODU jpa 去看看比较详细的spring-data 操作 
+	分布式cookei问题
+		在分布式中cookei 是不能公用的;因为访问的服务器是不一致的!? 处理方案
+		使用redis 来存储      重点是 cookies  session   拦截器   参数处理器
+			1,登陆的时候 服务器进行查数据sql,查是否已经登陆redis,没有把用户信息缓存到 redis ,跳转之前需要把 数据从redis查出来,并重新 设置时间,并共享给session(前端的用户登陆头像)  并把cookies响应回去 key为token value为后台生成的uuid
+			2,跳转页面的时候,通过拦截器 来会获取对应的cookies 然后获取redis 看看有没有 并看有没有 对应的handler方法有没有贴注解    /注意要在配置类 注册
+			3,Spring参数处理器    implements HandlerMethodArgumentResolver    实现 处理方法参数的分解器 
+				supportsParameter  对应的 支持处理什么样的参数    一般进行判断是什么类型的时候methodparameter.getparameterType==xxx.class && hasparameterAnnotation(xxx注解.class)    对什么样的类型进行分解合成
+				resolveArgument -->解决方案 就是什么处理 一般是通过本地请求(传入 请求字节码) 获取请求对象 获取cookies ----redis获取userinfo  
+				注册配置类 
+		
+	mongodb: 
+		回顾: 以集合 为表 里面的数据 文档 为行      db.集合.xxx 操作   :: db.user.find()-查所有   js形式 
+			对应一个实体类  @document()对应集合   @id对应数据库中的 ObjectID_id    
+	区分redis: redis是key-value对  存储只能是那几个类型 语法类似单一....  mongodb是存储的是集合-文档 语法类似js    	他们区别很明显      mongodb注意语法的拼接
+		开发模式: 
+			1, mongodb建立 domain  并单独建立 对应mongodb的id  @document(对应集合)  @id      对应别的类型的id 要单独列一个 字段
+			 2, 建立对应的接口  extends MongoRepository<StrategyComment,String>  并贴注解@Repository    	只要继承了这个接口 spring就会代理实现它 注意泛型里的前一个是对应的集合的实体类 ,后一个是id的类型   注意这个接口 只是有简单的增删改查方法
+			3,创建 对应的service  注意条件的拼接Query 加上Criteria 来拼接 where is 相等拼接,分页 pagquery.of     page对象-->pageImpl 类似于pageinfo         一般的凭借也就是对应类的字段拼接    一般简单的查询 都是使用的接口
+	分布式的小问题: 
+			不是自己的写的类pageimpl   无法序列化问题:  
+								dubbo 有2中序列化方式
+					Hession : 需要所有类必须实现 Serializable, 同时需要存在一个 空参数构造器 [默认使用]	
+					kryo : 也是一种序列方式, 这个相对Hession 速度更快, 不需要实现 Serializable,         使用第二种   
+				必须配置到服务生产者
+				#序列化方式
+				dubbo.protocol.serialization=kryo            	website 删除dev-tool                        注意添加对应依赖
+
+			对象的比较问题: 因为是分布式  是序列化 传输  对象的地址值是不对应的  所以一般使用字符串比较的方式  因为 字符串比较 是比较的char  其余的比较的是 地址值    --重--
+		
+	Spring的监听器  
+		Spring容器初始化的时候 就会执行 监听器 
+		@Component	必须要贴上 让spring管理  
+		public class RedisDataInitListener implements ApplicationListener<ContextRefreshedEvent>    --必须要实现应用监听器  
+		onApplicationEvent  复写这个方法      一般使用于 把sql的数据复制到redis ,, redis数据初始化
+		一般情况下 放在压力比较小,或者 首先开始的项目或者服务  建立 listener包
+	Spring的定时器
+		redis 自动处理机制:  redis 会把 会把 最旧 最少 使用 的数据 删除掉
+		Spring的定时器  Scheduler   
+			1, 建立一个job 一般在压力比较小,或者首先开启的服务,建立一个类 贴上@component 
+			2,建立一个方法 贴上@Scheduled(cron="")  cron指定的是定时器规则 比如 每三个小时执行一次,有专门的cron表达式(百度)   
+				 //秒 分 小时 月份中的日期 月份 星期中的日期 年份
+			  	//0 0 0 1/1 * ? 
+			3,在主方法(启动类) 开启定时服务支持   @EnableScheduling
+		redis存到sql中

@@ -1,0 +1,53 @@
+
+1, 跨域问题的 解决方案: 
+          	
+	主要是后端的api和前端(移动端,一类的)app         cors 方式
+	后端:Spring   mvc.xml文件添加 
+		 <mvc:cors  > 配置mvc:mapping path="/**"    作用是拦截所有路径  
+		 allowed-origins ：  授权可以访问的客户端域名    一般只能指定一个单独的域名 域名是 ip名称加端口
+		 allowed-methods ：  表明服务器支持的请求的方法     
+		 allowed-headers ：  表明服务器支持的头信息字段
+	                 allow-credentials:  允许客户端携带跨域cookie，此时origin值不能为“*”
+                                 max-age ：          授权的有效期时间
+	前端: 移动端 :  html 添加
+		/*设置允许跨域访问*/       设置ajax的默认值           允许携带 cookies
+		$.ajaxSetup({crossDomain: true, xhrFields: {withCredentials: true}});
+
+2,在service层添加 session 操作 需要 通过 RequestContextHolder  ----
+		 	一般做成一个工具 放在 util   并把 对应的session 设置成常量  ,,,把获取和填入 设置成get..set方法
+
+3, 移动的前端  存储 登陆的人员的信息的方法 :  在sessionStorage   先转json字符串再去存   setItem   方法是 JOSN.string
+						     取出来    getItem 通过对应的名字来   通过json.parse 解析成json对象
+4, 回显的方式  可以通过jrender       render-html 这个 一般是 对应的数据回显的属性
+
+5,注销  注意 注销需要把sessionStorage中的删除  使用remove        后端使用session的销毁   
+	注意 让父界面的跳转  window.parent
+6,前端路由::   跳转到其余的页面的时候  需要进行一定的检查 例如用户是不是登陆    一般通过取出来的 对象直接判断就行 因为js中 是空 就是false 
+		  --- 也就是检查 sessionStorage 是不是有这个对应的对象  转成对应的对象  更好的下一个页面利用
+
+7, 前端的 背景图片的回显 通过css 添加  
+8, restful风格的 更新 需要 mvc 添加 过滤器  并且 需要在添加 隐藏域 _method=对应的restful风格方法 ,
+
+9, 图片的上传, 
+		解决跨域问题需要把图片上传到 公共的网上的第三方,  为了满足插件规定的 结果 需要把 对象的数据装成 特定的形式 使用map
+   更新需要把 sessionStorage 也要更新
+
+10, 接口安全处理 
+	为了防止 任意的 修改数据     
+	       先建立一个拦截器 来拦截 看该方法 有没有自定义的注解,来判断 需不需要检查session 需要的话   如果是null 返回401 并拦截  
+	     在controller 判断传过来 要修改的id 和 session 的是不是一致  就是说不让 修改别人的/////
+11,treeview 插件 实现地区
+	首先, 他是一个指定模式的     在controller 成立对应的list--> map
+
+12,懒加载的实现: 
+	在属性节点添加 lazyLoad:true,  
+$('#treeview1').treeview('addNode', [ data, node ]);   添加父节点        类比docmenet,, xml文件来学 其实 是一样的
+	
+
+
+前后端 需要注意要传回到 后端的数据库 数据;;;; 看字段 对不对!!!!
+
+
+             
+	  注意sertful就是一个约束  到时候 应用它对应的约束就行了
+ 	

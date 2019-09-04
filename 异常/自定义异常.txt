@@ -1,0 +1,11 @@
+自定义异常类    
+1,受检查的异常 :                  继承 java.lang.Exception
+
+2,运行时期异常:                   继承java.lang.RuntimeException
+
+
+继承之后  提供三个构造器  1,无参构造器    
+		         2,一个带string类型message   构造器
+			{super(message)      }      //message是错误的原因或信息
+    	                          3,一个带string message,  Trowable  cause的构造器
+			{super(massage,cause)}   //cause是异常的根本原因

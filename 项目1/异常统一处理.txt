@@ -1,0 +1,26 @@
+
+统一异常处理：
+在Java EE项目的开发中，不管是对底层的数据库操作过程，还是业务层的处理过程，还是控制层的处理过程，都不可避免会遇到各种可预知的、不可预知的异常需要处理。
+每个过程都单独处理异常，系统的代码耦合度高，工作量大且不好统一，维护的工作量也很大。 
+那么，能不能将所有类型的异常处理从各处理过程解耦出来，这样既保证了相关处理过程的功能较单一，也实现了异常信息的统一处理和维护？答案是肯定的。下面将介绍使用Spring MVC统一处理异常的解决和实现过程。 
+
+Spring MVC处理异常有3种方式： 
+（1）使用Spring MVC提供的简单异常处理器SimpleMappingExceptionResolver； 
+（2）使用@ExceptionHandler注解实现异常处理；
+（3）实现Spring的异常处理接口HandlerExceptionResolver 自定义自己的异常处理器； 
+-----------------------------------------------------------------------------
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <!-- 定义默认的异常处理页面，当该异常类型的注册时使用 -->
+        <property name="defaultErrorView" value="common/error"/>
+        <!-- 定义异常处理页面用来获取异常信息的变量名，默认名为exception -->
+        <property name="exceptionAttribute" value="ex"/>
+        <!-- 定义需要特殊处理的异常，用类名或完全路径名作为key，异常也页名作为值 -->
+        <property name="exceptionMappings">
+            <value>
+                org.apache.shiro.authz.UnauthorizedException=common/nopermission
+                <!-- 这里还可以继续扩展不同异常类型的异常处理 -->
+            </value>
+        </property>
+    </bean>
+
+

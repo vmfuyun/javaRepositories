@@ -1,0 +1,2 @@
+jrender.min.js     
+	render-loop="list"  使用这个的时候     后面的注入 需要 添加对应的   list.   来获取

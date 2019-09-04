@@ -1,0 +1,11 @@
+
+
+@RequeryBody   请求处理注解: 一般用于 把 http请求的内容(一般是 json格式的字符串)  转成java对象,,,
+			,,一般在前端请求到 后端的 格式是 application/json格式   就必须用 @RequestBody 贴在 方法的形参上
+			 xml格式  也要贴    并把模型类 页贴上 对应@xmlrootElement()----告诉它 这个对应xml的什么----
+
+
+
+@ResponseBody   响应 处理注解 : 处理的是把 返回的数据 是一个json格式的字符串   
+
+@RestController  复合 注解  也就是说这个类是RESTful风格的   也就是说 返回的都是 json格式的字符串 
